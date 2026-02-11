@@ -1,6 +1,4 @@
 from .prediction import Prediction, VideoPredictionResponse
-
-
 class LipSyncInput(Prediction):
     video_id: str
     video_url: str
@@ -12,11 +10,8 @@ class LipSyncInput(Prediction):
     audio_type: str
     audio_file: str
     audio_url: str
-
-
 class LipSync(Prediction):
     input: LipSyncInput
-
     def __init__(self):
         super().__init__()
         self._request_method = "POST"

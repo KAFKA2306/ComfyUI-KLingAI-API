@@ -1,11 +1,7 @@
 from .prediction import Prediction, AudioResponse
-
-
 class Text2Audio(Prediction):
     prompt: str
-
     duration: float
-
     def __init__(self):
         super().__init__()
         self._request_method = "POST"

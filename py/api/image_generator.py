@@ -1,25 +1,14 @@
 from .prediction import Prediction, ImagePredictionResponse
-
-
 class ImageGenerator(Prediction):
     model_name: str
-
     prompt: str
-
     negative_prompt: str
-
     image: str
-
     image_reference: str
-
     image_fidelity: float
-
     human_fidelity: float
-
     n: int
-
     aspect_ratio: str
-
     def __init__(self):
         super().__init__()
         self._request_method = "POST"

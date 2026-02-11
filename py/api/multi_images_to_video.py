@@ -1,24 +1,14 @@
 from array import array
 from .prediction import Prediction, MultiImage2VideoResponse
-
-
 class MultiImages2Video(Prediction):
     model_name: str
-
     image_list: array
-
     image_tail: str
-
     prompt: str
-
     negative_prompt: str
-
     mode: str
-
     duration: str
-
     aspect_ratio: str
-
     def __init__(self):
         super().__init__()
         self._request_method = "POST"

@@ -1,11 +1,7 @@
 from .prediction import Prediction, VideoPredictionResponse
-
-
 class VideoExtend(Prediction):
     video_id: str
-
     prompt: str
-
     def __init__(self):
         super().__init__()
         self._request_method = "POST"

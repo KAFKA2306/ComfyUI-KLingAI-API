@@ -1,13 +1,8 @@
 from .prediction import Prediction, ImagePredictionResponse
-
-
 class KolorsVurtualTryOn(Prediction):
     model_name: str
-
     human_image: str
-
     cloth_image: str
-
     def __init__(self):
         super().__init__()
         self._request_method = "POST"

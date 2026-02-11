@@ -1,21 +1,12 @@
 from .prediction import Prediction, ImageExpanderPredictionResponse
-
-
 class ImageExpander(Prediction):
     image: str
-
     up_expansion_ratio: float
-
     down_expansion_ratio: float
-
     left_expansion_ratio: float
-
     right_expansion_ratio: float
-
     prompt: str
-
     n: int
-
     def __init__(self):
         super().__init__()
         self._request_method = "POST"

@@ -1,7 +1,6 @@
 from .nodes import Text2VideoNode, ImageGeneratorNode, TextToAudioNode, Video2AudioNode, ImageExpanderNode, \
     Image2VideoNode, KLingAIAPIClient, PreviewVideo, PreviewAudio, KolorsVirtualTryOnNode, VideoExtendNode, LipSyncNode, \
     LipSyncTextInputNode, LipSyncAudioInputNode, EffectNode
-
 NODE_CLASS_MAPPINGS = {
     'Client': KLingAIAPIClient,
     'Image Generator': ImageGeneratorNode,

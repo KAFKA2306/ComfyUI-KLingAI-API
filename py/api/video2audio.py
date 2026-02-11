@@ -1,13 +1,10 @@
 from .prediction import Prediction, Video2AudioResponse
-
-
 class Video2Audio(Prediction):
     video_id: str
     video_url: str
     sound_effect_prompt: str
     bgm_prompt: str
     asmr_mode: bool
-
     def __init__(self):
         super().__init__()
         self._request_method = "POST"

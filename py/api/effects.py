@@ -1,24 +1,14 @@
 from .prediction import Prediction, VideoPredictionResponse
 from typing import List
-
-
 class EffectInput(Prediction):
     model_name: str
-
     mode: str
-
     image: str
-
     images: List[str]
-
     duration: str
-
-
 class Effects(Prediction):
     effect_scene: str
-
     input: EffectInput
-
     def __init__(self):
         super().__init__()
         self._request_method = "POST"
