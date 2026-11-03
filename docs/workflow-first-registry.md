@@ -1,4 +1,4 @@
-# Workflow-first, evidence-preserving source registry
+# Comfy Workflow Atlas: workflow-first source registry
 
 ## Contract
 - Collect first. No proprietary score, ranking, popularity filter, quality gate, or workflow execution.

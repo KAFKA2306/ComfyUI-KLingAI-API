@@ -1,4 +1,4 @@
-name: Workflow Source Discovery
+name: Comfy Workflow Atlas - Source Discovery
 
 on:
   schedule:
