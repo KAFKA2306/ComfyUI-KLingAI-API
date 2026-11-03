@@ -1,27 +1,35 @@
 # ComfyUI Workflows Factory
 
-Workflow-first 2026 discovery for **YouTube, VRChat, BOOTH, Podcast, 3D Models, Movies, Chill Worlds, Game Worlds, Avatars and game assets**. The former Kling-specific implementation was retired; its Git history remains accessible.
+公式・コミュニティが公開するWorkflowを継続的に発見し、出典・改訂履歴を保ったまま制作業務に取り込む共通基盤です。
 
-## Browse and reproduce
+## 収集・検索
 
-- [Use-case index](catalog/index.md): direct links to original, pinned Workflow JSON.
-- [All candidates CSV](catalog/all-workflows.csv): complete index for Google Sheets / Excel, including unmatched entries.
-- [Use-case JSON](catalog/by-usecase.json): machine-readable cross-category IDs.
-- [Sources and limitations](docs/SOURCES.md)
-- [Source-preserving registry design](docs/workflow-first-registry.md)
+- [用途別一覧](catalog/index.md)、[全候補CSV](catalog/all-workflows.csv)、[JSON](catalog/by-usecase.json)
+- [収集対象](docs/SOURCES.md)、[出典を保つ管理方針](docs/workflow-first-registry.md)
+- [自動収集](.github/workflows/workflow-discovery.yml)：6時間ごと、および手動で実行
 
-The catalog merges the prior official/community snapshot and the new `data/workflow_registry.json` provenance-first crawler. It **does not filter, score or rank creators**. Every candidate, including unknown formats and PNG/WebP, stays discoverable. Category tags are exploratory, not evidence that a workflow completes an entire published product.
+公開Workflowに独自スコアや順位・足切りを設けません。未確認・未実行のものも出典付きで保存します。
 
-## Automatic collection
+## 業務への接続
 
-`.github/workflows/workflow-discovery.yml` runs every 6 hours and on demand. It tracks independent and official sources and revisions, inspects JSON metadata without executing upstream code, regenerates the full category index, and commits metadata changes.
+対象は既存の image2outfit、vrmineのVRChat小型カフェ、3Dモデルの複数視点画像準備です。入力画像・テクスチャなどの生成工程をComfyUIへ移し、Blender・Unity・公開判定は既存の責任範囲に残します。詳しくは [制作工程への接続](docs/production-handoff.md)。
 
-```sh
+~~~sh
+python scripts/production_job.py targets
+python scripts/production_job.py plan --target vrmine-cafe --workflow workflow-api.json
+python scripts/production_job.py submit --target vrmine-cafe --workflow workflow-api.json --receipt .artifacts/receipt.json
+python scripts/production_job.py collect --receipt .artifacts/receipt.json --output-root .artifacts/output
+~~~
+
+実行先はローカルComfyUIのみ。GPUや商用利用の検証はCIでは実施しません。生成物はハッシュ付きで回収しますが、製品完成やVRChat公開済みとは判定しません。
+
+## 開発・検証
+
+~~~sh
 python -m unittest discover -s tests -v
 PYTHONPATH=src python -m gwp.discovery sync
 PYTHONPATH=src python -m gwp.discovery stats
-PYTHONPATH=src python -m gwp.discovery search --term flux
 python scripts/build_catalog.py
-```
+~~~
 
-Python 3.11+, standard library. No paid model API. GPU execution, Unity/VRChat SDK integration and BOOTH commercial-license checks are separate production steps. Original versioned contracts and optional runtime adapter remain under `src/gwp/`.
+Python 3.11以上、外部Python依存は不要です。モデル・動画・音声・画像・秘密情報はGitにコミットしません。
