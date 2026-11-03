@@ -17,7 +17,7 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 
 | 領域 | 公開する作品 |
 | --- | --- |
-| VRChatワールド | カフェ、Chill World、探索・交流ワールド |
+| VRChatワールド | Chill World、探索・交流・体験型ワールド |
 | アバター・衣装 | VRM、衣装、アクセサリー |
 | BOOTH商品 | 3D素材、背景、デジタル商品 |
 | YouTube・Shorts | 解説動画、短編、キャラクター動画 |
@@ -26,13 +26,13 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 | 3Dモデル | キャラクター、建築、家具、ゲーム向けモデル |
 | ゲーム制作 | ゲーム本体、ワールド、キャラクター、UI、素材 |
 
-各領域の制作は並行して進めます。VRChatカフェは個別案件の一つで、他領域の開始条件にはしません。
+8領域は対等です。各領域で制作・検証・公開を並行して進め、特定の作品の完成を別の領域の開始条件にしません。
 
 ## 設計書と台帳
 
 [文書索引](docs/README.md)から、[全体設計](docs/design/system.md)、[台帳の保全・復旧](docs/design/durability.md)、[制作工程](docs/design/production.md)、[作品構成と演出](docs/design/creative.md)、[台帳と用語](docs/knowledge/registry.md)、[情報源](docs/knowledge/sources.md)を参照できます。
 
-制作目標・収集条件・制作案件の設定は、mainの[config/registry.json](config/registry.json)で管理します。収集した候補と制作履歴の正本は、mainブランチの `data/workflow_registry.json` と同名の `.sha256` ファイルです。ローカルの `.cache/` は作業用です。
+制作目標・収集条件・制作案件の設定は、`main` ブランチの [config/registry.json](config/registry.json)で管理します。収集した候補と制作履歴の正本は、mainブランチの `data/workflow_registry.json` と同名の `.sha256` ファイルです。ローカルの `.cache/` は作業用です。
 
 ## 実行方法
 
