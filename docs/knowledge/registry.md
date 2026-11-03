@@ -11,7 +11,7 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 
 # Workflow台帳と用語
 
-制作目標、制作案件、収集元の設定はmainの `config/registry.json` に保存します。収集した候補と制作履歴はcatalogの `data/workflow_registry.json` に保存し、ローカルの `.cache/workflow_registry.json` は作業コピーとして使います。保存・復旧・競合統合は[台帳の保全・復旧](../design/durability.md)に記載します。
+制作目標、制作案件、収集元の設定はmainの `config/registry.json` に保存します。収集した候補と制作履歴はmainの `data/workflow_registry.json` に保存し、ローカルの `.cache/workflow_registry.json` は作業コピーとして使います。保存・復旧・競合統合は[台帳の保全・復旧](../design/durability.md)に記載します。
 
 ## 台帳の項目
 
