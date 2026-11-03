@@ -21,5 +21,3 @@ sources: ["https://github.com/Comfy-Org/workflow_templates","https://github.com/
 GitHubのコミュニティWorkflowは設定されたリポジトリ・検索語で探索し、出典の固定コミット・パス・Blob SHAを記録します。
 
 **Hugging Face・Civitaiのモデル情報API**はモデルの情報を取得するもので、配布WorkflowのJSONを取得したことにはなりません。RunningHub、Reddit、Comfy Registry、OpenArtなどは、API取得が検証されていない限り参照先としてのみ登録します。
-
-発見されたこと、利用できること、再配布できること、商用利用できることは別です。Workflow、モデル、Custom Nodeの依存と利用条件は個別に確認します。スター数やファイル名だけで動作・品質を断定しません。
