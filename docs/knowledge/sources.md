@@ -11,16 +11,16 @@ sources: ["https://github.com/Comfy-Org/workflow_templates","https://github.com/
 
 # 一次資料と情報源
 
-取得対象の一覧と検索条件は `config/registry.json` で管理する。公開元を追加・変更する場合は、その設定を更新する。Markdownに同じ一覧を複製しない。
+公開元と検索条件は `config/registry.json` で管理する。対象を追加・変更する際は設定台帳を更新し、文書には情報源の種類と確認方法を記す。
 
 ## Workflowの公開元
 
-公式の入口には[Comfy-Orgのテンプレート](https://github.com/Comfy-Org/workflow_templates)、[公開Workflow](https://github.com/Comfy-Org/workflows)、[ComfyUIの作例](https://github.com/comfyanonymous/ComfyUI_examples)がある。[Comfy-Orgのリポジトリ一覧](https://github.com/orgs/Comfy-Org/repositories)では関連する公開元を確認できる。
+公式・開発元の公開先には[Comfy-Orgのテンプレート](https://github.com/Comfy-Org/workflow_templates)、[公開Workflow](https://github.com/Comfy-Org/workflows)、[ComfyUIの作例](https://github.com/comfyanonymous/ComfyUI_examples)がある。関連リポジトリは[Comfy-Orgの一覧](https://github.com/orgs/Comfy-Org/repositories)から調べられる。
 
-コミュニティのWorkflowは、設定したリポジトリと検索語から探す。取得したファイルには原典URL、固定コミット、パス、Blob SHAを結び付ける。更新や削除があっても、取得できなかった事実を候補の品質評価へ置き換えない。
+コミュニティのWorkflowは、設定したリポジトリと検索語で探す。取得したファイルには、原典URL、コミットSHA、ファイルパス、Blob SHAを記録する。取得に失敗した場合は失敗として記録し、品質の評価には使わない。
 
 ## モデル情報と参考サイト
 
-Hugging FaceとCivitaiのAPIから得るのはモデルのメタデータであり、Workflowファイルを取得したことにはならない。RunningHub、Reddit、Comfy Registry、OpenArtなどは、確認済みの取得APIがない場合は参考先として扱う。
+Hugging FaceとCivitaiのAPIではモデル情報を取得する。RunningHub、Reddit、Comfy Registry、OpenArtなどは、Workflowファイルを取得するAPIを確認できていない場合、参考先として記録する。
 
-Workflowを見つけても、実行可能性、再配布の許可、商用利用の許可までは確定しない。採用時にはWorkflow、依存モデル、Custom Node、生成素材について、原典の利用条件をそれぞれ調べる。GitHubのスター数やIssueの存在だけで個別Workflowの品質を断定しない。
+Workflowを採用する際は、原典にある依存モデルやCustom Node、生成素材の利用条件を確認する。GitHubのスター数やIssueの件数は、個別Workflowの動作実績とは区別する。
