@@ -343,7 +343,9 @@
         "テクスチャ"
       ],
       "mission_ids": [
-        "3d-models"
+        "3d-models",
+        "booth",
+        "games"
       ],
       "license": "未確認",
       "hardware_validation": "not-tested"
@@ -358,7 +360,197 @@
         "360度",
         "背景画像"
       ],
-      "mission_ids": [],
+      "mission_ids": [
+        "vrchat-world",
+        "games"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "chatterbox-dialog-tts",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/audio-chatterbox_tts_dialog.json",
+      "source_key": "github:comfy-org/workflow_templates:templates/audio-chatterbox_tts_dialog.json",
+      "purpose": "会話形式の音声・台詞を生成する公開テンプレート候補",
+      "tags": [
+        "Podcast",
+        "音声",
+        "会話"
+      ],
+      "mission_ids": [
+        "podcast"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "ace-step-1-5-audio",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/audio_ace_step_1_5_split_4b.json",
+      "source_key": "github:comfy-org/workflow_templates:templates/audio_ace_step_1_5_split_4b.json",
+      "purpose": "作品向け音楽・音響素材の公開テンプレート候補",
+      "tags": [
+        "音楽",
+        "音声"
+      ],
+      "mission_ids": [
+        "podcast",
+        "movies"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "qwen-image-edit-2511",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/image_qwen_image_edit_2511.json",
+      "source_key": "github:comfy-org/workflow_templates:templates/image_qwen_image_edit_2511.json",
+      "purpose": "画像の編集・統一表現を行う公開テンプレート候補",
+      "tags": [
+        "画像編集",
+        "キャラクター"
+      ],
+      "mission_ids": [
+        "avatars",
+        "booth"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "character-sheet",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/templates-character_sheet.json",
+      "source_key": "github:comfy-org/workflow_templates:templates/templates-character_sheet.json",
+      "purpose": "キャラクターの資料・シートを生成する公開テンプレート候補",
+      "tags": [
+        "キャラクター",
+        "素材"
+      ],
+      "mission_ids": [
+        "avatars",
+        "games"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "ltx-2-3-text-to-video",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/video_ltx2_3_t2v.json",
+      "source_key": "github:comfy-org/workflow_templates:templates/video_ltx2_3_t2v.json",
+      "purpose": "文章から映像を制作する公開テンプレート候補",
+      "tags": [
+        "動画",
+        "映像"
+      ],
+      "mission_ids": [
+        "youtube",
+        "movies"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "ltx-2-3-image-to-video",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/video_ltx2_3_i2v.json",
+      "source_key": "github:comfy-org/workflow_templates:templates/video_ltx2_3_i2v.json",
+      "purpose": "静止画から映像を制作する公開テンプレート候補",
+      "tags": [
+        "動画",
+        "画像から動画"
+      ],
+      "mission_ids": [
+        "youtube",
+        "movies"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "wan-2-2-5b-video",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/video_wan2_2_5B_ti2v.json",
+      "source_key": "github:comfy-org/workflow_templates:templates/video_wan2_2_5B_ti2v.json",
+      "purpose": "Wan 2.2 5Bによる動画制作の公開テンプレート候補",
+      "tags": [
+        "動画",
+        "映像"
+      ],
+      "mission_ids": [
+        "youtube",
+        "movies"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "sprite-sheet",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/template_purz_nb2_single_image_sprite_sheet.json",
+      "source_key": "github:comfy-org/workflow_templates:templates/template_purz_nb2_single_image_sprite_sheet.json",
+      "purpose": "ゲーム向けスプライトシートを生成する公開テンプレート候補",
+      "tags": [
+        "ゲーム",
+        "スプライト"
+      ],
+      "mission_ids": [
+        "games",
+        "booth"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "trellis2-lowpoly",
+      "repository": "aaroncose/comfyui-trellis-wan-workflows",
+      "path": "workflows/trellis2/img2glb-lowpoly.json",
+      "source_key": "github:aaroncose/comfyui-trellis-wan-workflows:workflows/trellis2/img2glb-lowpoly.json",
+      "purpose": "Trellis2でローポリ3D素材を生成する公開Workflow候補",
+      "tags": [
+        "3D",
+        "ローポリ"
+      ],
+      "mission_ids": [
+        "3d-models",
+        "games"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "isometric-tiles",
+      "repository": "0xheycat/isometric-game-skills",
+      "path": "skills/seamless-isometric-terrain/scripts/MEOWART_iso_tile_transparent_resepD_v3.json",
+      "source_key": "github:0xheycat/isometric-game-skills:skills/seamless-isometric-terrain/scripts/MEOWART_iso_tile_transparent_resepD_v3.json",
+      "purpose": "見下ろし型ゲーム用の地形タイルを生成する公開Workflow候補",
+      "tags": [
+        "ゲーム",
+        "タイル"
+      ],
+      "mission_ids": [
+        "games",
+        "booth"
+      ],
+      "license": "未確認",
+      "hardware_validation": "not-tested"
+    },
+    {
+      "id": "seedvr2-upscale",
+      "repository": "0c0/ComfyUI-Roundabout",
+      "path": "workflows/utility_seedvr2_upscale.json",
+      "source_key": "github:0c0/comfyui-roundabout:workflows/utility_seedvr2_upscale.json",
+      "purpose": "生成素材の高精細化に使う公開Workflow候補",
+      "tags": [
+        "高精細化",
+        "画像"
+      ],
+      "mission_ids": [
+        "booth",
+        "youtube"
+      ],
       "license": "未確認",
       "hardware_validation": "not-tested"
     }
