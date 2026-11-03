@@ -11,7 +11,7 @@ sources: []
 
 # 設計書とナレッジ
 
-`docs/` は設計書とナレッジの2分類に限定します。コード・テストと `data/workflow_registry.json` が動作・収集結果の正本です。Markdownには判断と確認方法だけを残します。
+`docs/` は設計書とナレッジの2分類に限定します。コード・テストと `.cache/workflow_registry.json` が動作・収集結果の正本です。Markdownには判断と確認方法だけを残します。
 
 ## 設計書
 
