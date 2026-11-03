@@ -3,7 +3,7 @@ id: "design-production"
 title: "ComfyUIと制作工程の接続"
 kind: "design"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["制作","素材","受け渡し","uv"]
 related: ["src/gwp/production_job.py","src/gwp/production.py"]
 sources: ["https://github.com/Comfy-Org/workflow_templates"]
@@ -11,13 +11,13 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 
 # ComfyUIと制作工程の接続
 
-ComfyUIで生成した画像・動画・音声を、作品制作に使うための受け渡し手順を定める。素材の生成成功と、Unityでの動作、商品販売、VRChatへの公開は、制作先で確認する別の工程である。
+ローカルのComfyUIへAPI形式のWorkflowを送信し、生成したファイルを制作先へ渡します。画像・動画・音声・3D素材の生成から、作品への組み込みと公開までを区別します。
 
-## API形式のWorkflowを実行する
+## 実行の準備
 
-Pythonの環境管理とCLIの実行には `uv` を使う。ComfyUIをローカルの `http://127.0.0.1:8188` で起動し、実際に使用するWorkflowを「Export Workflow (API)」から `workflow-api.json` に保存する。制作先は固定一覧ではなく、`--target` に英小文字・数字・`-`・`_` からなる1～64文字の識別子を指定する。
+Pythonの環境とCLIは `uv` で管理します。ComfyUIを `http://127.0.0.1:8188` で起動し、使用するWorkflowを「Export Workflow (API)」で `workflow-api.json` に保存します。
 
-以下の `TARGET` は制作案件の任意の識別子であり、8領域のいずれかに固定しない。
+`TARGET` は制作先を区別する1～64文字の識別子です。英小文字、数字、ハイフン、下線を使えます。固定の制作先一覧への登録は必要ありません。各実行の `RECEIPT` は別ファイルにしてください。
 
 ```sh
 TARGET=project-identifier
@@ -25,22 +25,20 @@ RECEIPT=.cache/jobs/receipt.json
 OUTPUT_ROOT=.cache/jobs/output
 uv run --locked python -m gwp.production_job plan --target "$TARGET" --workflow workflow-api.json
 uv run --locked python -m gwp.production_job submit --target "$TARGET" --workflow workflow-api.json --receipt "$RECEIPT"
-uv run --locked python -m gwp.production_job collect --receipt "$RECEIPT" --output-root "$OUTPUT_ROOT"
 ```
 
-`plan`はWorkflowと入力値を検査する。`submit`はComfyUIへ実行を依頼し、受け取ったジョブIDを`receipt`に保存する。`collect`は実行履歴で成功を確認した場合にファイルを回収し、それぞれのSHA-256を記録する。処理が終わっていなければ、完了後に`collect`を再実行する。
-
-送信中に通信が切れた場合、`receipt` に `SUBMISSION_UNKNOWN` が残る。この状態では同じWorkflowを再送せず、次のコマンドでComfyUIの実行待ち・実行中のジョブを照合する。
+`plan` はWorkflowの入力形式を検査します。`submit` はComfyUIへ実行を依頼し、応答から得たジョブIDをreceiptに保存します。送信途中の通信断ではreceiptが `SUBMISSION_UNKNOWN` のまま残ります。重複送信を避けるため、この状態では新たな `submit` を行わず、次のコマンドで確認します。
 
 ```sh
 uv run --locked python -m gwp.production_job status --receipt "$RECEIPT"
+uv run --locked python -m gwp.production_job collect --receipt "$RECEIPT" --output-root "$OUTPUT_ROOT"
 ```
 
-`status` がジョブIDを特定すると、`receipt` の状態が `SUBMITTED_NOT_COMPLETE` に更新される。その後、ジョブの成功を確認できた時点で`collect`を実行する。照合できない場合は未確認のまま保持し、重複送信を避ける。
+`status` は取得できた実行状態を表示します。`collect` はComfyUIの完了履歴が成功を示した場合に出力を回収し、各ファイルのSHA-256を記録します。未完了・失敗・結果不明のジョブから完成ファイルを回収したことにはしません。
 
 ## 制作先への受け渡し
 
-制作先の既存ディレクトリを `PROJECT_ROOT` に指定する。BashまたはWSLではreceiptに記録されたジョブIDを読み取り、次のように受け渡す。
+既存の制作プロジェクトのディレクトリーを `PROJECT_ROOT` に指定します。BashまたはWSLでは、receiptのジョブIDを読み取って次のように実行できます。
 
 ```sh
 PROJECT_ROOT=/path/to/existing/project
@@ -48,6 +46,4 @@ PROMPT_ID=$(uv run --locked python -c 'import json,sys; print(json.load(open(sys
 uv run --locked python -m gwp.production_job handoff --manifest "$OUTPUT_ROOT/$TARGET/$PROMPT_ID/manifest.json" --project-root "$PROJECT_ROOT"
 ```
 
-`handoff` はファイルのハッシュを照合し、制作先の `.artifacts/comfyui/$TARGET/` 配下にコピーする。制作先ではこの作業領域をGit管理から除外する。画像・動画・音声・GLB・FBX・OBJなど、コードが許可した拡張子を回収できるが、拡張子の確認だけでは3D構造や見た目を検証したことにならない。
-
-素材を受け取った制作先が、依存モデルと素材の利用条件、見た目、性能、公開条件を確認して作品を完成させる。
+`handoff` はファイルのハッシュを確認し、`PROJECT_ROOT/.artifacts/comfyui/$TARGET/$PROMPT_ID/` へコピーします。制作先では `.artifacts/` をGit管理から除外してください。拡張子の許可とSHA-256の一致はファイル内容の品質、3D構造、権利を保証しません。制作先で実素材の表示、性能、利用条件を確認してから作品へ組み込みます。

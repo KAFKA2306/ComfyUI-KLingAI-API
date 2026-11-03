@@ -3,7 +3,7 @@ id: "design-system"
 title: "Workflowの収集と制作基盤の設計"
 kind: "design"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["設計","Workflow","出典","ComfyUI"]
 related: ["config/registry.json","src/gwp/discovery.py","src/gwp/production.py"]
 sources: ["https://github.com/Comfy-Org/workflow_templates"]
@@ -11,27 +11,30 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 
 # Workflowの収集と制作基盤の設計
 
-公開されたWorkflow、Subgraph、Blueprintを出典付きで収集し、必要な制作工程に取り入れる。8つの制作領域は独立して進め、収集した候補と知識を共有する。制作目標、案件、取得元、採用候補の設定は `config/registry.json` にまとめる。人気や独自スコアによって候補を除外しない。
+公開されたWorkflow、Subgraph、Blueprintを出典付きで収集し、8つの制作領域で再利用します。制作領域は独立して進め、収集結果と制作の知識を共有します。公開元の人気や独自の点数で収集対象を除外しません。
 
-## 情報の流れ
+## 情報の保存先
 
-| 処理 | ファイルと役割 |
+| 役割 | 正本・実装 |
 | --- | --- |
-| 収集条件 | `config/registry.json`：公開元、検索語、用途の分類 |
-| 発見・静的確認 | `src/gwp/discovery.py`：候補の列挙、改訂履歴、JSON形式の確認 |
-| 永続台帳 | `catalog:data/workflow_registry.json`：出典・改訂・探索状態・採用・制作・公開履歴 |
-| 検索・出力 | `gwp.discovery search / export`：取得結果から検索し、CSV・JSONを生成 |
-| 素材生成 | `src/gwp/production.py`：選んだAPI形式WorkflowをローカルComfyUIに投入 |
-| 作品の完成 | Blender、Unity、制作先の編集環境と公開サービスで確認 |
+| 目標・案件・収集条件 | mainの `config/registry.json` |
+| 発見・静的確認 | `src/gwp/discovery.py` |
+| 出典・改訂・制作履歴 | catalogの `data/workflow_registry.json` |
+| 台帳の保存・復元 | `src/gwp/state.py`、`scripts/catalog_sync.sh`、`scripts/catalog_publish.sh` |
+| 台帳の検索・出力 | `gwp.discovery search`・`export`、用途別の並べ替えは `gwp.select` |
+| 素材の生成・受け渡し | `src/gwp/production.py`、`src/gwp/production_job.py` |
+| 作品構成と変更影響 | `src/gwp/creative.py` |
 
-収集結果は[定期収集](../../.github/workflows/collect.yml)で6時間ごとに更新し、Gitの専用ブランチに確定する。`.cache/`は作業用の一時保存先であり、キャッシュ消滅を履歴の消滅としない。別媒体への保全、復旧、更新競合、版の管理は[台帳保全設計](durability.md)に定める。
+収集処理は[GitHub Actions](../../.github/workflows/collect.yml)から6時間おきとmain更新時に起動します。`scripts/catalog_sync.sh` がcatalogの正本を取得して差分を追加します。`gwp.discovery sync` を直接実行した場合はローカルの台帳が更新されるため、永続保存には別途 `scripts/catalog_publish.sh` が必要です。
 
-## 出典と実行の境界
+更新競合、バックアップ、別PCからの復元は[台帳の保全・復旧](durability.md)で扱います。
 
-- 原典のリポジトリ、パス、固定コミット、Blob SHAを記録し、異なる作者の出典を一つにまとめない。
-- 未分類の候補や取得・解析の失敗も記録する。APIエラーを候補が存在しない証拠として扱わない。
-- ファイルの静的確認と、モデルを使った実行確認を区別する。静的確認だけでは品質や商用利用条件は確定しない。
-- 収集時に第三者のWorkflow、Custom Node、モデルを自動で導入・実行しない。
-- GitHub検索と巡回には件数の上限がある。収集結果を世界中のWorkflowの完全な一覧とは呼ばない。
+## 収集から作品公開まで
 
-制作への接続と完成条件の扱いは[制作工程への接続](production.md)に定める。
+1. 公開元のファイルを探索し、出典URL、固定コミット、Blob SHA、改訂履歴を保存します。
+2. 候補の形式と依存モデルを調べ、作品の用途に合うWorkflowを選びます。
+3. 利用条件を確かめ、API形式のWorkflowをローカルComfyUIで実行します。
+4. 出力のハッシュを記録し、制作先の編集環境へ渡します。
+5. 制作先で品質と動作を検証し、公開先のURLと確認結果を保存します。
+
+ファイルの静的確認だけで実行や商用利用を認めることはできません。未分類のファイルや取得失敗は台帳に残します。GitHub検索と巡回には上限があるため、収集結果が公開Workflowの全件を含むとは扱いません。
