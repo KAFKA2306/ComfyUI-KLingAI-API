@@ -29,7 +29,7 @@ class SelectionTests(unittest.TestCase):
             row = self.catalog["artifacts"]["github:" + repo + ":" + name]
             if complete:
                 row.update({"format": "workflow-ui", "inspection": "complete",
-                            "node_types": ["SaveGLB"]})
+                            "node_types": ["SaveAudio" if repo == "example/unrelated" else "SaveGLB"]})
         self.metadata = {
             "example/popular": {"stargazers_count": 100,
                                 "pushed_at": "2026-06-01T00:00:00Z"},
