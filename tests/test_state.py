@@ -8,11 +8,26 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from gwp.state import atomic_save, empty_catalog, health, load_catalog, merge_catalog, restore
+from gwp.state import atomic_save, backup, empty_catalog, health, load_catalog, main as state_main, merge_catalog, restore
 from gwp.discovery import extract_png_workflow, record_file, discover_github
 
 
 class CatalogDurabilityTests(unittest.TestCase):
+    def test_verify_backup_restore_reject_missing_checksum(self):
+        with tempfile.TemporaryDirectory() as root:
+            source = Path(root) / "source.json"
+            target = Path(root) / "target.json"
+            atomic_save(source, empty_catalog())
+            source.with_name(source.name + ".sha256").unlink()
+            # 旧版移行の読み込みは許すが、検証・復旧の正本には使わない。
+            self.assertEqual(load_catalog(source)["artifacts"], {})
+            with self.assertRaisesRegex(ValueError, "SHA-256検証ファイル"):
+                state_main(["verify", "--catalog", str(source)])
+            with self.assertRaisesRegex(ValueError, "SHA-256検証ファイル"):
+                backup(source, Path(root) / "backups")
+            with self.assertRaisesRegex(ValueError, "SHA-256検証ファイル"):
+                restore(target, source)
+
     def test_atomic_update_backup_corruption_restore(self):
         with tempfile.TemporaryDirectory() as root:
             file = Path(root) / "registry.json"

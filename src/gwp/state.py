@@ -53,7 +53,7 @@ def migrate(data):
     return copy
 
 
-def load_catalog(path, *, allow_missing=True):
+def load_catalog(path, *, allow_missing=True, require_checksum=False):
     path = Path(path)
     if not path.exists():
         if allow_missing:
@@ -61,6 +61,8 @@ def load_catalog(path, *, allow_missing=True):
         raise FileNotFoundError(path)
     raw = path.read_bytes()
     marker = path.with_name(path.name + ".sha256")
+    if require_checksum and not marker.exists():
+        raise ValueError("SHA-256検証ファイルがありません: " + str(marker))
     if marker.exists() and marker.read_text(encoding="ascii").strip() != hashlib.sha256(raw).hexdigest():
         raise ValueError("保存済みSHA-256が一致しません。復旧が必要です: " + str(path))
     try:
@@ -262,7 +264,7 @@ def health(current, previous=None):
 def restore(path, backup):
     """破損した本体を隔離し、検証済み版から復旧する。"""
     source = Path(backup)
-    candidate = load_catalog(source, allow_missing=False)
+    candidate = load_catalog(source, allow_missing=False, require_checksum=True)
     path = Path(path)
     previous = None
     if path.exists():
@@ -286,7 +288,7 @@ def restore(path, backup):
 def backup(path, destination):
     """独立した保存先に検証可能なスナップショットを作る。既存版は上書きしない。"""
     path, destination = Path(path), Path(destination)
-    current = load_catalog(path, allow_missing=False)
+    current = load_catalog(path, allow_missing=False, require_checksum=True)
     digest = checksum(current)
     dest = destination / (digest + ".json")
     if dest.exists():
@@ -330,7 +332,8 @@ def main(argv=None):
             atomic_save(args.output, combined, preserve=False)
         result = health(combined)
     else:
-        current = load_catalog(args.catalog, allow_missing=False)
+        current = load_catalog(args.catalog, allow_missing=False,
+                               require_checksum=(args.command == "verify"))
         previous = load_catalog(args.other, allow_missing=False) if args.other else None
         result = health(current, previous)
         if result["status"] != "ok":
