@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "goal": "VRChat small cafe: image-to-3D cup, 360 environment reference, alternative retopology workflow",
+  "workflows": [
+    {
+      "id": "cup-hunyuan3d",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/3d_hunyuan3d_image_to_model.json",
+      "purpose": "Generate one GLB coffee cup from an input image",
+      "mode": "local",
+      "output": "GLB",
+      "hardware_validation": "not-tested",
+      "commercial_terms": "review-upstream-model-license"
+    },
+    {
+      "id": "cup-trellis2",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/3d_pixal3d_trellis2_image_to_model.json",
+      "purpose": "Alternative mesh and texture processing",
+      "mode": "local",
+      "output": "3D mesh",
+      "hardware_validation": "not-tested",
+      "commercial_terms": "review-upstream-model-license"
+    },
+    {
+      "id": "panorama-qwen",
+      "repository": "Comfy-Org/workflow_templates",
+      "path": "templates/template_qwen_Image_2512_360_lora.json",
+      "purpose": "Reference-only 360-degree cafe exterior panorama",
+      "mode": "local",
+      "output": "PNG panorama",
+      "hardware_validation": "not-tested",
+      "commercial_terms": "review-upstream-model-license"
+    }
+  ]
+}
