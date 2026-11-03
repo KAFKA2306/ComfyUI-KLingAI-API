@@ -11,7 +11,7 @@ sources: []
 
 # 設計書とナレッジ
 
-設計書は制作基盤の動作と運用方法、ナレッジはWorkflowの出典と用語を扱います。8領域の目標・収集元・制作案件は `config/registry.json` にまとめ、収集データと制作履歴はcatalogブランチに保存します。文書へ台帳を複製しません。
+設計書は制作基盤の動作と運用方法、ナレッジはWorkflowの出典と用語を扱います。8領域の目標・収集条件・Workflow候補・制作案件は `config/registry.json` で管理します。収集結果と制作履歴は `catalog` ブランチに保存します。文書へ台帳を複製しません。
 
 ## 設計書
 
@@ -27,7 +27,7 @@ sources: []
 
 ## 文書の規則
 
-全Markdownファイルの先頭に、`id`、`title`、`kind`、`status`、`updated`、`tags`、`related`、`sources` を含むYAMLフロントマターを付けます。値はJSON互換のYAMLで記述します。
+`docs/` 内のMarkdownファイルの先頭に、`id`、`title`、`kind`、`status`、`updated`、`tags`、`related`、`sources` を含むYAMLフロントマターを付けます。値はJSON互換のYAMLで記述します。
 
 `kind` は `index`・`design`・`knowledge`、`status` は `active`・`reference` のいずれかです。`tags` は重複しない検索語を2件以上、`related` は存在するリポジトリ内のパス、`sources` は対応する一次資料のHTTPS URLを指定します。
 
