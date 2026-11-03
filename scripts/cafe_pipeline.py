@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""VRChat café source snapshot and GLB preflight. Never executes downloaded workflows."""
+"""VRChatカフェ用の出典保存とGLB形式検査。収集したWorkflowは実行しない。"""
 from __future__ import annotations
 
 import argparse
 import base64
 import hashlib
 import json
-import os
 import re
 import struct
 from pathlib import Path
@@ -36,17 +35,14 @@ def manifest_entries(root: Path) -> list[dict]:
 
 def github_json(path: str) -> dict:
     url = "https://api.github.com/" + path.lstrip("/")
-    headers = {"Accept": "application/vnd.github+json", "User-Agent": "gwp-vrchat-cafe", "X-GitHub-Api-Version": "2022-11-28"}
-    if os.environ.get("GITHUB_TOKEN"):
-        headers["Authorization"] = "Bearer " + os.environ["GITHUB_TOKEN"]
-    req = Request(url, headers=headers)
+    req = Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "gwp-vrchat-cafe", "X-GitHub-Api-Version": "2022-11-28"})
     with urlopen(req, timeout=35) as response:
         return json.load(response)
 
 
 def download_snapshot(entry: dict, get=github_json) -> tuple[bytes, dict]:
     repo, path = entry["repository"], entry["path"]
-    # Pin to the default branch HEAD before downloading any source bytes.
+    # 取得前に参照先のコミットを確定する。
     meta = get(f"repos/{repo}")
     branch = meta["default_branch"]
     commit = get(f"repos/{repo}/commits/{quote(branch, safe='')}")["sha"]
@@ -63,7 +59,7 @@ def download_snapshot(entry: dict, get=github_json) -> tuple[bytes, dict]:
 
 
 def snapshot(root: Path, get=github_json) -> list[dict]:
-    # Fetch all first, then write; a partial network failure cannot create a mixed snapshot.
+    # すべて取得できた場合だけ保存し、不完全な記録を作らない。
     gathered = [(entry, *download_snapshot(entry, get)) for entry in manifest_entries(root)]
     folder = root / "projects/vrchat-cafe/upstream"
     folder.mkdir(parents=True, exist_ok=True)
@@ -102,7 +98,7 @@ def verify_snapshots(root: Path) -> list[dict]:
 
 
 def inspect_glb(path: Path) -> dict:
-    """Check binary container + JSON chunk, not aesthetic quality or VRChat suitability."""
+    """形式検査のみ。見た目やVRChat適合性は検証しない。"""
     data = path.read_bytes()
     if len(data) < 20 or data[:4] != b"glTF":
         raise ValueError("missing GLB magic")

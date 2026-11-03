@@ -7,5 +7,5 @@
   "upload": "not_run",
   "community_labs": "not_submitted",
   "public_visibility": "not_public",
-  "notes": "Only change status after evidence from VRChat SDK/website."
+  "notes": "VRChat SDKと公式ページによる確認後に限り、公開状態を書き換える。"
 }

@@ -1,7 +1,7 @@
-"""Prepare one ComfyUI-generated GLB for importing to Unity as an FBX.
+"""ComfyUIで生成したGLBをUnity向けFBXへ変換する。
 
-Run: blender --background --python scripts/blender_cafe_asset.py -- --input cup.glb --output CoffeeCup.fbx --height 0.16
-This script transforms an asset; it cannot establish license rights or visual quality.
+実行: blender --background --python scripts/blender_cafe_asset.py -- --input cup.glb --output CoffeeCup.fbx --height 0.16
+形式を変換するだけで、ライセンスや見た目の品質は保証しない。
 """
 import argparse
 import sys
@@ -34,7 +34,7 @@ def main():
     meshes = [obj for obj in bpy.context.scene.objects if obj.type == "MESH"]
     if not meshes:
         raise RuntimeError("No mesh objects were imported from GLB")
-    # Preserve materials and hierarchy. Normalize physical height using the total mesh bounding box.
+    # 材質と階層を維持し、全メッシュの外接枠で高さを正規化する。
     corners = [obj.matrix_world @ Vector(c) for obj in meshes for c in obj.bound_box]
     lo = Vector((min(p.x for p in corners), min(p.y for p in corners), min(p.z for p in corners)))
     hi = Vector((max(p.x for p in corners), max(p.y for p in corners), max(p.z for p in corners)))
@@ -42,7 +42,7 @@ def main():
         raise RuntimeError("Mesh has zero height")
     ratio = args.height / (hi.z - lo.z)
     center = Vector(((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, lo.z))
-    # Transform all imported roots uniformly to preserve relative positions.
+    # 相対位置が変わらないよう全ルートを同じ倍率で変換する。
     roots = [obj for obj in bpy.context.scene.objects if obj.parent is None]
     from mathutils import Matrix
     transform = Matrix.Scale(ratio, 4) @ Matrix.Translation(-center)

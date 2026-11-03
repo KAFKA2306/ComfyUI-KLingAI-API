@@ -1,5 +1,5 @@
-// Copy this Editor script to Assets/Editor in a VCC-created VRChat Worlds project.
-// Uses Unity primitives so the first working scene needs no generated AI assets.
+// VCCで作成したVRChat WorldsプロジェクトのAssets/Editorへ配置する。
+// Unity標準形状だけでシーンを作り、AI生成素材を必須にしない。
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -32,11 +32,11 @@ public static class GWPCafeBuilder
         Cube(root, "Ceiling", new Vector3(0, 3.05f, 0), new Vector3(6f, .1f, 6f), wall);
         Cube(root, "Left Wall", new Vector3(-3, 1.5f, 0), new Vector3(.16f, 3, 6), wall);
         Cube(root, "Back Wall", new Vector3(0, 1.5f, 3), new Vector3(6, 3, .16f), wall);
-        // Doorway 1.6m wide and 2.4m tall; no blocking collider across the opening.
+        // 出入口は幅1.6m、高さ2.4m。通路をコライダーで塞がない。
         Cube(root, "Front Wall Left", new Vector3(-1.9f, 1.5f, -3), new Vector3(2.2f, 3, .16f), wall);
         Cube(root, "Front Wall Right", new Vector3(1.9f, 1.5f, -3), new Vector3(2.2f, 3, .16f), wall);
         Cube(root, "Front Door Lintel", new Vector3(0, 2.7f, -3), new Vector3(1.6f, .6f, .16f), wall);
-        // Right wall with a window opening, covered by a thin, non-colliding pane.
+        // 右壁の窓に薄い衝突判定なしの板を設置する。
         Cube(root, "Right Wall Front", new Vector3(3, 1.5f, -1.6f), new Vector3(.16f, 3, 2.8f), wall);
         Cube(root, "Right Wall Back", new Vector3(3, 1.5f, 2.1f), new Vector3(.16f, 3, 1.8f), wall);
         Cube(root, "Window Sill Wall", new Vector3(3, .45f, .5f), new Vector3(.16f, .9f, 1.4f), wall);
@@ -57,7 +57,7 @@ public static class GWPCafeBuilder
         GameObject spawn = new GameObject("Spawn");
         spawn.transform.SetParent(root.transform);
         spawn.transform.position = new Vector3(0, .05f, -2.2f);
-        spawn.transform.rotation = Quaternion.identity; // Forward (+Z) faces into the cafe.
+        spawn.transform.rotation = Quaternion.identity; // 前方（+Z）がカフェ内部を向く。
         GameObject vrcWorld = new GameObject("VRCWorld");
         VRCSceneDescriptor descriptor = vrcWorld.AddComponent<VRCSceneDescriptor>();
         descriptor.spawns = new[] { spawn.transform };

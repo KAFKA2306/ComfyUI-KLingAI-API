@@ -35,7 +35,13 @@
     "ComfyUI VRChat avatar in:name,description",
     "ComfyUI environment panorama in:name,description",
     "ComfyUI game assets in:name,description",
-    "ComfyUI subgraph blueprint in:name,description"
+    "ComfyUI subgraph blueprint in:name,description",
+    "ComfyUI subgraph in:name,description",
+    "ComfyUI blueprint in:name,description",
+    "ComfyUI workflow video in:name,description",
+    "ComfyUI workflow 3D in:name,description",
+    "ComfyUI workflow audio in:name,description",
+    "ComfyUI workflow VRChat in:name,description"
   ],
   "metadata_feeds": [
     {
@@ -94,6 +100,160 @@
       "id": "openart-workflows",
       "url": "https://openart.ai/",
       "status": "index-only-no-verified-api"
+    }
+  ],
+  "github_organizations": [
+    "Comfy-Org"
+  ],
+  "categories": [
+    {
+      "id": "youtube",
+      "title": "動画・YouTube",
+      "keywords": [
+        "youtube",
+        "shorts",
+        "social video",
+        "t2v",
+        "i2v",
+        "video",
+        "ltx",
+        "wanvideo",
+        "talking",
+        "avatar_video"
+      ]
+    },
+    {
+      "id": "podcast",
+      "title": "音声・ポッドキャスト",
+      "keywords": [
+        "podcast",
+        "audio",
+        "tts",
+        "chatterbox",
+        "voice",
+        "speech",
+        "lip sync",
+        "lipsync",
+        "whisper",
+        "sound"
+      ]
+    },
+    {
+      "id": "movies",
+      "title": "映像・映画",
+      "keywords": [
+        "cinematic",
+        "film",
+        "movie",
+        "video",
+        "wan",
+        "ltx",
+        "animate",
+        "motion",
+        "frame",
+        "camera"
+      ]
+    },
+    {
+      "id": "vrchat",
+      "title": "VRChat",
+      "keywords": [
+        "vrchat",
+        "unity",
+        "vrc",
+        "world",
+        "avatar"
+      ]
+    },
+    {
+      "id": "avatars",
+      "title": "アバター",
+      "keywords": [
+        "avatar",
+        "character",
+        "face",
+        "portrait",
+        "rigging",
+        "expression",
+        "vrm",
+        "humanoid"
+      ]
+    },
+    {
+      "id": "booth",
+      "title": "BOOTH向け素材",
+      "keywords": [
+        "booth",
+        "product",
+        "merch",
+        "texture",
+        "illustration",
+        "3d",
+        "mesh",
+        "upscale",
+        "pbr"
+      ]
+    },
+    {
+      "id": "3d-models",
+      "title": "3Dモデル",
+      "keywords": [
+        "3d",
+        "trellis",
+        "hunyuan3d",
+        "tripo",
+        "meshy",
+        "mesh",
+        "pbr",
+        "texture",
+        "glb",
+        "obj"
+      ]
+    },
+    {
+      "id": "chill-world",
+      "title": "くつろぎワールド",
+      "keywords": [
+        "chill",
+        "panorama",
+        "360",
+        "environment",
+        "landscape",
+        "skybox",
+        "background",
+        "scenery",
+        "interior"
+      ]
+    },
+    {
+      "id": "game-world",
+      "title": "ゲームワールド",
+      "keywords": [
+        "game",
+        "world",
+        "environment",
+        "terrain",
+        "dungeon",
+        "level",
+        "landscape",
+        "panorama",
+        "360"
+      ]
+    },
+    {
+      "id": "game-assets",
+      "title": "ゲーム素材",
+      "keywords": [
+        "asset",
+        "prop",
+        "3d",
+        "mesh",
+        "texture",
+        "weapon",
+        "item",
+        "pbr",
+        "sprite"
+      ]
     }
   ]
 }
