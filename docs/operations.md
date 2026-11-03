@@ -54,12 +54,12 @@ uv run --locked python -m gwp.production_job handoff --manifest .artifacts/outpu
 
 1. `projects/vrchat-cafe/workflows.json` に記された候補の出典・モデル・ライセンスを確認する。
 2. `uv run --locked python projects/vrchat-cafe/cafe_pipeline.py snapshot` で候補のWorkflowを取得し、`uv run --locked python projects/vrchat-cafe/cafe_pipeline.py check --strict` で保存物の整合性を調べる。取得だけでは実行成功ではありません。
-3. ComfyUIで小物や背景の素材を生成し、GLBは `uv run --locked python projects/vrchat-cafe/cafe_pipeline.py glb --file <path.glb>` で形式を確認する。3Dメッシュの外観品質は別検証。
-4. Blender/Unity/VRChat SDKでワールドを構成する。VRChat Creator Companionが指定するUnityとSDKを使う。
-5. Build & Testで歩行・衝突判定・視認性・負荷を実機で確認する。公開に使う外部資産の利用条件も確認する。
-6. 認可済みのVRChatアカウントで公開し、**実際の公開ワールドURL**を確認してから `projects/vrchat-cafe/publication.json` を更新する。
+3. 採用したWorkflowを実行し、実際の制作素材を得る。GLBは `uv run --locked python projects/vrchat-cafe/cafe_pipeline.py glb --file <path.glb>` で形式を確認する。ただし形式検査だけでは外観、権利、VRChat適合を保証しない。
+4. 出典と利用条件を確認した実素材をBlender/Unityへ統合し、VRChat Creator Companionが指定するUnityとSDKでワールドを制作する。必要な実素材が無い場合は制作を未完了とする。標準形状だけの仮シーンや仮のテクスチャで完成工程を代替しない。
+5. Build & Testで歩行・衝突判定・視認性・負荷と、実素材が意図どおり表示されることを実機で確認する。未実施なら合格にしない。
+6. 認可済みのVRChatアカウントで公開し、**実際の公開ワールドURL**を制作先の正本に記録する。URL未確認なら公開済みとしない。
 
-カフェ案件の公開記録にURLがない状態を「公開済み」とは扱いません。VRChat以外の7領域も、各公開先で同じく成果の証拠を残します。
+カフェ案件の公開URLが確認できない状態を「公開済み」とは扱いません。Workflow候補の収集、JSON取得、GLB変換、Unityシーン保存だけでも「作品完成」にはなりません。VRChat以外の7領域も、各公開先で同じく成果の証拠を残します。
 
 ## 検証と障害の記録
 
