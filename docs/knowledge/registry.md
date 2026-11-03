@@ -41,11 +41,11 @@ Workflowはノードを接続した処理構成です。Subgraphは再利用す�
 uv run --locked python -m gwp.state verify --catalog .cache/workflow_registry.json
 uv run --locked python -m gwp.discovery stats --catalog .cache/workflow_registry.json
 uv run --locked python -m gwp.discovery search --catalog .cache/workflow_registry.json --term VRChat
-uv run --locked python -m gwp.discovery export --catalog .cache/workflow_registry.json --format csv > workflows.csv
-uv run --locked python -m gwp.discovery export --catalog .cache/workflow_registry.json --format json > workflows.json
+uv run --locked python -m gwp.discovery export --catalog .cache/workflow_registry.json --format csv > .cache/workflows.csv
+uv run --locked python -m gwp.discovery export --catalog .cache/workflow_registry.json --format json > .cache/workflows.json
 ```
 
-CSVとJSONの書き出し結果は閲覧用です。正本として編集せず、必要なときに台帳から再生成します。収集対象の件数はGitHub検索と巡回の上限に左右されます。
+CSVとJSONは `.cache/` に出力する閲覧用ファイルです。正本として編集せず、必要なときに台帳から再生成します。収集対象の件数はGitHub検索と巡回の上限に左右されます。
 
 ## Workflow候補の絞り込み
 
@@ -57,7 +57,7 @@ CSVとJSONの書き出し結果は閲覧用です。正本として編集せず�
 uv run --locked python -m gwp.select --mission 3d-models --sort suitable --inspected-only
 uv run --locked python -m gwp.select --mission youtube --sort popular --min-stars 1
 uv run --locked python -m gwp.select --mission vrchat-world --sort latest --updated-within-days 90
-uv run --locked python -m gwp.select --mission games --sort suitable --format csv > game-workflows.csv
+uv run --locked python -m gwp.select --mission games --sort suitable --format csv > .cache/game-workflows.csv
 ```
 
 `suitable` は用途登録、検索語、静的確認の結果を使って表示順を決めます。`popular` はリポジトリのスター数、`latest` はリポジトリの最終push日時を使います。これらは個別Workflowの人気、更新日、品質を表しません。
