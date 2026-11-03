@@ -3,7 +3,7 @@ id: "design-creative"
 title: "作品構成と演出の設計"
 kind: "design"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["作品構成","演出","制作単位","依存関係"]
 related: ["src/gwp/creative.py","config/registry.json","docs/design/production.md"]
 sources: []
@@ -15,7 +15,7 @@ sources: []
 
 ## 制作仕様のデータ
 
-作品ごとの `creative.json` に構成と必要な成果物を記述する。`project_id` と制作領域は[設定台帳](../../config/registry.json)の `projects` に登録した値と一致させる。
+作品ごとの `creative.json` に構成と必要な成果物を記述する。事前に[設定台帳](../../config/registry.json)の `projects` へ制作案件を登録し、`project_id` と領域を一致させる。
 
 | キー | 内容 |
 | --- | --- |
@@ -31,7 +31,7 @@ sources: []
 
 ## 依存関係を確認する
 
-Pythonの実行には `uv` を使う。`PLAN` には既存の制作仕様ファイル、`UNIT` には変更の影響を調べる制作単位IDを指定する。
+Pythonの実行には `uv` を使う。`PLAN` には登録済みの作品の制作仕様ファイル、`UNIT` にはそのファイル内の制作単位IDを指定する。下のパスとIDは実際の値に置き換える。
 
 ```sh
 PLAN=/path/to/creative.json
@@ -42,4 +42,3 @@ uv run --locked python -m gwp.creative impact --plan "$PLAN" --unit "$UNIT"
 ```
 
 `validate` は必須項目と参照先、依存関係の循環を検査する。`order` は依存関係に沿った制作順、`impact` は変更に伴う再確認の対象を出力する。素材の生成と受け渡しには[制作工程のCLI](production.md)を使う。
-
