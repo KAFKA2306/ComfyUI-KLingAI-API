@@ -1,4 +1,4 @@
-name: Comfy Workflow Atlas - Source Discovery
+name: ComfyUI Workflows Factory - Source Discovery
 
 on:
   schedule:

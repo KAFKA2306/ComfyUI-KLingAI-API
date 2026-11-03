@@ -1,4 +1,4 @@
-# Comfy Workflow Atlas architecture
+# ComfyUI Workflows Factory architecture
 
 ## Boundaries
 

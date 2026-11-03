@@ -1,4 +1,4 @@
-# Comfy Workflow Atlas: workflow-first source registry
+# ComfyUI Workflows Factory: workflow-first source registry
 
 ## Contract
 - Collect first. No proprietary score, ranking, popularity filter, quality gate, or workflow execution.

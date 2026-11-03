@@ -1,6 +1,6 @@
 # ADR-0002: Comfy Workflow Atlas project identity
 
-Status: accepted (2026-11-03)
+Status: superseded by ADR-0003 (2026-11-03)
 
 - Display name: **Comfy Workflow Atlas**
 - GitHub repository slug: `comfy-workflow-atlas`
