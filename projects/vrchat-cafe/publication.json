@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "world_name": "GWP Small Cafe",
+  "world_id": null,
+  "world_url": null,
+  "unity_build_test": "not_run",
+  "upload": "not_run",
+  "community_labs": "not_submitted",
+  "public_visibility": "not_public",
+  "notes": "Only change status after evidence from VRChat SDK/website."
+}
