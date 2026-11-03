@@ -11,13 +11,13 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 
 # ComfyUI制作基盤：8領域の作品制作
 
-公開Workflowを出典と改訂を保って収集し、作品の制作に利用します。最終的な成果は収集件数ではなく、次の8領域で完成させて公開する作品です。
+公開されているComfyUIのWorkflowを収集し、出典と改訂履歴を記録します。そのWorkflowを使い、次の8領域で作品を制作・公開することが長期目標です。
 
 ## 対等な8つの長期目標
 
 | 領域 | 公開する作品 |
 | --- | --- |
-| VRChatワールド | カフェ、Chill World、探索・交流ワールド |
+| VRChatワールド | Chill World、探索・交流ワールド |
 | アバター・衣装 | VRM、衣装、アクセサリー |
 | BOOTH商品 | 3D素材、背景、デジタル商品 |
 | YouTube・Shorts | 解説、短編、キャラクター動画 |
@@ -26,17 +26,17 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 | 3Dモデル | キャラクター、建築、家具、ゲーム向けモデル |
 | ゲーム制作 | ゲーム本体、ワールド、キャラクター、UI、素材 |
 
-8領域は独立して制作します。VRChatカフェは制作案件の一つであり、他領域の着手条件ではありません。
+8領域は対等です。各領域で制作・検証・公開を並行して進め、特定の作品の完成を他領域の着手条件にしません。
 
 ## 設計書とナレッジ
 
-[文書索引](docs/README.md)から、[台帳保全・復旧](docs/design/durability.md)、[全体設計](docs/design/system.md)、[制作工程](docs/design/production.md)、[作品構成と演出](docs/design/creative.md)、[台帳と用語](docs/knowledge/registry.md)、[情報源](docs/knowledge/sources.md)を参照できます。
+文書の一覧は[設計書とナレッジの索引](docs/README.md)にあります。収集の仕組みは[全体設計](docs/design/system.md)、制作の手順は[制作工程](docs/design/production.md)、作品内の依存関係は[作品構成と演出](docs/design/creative.md)で説明します。
 
-8領域・収集元・制作案件の設定正本は`config/registry.json`です。候補は特定の制作案件に従属させません。収集したWorkflowと制作履歴は、専用の`catalog`ブランチにある`data/workflow_registry.json`へ継続保存します。`.cache/`は作業用の一時ファイルです。保存・復旧・競合統合は[台帳保全設計](docs/design/durability.md)に定義します。
+8領域、収集元、Workflow候補、制作案件の設定は `config/registry.json` で管理します。収集結果と制作履歴は `catalog` ブランチの `data/workflow_registry.json` に保存し、`.cache/` は一時作業用に使います。保存と復旧の手順は[台帳の保全・復旧](docs/design/durability.md)を参照してください。
 
 ## 実行方法
 
-Python 3.11以上を使います。環境構築、依存関係、スクリプト、テストは`uv`経由で実行します。
+Python 3.11以上を使用し、環境構築、スクリプト、テストは `uv` から実行します。
 
 ~~~sh
 uv sync --locked
@@ -49,10 +49,10 @@ uv run --locked python -m gwp.discovery stats
 uv run --locked python -m gwp.discovery search --term VRChat
 ~~~
 
-`sync`はネットワークに接続します。制作先への素材の受け渡しは[制作工程](docs/design/production.md)で説明します。
+`sync` は公開情報を取得するためにネットワークへ接続します。制作先への素材の受け渡しには[制作工程のコマンド](docs/design/production.md)を使います。
 
 ## 制作の原則
 
-公式とコミュニティ双方の公開Workflowを収集し、人気や独自採点を理由に候補を除外しません。発見しただけの第三者Workflow、Custom Node、モデルを自動実行しません。
+公式とコミュニティの公開Workflowを収集し、人気や独自スコアで候補を除外しません。第三者のWorkflowやCustom Node、モデルは、収集時には実行しません。
 
-素材の生成、作品への組み込み、品質の確認、公開は別工程です。単色の仮素材や空のシーンを実素材の代わりに完成扱いしません。認証情報、モデル本体、生成メディア、個人情報はGitに含めません。
+作品は素材の生成後に制作先で組み込みと品質確認を行い、公開します。仮素材だけの作品を完成品として扱わず、認証情報、モデル本体、生成メディア、個人情報はGitに保存しません。
