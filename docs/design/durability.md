@@ -15,7 +15,7 @@ sources: ["https://docs.github.com/en/rest/git/trees", "https://docs.github.com/
 
 制作目標、収集条件、制作案件は main ブランチの config/registry.json を設定の正本とする。収集結果と制作履歴は catalog ブランチの data/workflow_registry.json と同名の .sha256 ファイルを正本とする。GitHub Actionsのキャッシュと一時成果物は正本ではない。
 
-GitHub以外のUSB、NAS、クラウドフォルダにも定期的に別媒体バックアップを保存する。生成メディアとモデル本体はGitへ入れず、SHA-256、バイト数、保管場所と出典を台帳へ保存する。認証情報は台帳へ記録しない。
+別媒体のバックアップには `gwp.state backup` を使い、USB、NAS、クラウドフォルダーなどに保存する。バックアップの定期実行と保管先の管理は利用環境で設定する。生成メディアとモデル本体はGitへ入れず、ファイルのSHA-256、バイト数、保管場所、出典を台帳へ記録する。認証情報は保存しない。
 
 ## PC交換・破損・復元
 
@@ -63,6 +63,7 @@ publicationsで公開確認を記録するには、作品のURL、公開先、�
 
 ~~~sh
 uv sync --locked
+mkdir -p .cache
 git fetch origin catalog
 git show origin/catalog:data/workflow_registry.json > .cache/restored.json
 git show origin/catalog:data/workflow_registry.json.sha256 > .cache/restored.json.sha256
@@ -71,4 +72,4 @@ uv run --locked python -m gwp.state backup --catalog .cache/restored.json --outp
 uv run --locked python -m gwp.ledger query --catalog .cache/restored.json --section artifacts --term VRChat
 ~~~
 
-収集設定の変更はgwp.registry validateで検査する。失敗した処理や実施していないGPU・品質・公開検証を成功済みとして記録しない。
+収集条件を変更したら `uv run --locked python -m gwp.registry validate` で設定を検査する。GPUでの動作、品質、公開の記録には、それぞれ実施した確認の結果を使う。
