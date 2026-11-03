@@ -1,1 +1,1 @@
-"""Model-agnostic workflow platform."""
+"""公開Workflowの出典を追跡するカタログ。"""

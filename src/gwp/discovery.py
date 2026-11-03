@@ -1,15 +1,12 @@
-"""Source-preserving ComfyUI workflow discovery. Python standard library only.
-
-No popularity scores, quality decisions, auto-adoption or execution of collected code.
-Network results are metadata and references; external content is never executed.
-"""
+"""公開Workflowの出典と改訂履歴を記録する収集器。第三者のコードは実行しない。"""
 from __future__ import annotations
 
 import argparse
-import hashlib
+import csv
+import io
 import json
 import os
-import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -25,9 +22,6 @@ MODEL_KEYS = {"ckpt_name", "unet_name", "lora_name", "vae_name", "control_net_na
 def now_utc():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
-
-def digest(text):
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:24]
 
 
 def new_catalog():
@@ -185,6 +179,36 @@ def inspect_pending(api, catalog, limit):
     return inspected
 
 
+
+def discover_organizations(api, catalog, organizations):
+    """組織の公開リポジトリを列挙し、失敗を消滅と取り違えない。"""
+    for organization in organizations:
+        for page in range(1, 101):
+            url = BASE + "/orgs/" + quote(organization, safe="") + "/repos?" + urlencode(
+                {"per_page": 100, "page": page, "type": "public"})
+            try:
+                repos = api.json(url)
+            except (HTTPError, URLError, TimeoutError, ValueError, TypeError) as exc:
+                catalog["search_progress"]["org:" + organization + ":error"] = str(exc)[:250]
+                break
+            if not isinstance(repos, list):
+                catalog["search_progress"]["org:" + organization + ":error"] = "invalid_response"
+                break
+            for repository in repos:
+                full = repository.get("full_name")
+                if not full:
+                    continue
+                key = full.lower()
+                row = catalog["discoveries"].setdefault(key, {
+                    "repo": full, "discovered_via": [], "url": repository.get("html_url") or
+                    "https://github.com/" + full})
+                tag = "organization:" + organization
+                if tag not in row["discovered_via"]:
+                    row["discovered_via"].append(tag)
+            if len(repos) < 100:
+                break
+
+
 def discover_github(api, catalog, queries, pages):
     for query in queries:
         progress = catalog["search_progress"].get(query, 1)
@@ -243,6 +267,7 @@ def sync(api, catalog, settings, max_repos=12, discovery_pages=1, inspect_limit=
         catalog["discoveries"].setdefault(entry.lower(), {
             "repo": entry, "discovered_via": ["configured-seed"],
             "url": "https://github.com/" + entry})
+    discover_organizations(api, catalog, settings.get("github_organizations", []))
     discover_github(api, catalog, settings.get("github_queries", []), discovery_pages)
     # Round-robin across all discoveries; no popularity score or exclusion policy.
     queue = sorted(catalog["discoveries"].values(),
@@ -302,15 +327,59 @@ def search(catalog, query):
             yield item
 
 
+
+def labels_for(item, categories):
+    """検索用分類。品質や動作確認とは無関係。"""
+    terms = " ".join([
+        item.get("path", ""), item.get("source", ""),
+        " ".join(item.get("node_types", [])),
+        " ".join(item.get("model_references", [])),
+    ]).casefold()
+    return [category["title"] for category in categories if any(
+        word.casefold() in terms for word in category["keywords"])]
+
+
+def export_catalog(catalog, categories, format="csv"):
+    """未分類を含む全候補を日本語のCSVまたはJSONに書き出す。"""
+    rows = []
+    for item in sorted(catalog["artifacts"].values(),
+                       key=lambda x: (x.get("source", ""), x.get("path", ""))):
+        rows.append({
+            "ID": item["id"],
+            "出典": item.get("source", ""),
+            "ファイル": item.get("path", ""),
+            "原典URL": item.get("source_url", ""),
+            "コミット": item.get("commit_sha", ""),
+            "ファイルSHA": item.get("blob_sha", ""),
+            "形式": item.get("format", "未確認"),
+            "確認状態": item.get("inspection", "未確認"),
+            "用途候補（未検証）": "／".join(labels_for(item, categories)) or "未分類",
+            "利用条件": "未確認",
+        })
+    if format == "json":
+        return json.dumps({"schema_version": 1, "count": len(rows), "items": rows},
+                          ensure_ascii=False, indent=2) + "\n"
+    if format != "csv":
+        raise ValueError("未対応の出力形式")
+    buffer = io.StringIO(newline="")
+    fields = ["ID", "出典", "ファイル", "原典URL", "コミット", "ファイルSHA",
+              "形式", "確認状態", "用途候補（未検証）", "利用条件"]
+    writer = csv.DictWriter(buffer, fieldnames=fields, lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(rows)
+    return "\ufeff" + buffer.getvalue()
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Source-preserving Workflow Registry")
-    parser.add_argument("command", nargs="?", choices=("sync", "search", "stats"), default="sync")
+    parser.add_argument("command", nargs="?", choices=("sync", "search", "stats", "export"), default="sync")
     parser.add_argument("--catalog", type=Path, default=Path("data/workflow_registry.json"))
     parser.add_argument("--sources", type=Path, default=Path("config/workflow_sources.json"))
     parser.add_argument("--max-repos", type=int, default=12)
     parser.add_argument("--discovery-pages", type=int, default=1)
     parser.add_argument("--inspect-limit", type=int, default=50)
     parser.add_argument("--term", default="")
+    parser.add_argument("--format", choices=("csv", "json"), default="csv")
     args = parser.parse_args(argv)
     catalog = load_catalog(args.catalog)
     if args.command == "sync":
@@ -319,6 +388,9 @@ def main(argv=None):
              max_repos=args.max_repos, discovery_pages=args.discovery_pages,
              inspect_limit=args.inspect_limit)
         atomic_save(args.catalog, catalog)
+    elif args.command == "export":
+        settings = json.loads(args.sources.read_text(encoding="utf-8"))
+        sys.stdout.write(export_catalog(catalog, settings.get("categories", []), args.format))
     elif args.command == "search":
         for item in search(catalog, args.term):
             print(json.dumps({"source_url": item["source_url"], "format": item["format"],

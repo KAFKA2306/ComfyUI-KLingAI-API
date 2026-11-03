@@ -1,4 +1,4 @@
-"""HTTP boundary for a local ComfyUI instance; no third-party dependencies."""
+"""ローカルComfyUIへのHTTP接続。外部ライブラリには依存しない。"""
 import json
 from urllib.request import Request, urlopen
 from urllib.parse import urlsplit

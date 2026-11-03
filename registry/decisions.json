@@ -1,5 +1,0 @@
-{
-  "schema_version": 1,
-  "decisions": [],
-  "note": "Unverified discoveries are never deployed. GPU execution evidence is required for qualification."
-}

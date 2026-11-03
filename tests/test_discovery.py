@@ -6,7 +6,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from gwp.discovery import (new_catalog, workflow_details, record_file,
-                           walk_tree, atomic_save, load_catalog, search)
+                           walk_tree, atomic_save, load_catalog, search,
+                           discover_organizations, export_catalog)
 
 
 class FakeAPI:
@@ -55,6 +56,26 @@ class WorkflowDiscoveryTests(unittest.TestCase):
             path = Path(folder) / "data" / "catalog.json"
             atomic_save(path, c)
             self.assertEqual(len(load_catalog(path)["artifacts"]), 2)
+
+
+    def test_organization_listing_includes_all_repositories(self):
+        c = new_catalog()
+        url = "https://api.github.com/orgs/Comfy-Org/repos?per_page=100&page=1&type=public"
+        discover_organizations(FakeAPI({url: [
+            {"full_name": "Comfy-Org/workflows", "html_url": "https://github.com/Comfy-Org/workflows"},
+            {"full_name": "Comfy-Org/ComfyUI", "html_url": "https://github.com/Comfy-Org/ComfyUI"},
+        ]}), c, ["Comfy-Org"])
+        self.assertEqual(len(c["discoveries"]), 2)
+
+    def test_export_preserves_unknown_candidates(self):
+        c = new_catalog()
+        for path in ("vrchat/demo.json", "unknown.json"):
+            record_file(c, "a/b", "c" * 40, {"path": path, "sha": "d" * 40}, "now")
+        out = export_catalog(c, [{"title": "VRChat", "keywords": ["vrchat"]}])
+        self.assertTrue(out.startswith("\ufeff"))
+        self.assertEqual(out.count("\n"), 3)
+        self.assertIn("VRChat", out)
+        self.assertIn("未分類", out)
 
 
 if __name__ == "__main__":
