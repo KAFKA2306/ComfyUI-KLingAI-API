@@ -1,0 +1,12 @@
+{
+  "id": "panorama-qwen",
+  "source": "https://github.com/Comfy-Org/workflow_templates/blob/60d0d2c2f5c98ab50116abd837156e4010534657/templates/template_qwen_Image_2512_360_lora.json",
+  "repository": "Comfy-Org/workflow_templates",
+  "path": "templates/template_qwen_Image_2512_360_lora.json",
+  "commit": "60d0d2c2f5c98ab50116abd837156e4010534657",
+  "blob_sha": "614e3cc51b13d0ee58dd635b2695465d26bfd512",
+  "sha256": "5b5280796f29b638d5c96b6d645dcba49d622ce24a513ae4bfcbb4751d75ba51",
+  "license": "unverified",
+  "execution": "not-run",
+  "review_required": true
+}

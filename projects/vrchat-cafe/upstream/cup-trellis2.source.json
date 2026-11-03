@@ -1,0 +1,12 @@
+{
+  "id": "cup-trellis2",
+  "source": "https://github.com/Comfy-Org/workflow_templates/blob/60d0d2c2f5c98ab50116abd837156e4010534657/templates/3d_pixal3d_trellis2_image_to_model.json",
+  "repository": "Comfy-Org/workflow_templates",
+  "path": "templates/3d_pixal3d_trellis2_image_to_model.json",
+  "commit": "60d0d2c2f5c98ab50116abd837156e4010534657",
+  "blob_sha": "9d4fdcc4e22ed2d91d6753d833c4bb1b3961cd54",
+  "sha256": "df8a1dc4dacac39ba036758f7b4bb7e57e556a607e5391b500e29effd95b2e5d",
+  "license": "unverified",
+  "execution": "not-run",
+  "review_required": true
+}
