@@ -17,7 +17,7 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 
 | 領域 | 公開する作品 |
 | --- | --- |
-| VRChatワールド | カフェ、Chill World、探索・交流ワールド |
+| VRChatワールド | Chill World、探索・交流・体験型ワールド |
 | アバター・衣装 | VRM、衣装、アクセサリー |
 | BOOTH商品 | 3D素材、背景、デジタル商品 |
 | YouTube・Shorts | 解説動画、短編、キャラクター動画 |
@@ -26,13 +26,13 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 | 3Dモデル | キャラクター、建築、家具、ゲーム向けモデル |
 | ゲーム制作 | ゲーム本体、ワールド、キャラクター、UI、素材 |
 
-各領域の制作は並行して進めます。VRChatカフェは個別案件の一つで、他領域の開始条件にはしません。
+8領域は対等です。作品の制作・検証・公開は領域ごとに並行して進め、特定の案件の完成をほかの領域の開始条件にしません。
 
 ## 設計書と台帳
 
 [文書索引](docs/README.md)から、[全体設計](docs/design/system.md)、[台帳の保全・復旧](docs/design/durability.md)、[制作工程](docs/design/production.md)、[作品構成と演出](docs/design/creative.md)、[台帳と用語](docs/knowledge/registry.md)、[情報源](docs/knowledge/sources.md)を参照できます。
 
-制作目標・収集条件・制作案件の設定は、mainの[config/registry.json](config/registry.json)で管理します。収集した候補と制作履歴の正本は、catalogブランチの `data/workflow_registry.json` と同名の `.sha256` ファイルです。ローカルの `.cache/` は作業用です。
+8領域の目標、収集条件、Workflow候補、制作案件の設定は、`main` ブランチの [config/registry.json](config/registry.json) で管理します。収集結果と制作履歴は `catalog` ブランチの `data/workflow_registry.json` に保存し、対応する `.sha256` ファイルで整合性を確認します。`.cache/` はローカルの作業用ディレクトリーです。
 
 ## 実行方法
 
@@ -57,7 +57,8 @@ uv run --locked python -m gwp.discovery stats --catalog .cache/workflow_registry
 uv run --locked python -m gwp.discovery search --catalog .cache/workflow_registry.json --term VRChat
 ```
 
-収集から競合統合、catalogへの保存までの運用コマンドは `bash scripts/catalog_sync.sh` です。GitHubへの読み書き権限とネットワーク接続が必要です。`gwp.discovery sync` 単体はローカル台帳を更新し、catalogへは保存しません。収集結果の保存と復旧は[台帳の保全・復旧](docs/design/durability.md)、素材生成は[制作工程](docs/design/production.md)を参照してください。
+収集から競合統合、`catalog` への保存までの運用コマンドは `bash scripts/catalog_sync.sh` です。GitHubへの読み書き権限とネットワーク接続が必要です。`gwp.discovery sync` 単体はローカル台帳を更新し、`catalog` へは保存しません。収集結果の保存と復旧は[台帳の保全・復旧](docs/design/durability.md)、素材生成は[制作工程](docs/design/production.md)を参照してください。
+
 ## Workflow候補の絞り込み
 
 既存の台帳は変更せず、用途と静的確認の結果で候補を並べられます。次の例は上で取得した台帳を参照します。
