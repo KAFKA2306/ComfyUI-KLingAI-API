@@ -3,7 +3,7 @@ id: "design-system"
 title: "Workflowの収集と制作基盤の設計"
 kind: "design"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["設計","Workflow","出典","ComfyUI"]
 related: ["config/registry.json","src/gwp/discovery.py","src/gwp/production.py"]
 sources: ["https://github.com/Comfy-Org/workflow_templates"]
@@ -11,7 +11,7 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 
 # Workflowの収集と制作基盤の設計
 
-公開されたWorkflow、Subgraph、Blueprintを出典付きで収集し、必要な制作工程に取り入れる。8つの制作領域は独立して進め、収集した候補と知識を共有する。制作目標、案件、取得元、採用候補の設定は `config/registry.json` にまとめる。人気や独自スコアによって候補を除外しない。
+公開Workflow、Subgraph、Blueprintを出典付きで収集し、8領域の制作に利用する。領域は並行して進め、収集した候補と知識を共有する。目標・案件・取得元・採用候補は`config/registry.json`に設定する。
 
 ## 情報の流れ
 
@@ -24,14 +24,10 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 | 素材生成 | `src/gwp/production.py`：選んだAPI形式WorkflowをローカルComfyUIに投入 |
 | 作品の完成 | Blender、Unity、制作先の編集環境と公開サービスで確認 |
 
-収集結果は[定期収集](../../.github/workflows/collect.yml)で6時間ごとに更新し、Gitの専用ブランチに確定する。`.cache/`は作業用の一時保存先であり、キャッシュ消滅を履歴の消滅としない。別媒体への保全、復旧、更新競合、版の管理は[台帳保全設計](durability.md)に定める。
+[収集ジョブ](../../.github/workflows/collect.yml)は6時間ごとの起動を設定し、取得結果を`catalog`ブランチへ保存する。実行時刻はGitHub Actionsの運用に左右される。`.cache/`は一時保存先とする。復旧と競合時の処理は[台帳保全設計](durability.md)を参照する。
 
 ## 出典と実行の境界
 
-- 原典のリポジトリ、パス、固定コミット、Blob SHAを記録し、異なる作者の出典を一つにまとめない。
-- 未分類の候補や取得・解析の失敗も記録する。APIエラーを候補が存在しない証拠として扱わない。
-- ファイルの静的確認と、モデルを使った実行確認を区別する。静的確認だけでは品質や商用利用条件は確定しない。
-- 収集時に第三者のWorkflow、Custom Node、モデルを自動で導入・実行しない。
-- GitHub検索と巡回には件数の上限がある。収集結果を世界中のWorkflowの完全な一覧とは呼ばない。
+原典ごとにリポジトリ、パス、固定コミット、Blob SHAを保存する。同じ内容でも作者が異なれば出典を分ける。取得・解析に失敗した候補は残し、APIエラーを削除の根拠にしない。
 
-制作への接続と完成条件の扱いは[制作工程への接続](production.md)に定める。
+静的確認で分かるのはファイル形式やノード参照までで、動作・品質・商用利用の可否は確定しない。収集時に第三者のWorkflow、Custom Node、モデルは実行しない。検索APIと巡回数には上限があるため、台帳は公開Workflowの網羅的な一覧ではない。実行と作品への組み込みは[制作工程](production.md)で扱う。
