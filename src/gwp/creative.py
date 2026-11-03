@@ -39,8 +39,7 @@ def validate(plan, registry=None):
     missions = _strings(plan.get("missions"), "missions", True)
     if any(x not in registry["missions"] or x not in project["mission_ids"] for x in missions):
         raise ValueError("missions が一元台帳の制作案件と一致しません")
-    workflow_ids = {workflow["id"] for row in registry["projects"].values()
-                    for workflow in row["workflows"]}
+    workflow_ids = {workflow["id"] for workflow in registry["workflows"]}
     continuity = plan.get("continuity")
     if not isinstance(continuity, dict):
         raise ValueError("continuity は辞書にしてください")
@@ -111,9 +110,9 @@ def validate(plan, registry=None):
     return order
 
 
-def impact(plan, changed):
+def impact(plan, changed, registry=None):
     """変更起点に依存する制作単位と公開先を返す。自動再生成は行わない。"""
-    order = validate(plan)
+    order = validate(plan, registry)
     units = {unit["id"]: unit for unit in plan["units"]}
     if changed not in units:
         raise ValueError(f"制作単位がありません: {changed}")
