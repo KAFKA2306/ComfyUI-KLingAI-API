@@ -65,7 +65,7 @@ bash scripts/catalog_publish.sh .cache/edit.json
 
 採用・依存・実行は `adoptions`、`models`、`dependencies`、`environments`、`jobs` に記録します。送信結果が不明なジョブは `submission_unknown` として保持し、ComfyUI側の状態確認前に再送しません。
 
-素材は `assets`、権利の根拠は `rights`、公開の確認は `publications` に記録します。公開記録には作品URL、公開先、確認日時・方法、一次証拠URLが必要です。公開先への通信が途切れた場合は `upload_unknown` とし、公開状態を確認してから処理を続けます。影響する作品・公開先は `gwp.ledger lineage` で追跡します。
+素材は `assets`、権利の根拠は `rights`、公開の状態は `publications` に記録します。公開状態を `verified` とするには、公開先、作品URL、確認日時・方法、証拠URLが必要です。通信が途切れて公開の成否が分からない場合は `upload_unknown` とし、公開先で確かめてから処理を続けます。関連する作品・公開先は `gwp.ledger lineage` で追跡します。
 
 ## バックアップと検索
 
