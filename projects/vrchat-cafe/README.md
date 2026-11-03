@@ -44,3 +44,7 @@ Place the FBX into the VCC Unity project and replace the scene's `Replaceable Co
 - [ ] World is uploaded, its world URL is independently verified and Community Labs/public visibility is recorded **separately**.
 
 Primary documentation: [Creating your first world](https://creators.vrchat.com/worlds/creating-your-first-world/), [VRC Scene Descriptor](https://creators.vrchat.com/worlds/components/vrc_scenedescriptor/), [Community Labs](https://creators.vrchat.com/worlds/submitting-a-world-to-be-made-public/), [Unity version](https://creators.vrchat.com/sdk/upgrade/current-unity-version/).
+
+## Automated official workflow snapshots
+
+The [cafe workflow snapshot job](../../.github/workflows/cafe-workflow-snapshots.yml) fetches the original official JSON and writes SHA-pinned provenance on merge, on manual dispatch and every Monday at 02:23 JST. Source JSON is **not** executed, adopted as an API-format workflow, or proof that its models run on RTX 3060 12GB. Original Comfy-Org workflow template repository content is MIT licensed; the [upstream license notice](THIRD_PARTY_LICENSE.txt) is included. Model weights and separately hosted input images have independent terms which must be checked before publishing.
