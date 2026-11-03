@@ -138,6 +138,33 @@ class DiscoveryRecoveryTests(unittest.TestCase):
         png = b"\x89PNG\r\n\x1a\n" + chunk(b"tEXt", b"workflow\x00" + payload) + chunk(b"IEND", b"")
         self.assertEqual(extract_png_workflow(png)["nodes"][0]["type"], "KSampler")
 
+    def test_search_backlog_keeps_days_created_during_scan(self):
+        from datetime import date, timedelta
+        from urllib.error import URLError
+
+        yesterday = date.today() - timedelta(days=1)
+        old_end = yesterday - timedelta(days=1)
+        catalog = empty_catalog()
+        query = "comfyui workflow"
+        state = {
+            "pending": [{"query": query, "start": "2008-01-01",
+                         "end": old_end.isoformat(), "page": 1}],
+            "completed": 0, "overflows": [],
+        }
+        catalog["search_progress"]["github-search:" + query] = state
+
+        class OfflineAPI:
+            def json(self, url):
+                raise URLError("一時的に取得できません")
+
+        discover_github(OfflineAPI(), catalog, [query], pages=1)
+        self.assertEqual(state["pending"][0]["end"], old_end.isoformat())
+        self.assertEqual(state["pending"][1]["start"], yesterday.isoformat())
+        self.assertEqual(state["pending"][1]["end"], date.today().isoformat())
+        # 同じ日に再試行しても未処理区間を重複追加しない。
+        discover_github(OfflineAPI(), catalog, [query], pages=1)
+        self.assertEqual(len(state["pending"]), 2)
+
     def test_search_1000_limit_partitions_and_resumes(self):
         catalog = empty_catalog()
         called = []

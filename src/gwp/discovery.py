@@ -280,6 +280,18 @@ def discover_github(api, catalog, queries, pages):
                 "pending": [{"query": query, "start": "2008-01-01",
                              "end": today.isoformat(), "page": 1}], "completed": 0,
                 "overflows": []}
+        # 初回の全期間探索が複数日にまたがっても、その間の新規公開元を飛ばさない。
+        # 既存の未処理区間は維持し、未登録の日付だけを後ろに追加する。
+        if state["pending"]:
+            covered_until = max(date.fromisoformat(task["end"]) for task in state["pending"])
+        else:
+            last_full = state.get("last_full_scan_at", "")
+            covered_until = date.fromisoformat(last_full[:10]) if last_full else today
+        if covered_until < today:
+            state["pending"].append({
+                "query": query, "start": (covered_until + timedelta(days=1)).isoformat(),
+                "end": today.isoformat(), "page": 1})
+
         budget = max(1, pages)
         while budget > 0 and state["pending"]:
             task = state["pending"][0]
