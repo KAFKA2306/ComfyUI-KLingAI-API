@@ -17,15 +17,15 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 
 | 役割 | 正本・実装 |
 | --- | --- |
-| 目標・案件・収集条件 | mainの `config/registry.json` |
+| 目標・候補・案件・収集条件 | `main` ブランチの `config/registry.json` |
 | 発見・静的確認 | `src/gwp/discovery.py` |
-| 出典・改訂・制作履歴 | catalogの `data/workflow_registry.json` |
+| 出典・改訂・制作履歴 | `catalog` ブランチの `data/workflow_registry.json` |
 | 台帳の保存・復元 | `src/gwp/state.py`、`scripts/catalog_sync.sh`、`scripts/catalog_publish.sh` |
 | 台帳の検索・出力 | `gwp.discovery search`・`export`、用途別の並べ替えは `gwp.select` |
 | 素材の生成・受け渡し | `src/gwp/production.py`、`src/gwp/production_job.py` |
 | 作品構成と変更影響 | `src/gwp/creative.py` |
 
-収集処理は[GitHub Actions](../../.github/workflows/collect.yml)から6時間おきとmain更新時に起動します。`scripts/catalog_sync.sh` がcatalogの正本を取得して差分を追加します。`gwp.discovery sync` を直接実行した場合はローカルの台帳が更新されるため、永続保存には別途 `scripts/catalog_publish.sh` が必要です。
+収集処理は[GitHub Actions](../../.github/workflows/collect.yml)から6時間おきと `main` 更新時に起動します。`scripts/catalog_sync.sh` は `catalog` の台帳を取得して差分を追加します。`gwp.discovery sync` を直接実行した場合はローカルの台帳が更新されるため、永続保存には別途 `scripts/catalog_publish.sh` が必要です。
 
 更新競合、バックアップ、別PCからの復元は[台帳の保全・復旧](durability.md)で扱います。
 
