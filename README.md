@@ -17,7 +17,7 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 
 | 領域 | 公開する作品 |
 | --- | --- |
-| VRChatワールド | カフェ、Chill World、探索・交流ワールド |
+| VRChatワールド | Chill World、探索・交流・体験型ワールド |
 | アバター・衣装 | VRM、衣装、アクセサリー |
 | BOOTH商品 | 3D素材、背景、デジタル商品 |
 | YouTube・Shorts | 解説、短編、キャラクター動画 |
@@ -26,13 +26,13 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 | 3Dモデル | キャラクター、建築、家具、ゲーム向けモデル |
 | ゲーム制作 | ゲーム本体、ワールド、キャラクター、UI、素材 |
 
-8領域は独立して制作します。VRChatカフェは制作案件の一つであり、他領域の着手条件ではありません。
+8領域は対等であり、並行して制作・検証・公開を進めます。個別の作品や用途を共通基盤の既定例にせず、他領域の開始条件にも指定しません。
 
 ## 設計書とナレッジ
 
-[文書索引](docs/README.md)から、[全体設計](docs/design/system.md)、[制作工程](docs/design/production.md)、[作品構成と演出](docs/design/creative.md)、[VRChatカフェ設計](docs/design/vrchat-cafe.md)、[台帳と用語](docs/knowledge/registry.md)、[情報源](docs/knowledge/sources.md)を参照できます。
+[文書索引](docs/README.md)から、[全体設計](docs/design/system.md)、[制作工程](docs/design/production.md)、[作品構成と演出](docs/design/creative.md)、[台帳と用語](docs/knowledge/registry.md)、[情報源](docs/knowledge/sources.md)を参照できます。
 
-8領域、収集元、採用Workflow、制作案件の設定正本は`config/registry.json`です。収集結果の再生成可能なキャッシュは`.cache/workflow_registry.json`です。両者の役割は[全体設計](docs/design/system.md)で定義します。
+8領域、収集元、Workflow候補、制作案件の設定正本は`config/registry.json`です。候補は特定の制作案件に従属させません。収集結果の再生成可能なキャッシュは`.cache/workflow_registry.json`です。両者の役割は[全体設計](docs/design/system.md)で定義します。
 
 ## 実行方法
 

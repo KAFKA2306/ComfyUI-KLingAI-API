@@ -8,7 +8,7 @@ models/
 outputs/
 .artifacts/
 .cache/
-projects/vrchat-cafe/upstream/
+projects/**/upstream/
 *.safetensors
 *.ckpt
 *.pt

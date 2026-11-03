@@ -1,3 +1,4 @@
+"""設定台帳の参照整合性を検査する。"""
 import copy
 import sys
 import unittest
@@ -8,24 +9,31 @@ from gwp.registry import load_registry, validate_registry
 
 
 class RegistryTests(unittest.TestCase):
-    def test_single_registry_contains_all_missions_and_selected_workflows(self):
+    def test_missions_and_workflows_are_independent_from_projects(self):
         data = load_registry()
         self.assertEqual(len(data["missions"]), 8)
-        self.assertEqual(len(data["projects"]["vrchat-cafe"]["workflows"]), 3)
+        self.assertIsInstance(data["projects"], dict)
         self.assertTrue(data["github_repos"])
-        self.assertEqual(len({x["source_key"] for x in data["projects"]["vrchat-cafe"]["workflows"]}), 3)
+        self.assertEqual(len({row["id"] for row in data["workflows"]}), len(data["workflows"]))
+        self.assertEqual(len({row["source_key"] for row in data["workflows"]}), len(data["workflows"]))
 
-    def test_broken_references_and_duplicate_ids_fail(self):
+    def test_invalid_source_or_references_fail(self):
         data = load_registry()
         broken = copy.deepcopy(data)
-        broken["projects"]["vrchat-cafe"]["workflows"][0]["source_key"] = "wrong"
+        broken["workflows"][0]["source_key"] = "wrong"
         with self.assertRaises(ValueError):
             validate_registry(broken)
-        duplicate = copy.deepcopy(data)
-        flows = duplicate["projects"]["vrchat-cafe"]["workflows"]
-        flows[1]["id"] = flows[0]["id"]
+        missing = copy.deepcopy(data)
+        missing["projects"]["project-001"] = {
+            "title": "制作案件", "tags": ["制作", "検証"],
+            "mission_ids": ["unknown"], "workflow_ids": []
+        }
         with self.assertRaises(ValueError):
-            validate_registry(duplicate)
+            validate_registry(missing)
+        missing["projects"]["project-001"]["mission_ids"] = ["youtube"]
+        missing["projects"]["project-001"]["workflow_ids"] = ["nonexistent"]
+        with self.assertRaises(ValueError):
+            validate_registry(missing)
 
 
 if __name__ == "__main__":
