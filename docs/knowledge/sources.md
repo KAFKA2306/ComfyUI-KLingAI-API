@@ -3,7 +3,7 @@ id: "knowledge-sources"
 title: "一次資料と情報源"
 kind: "knowledge"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["出典","一次資料","ComfyUI","ライセンス"]
 related: ["config/registry.json","docs/knowledge/registry.md"]
 sources: ["https://github.com/Comfy-Org/workflow_templates","https://github.com/comfyanonymous/ComfyUI_examples"]
@@ -23,4 +23,4 @@ sources: ["https://github.com/Comfy-Org/workflow_templates","https://github.com/
 
 Hugging FaceとCivitaiのAPIではモデル情報を取得する。RunningHub、Reddit、Comfy Registry、OpenArtなどは、Workflowファイルを取得するAPIを確認できていない場合、参考先として記録する。
 
-Workflowを採用する際は、原典にある依存モデルやCustom Node、生成素材の利用条件を確認する。GitHubのスター数やIssueの件数は、個別Workflowの動作実績とは区別する。
+Workflowを採用する際は、Workflow本体、依存モデル、Custom Node、生成素材の利用条件を原典で確認する。GitHubのスター数やIssueの件数は、個別Workflowの動作実績とは区別する。
