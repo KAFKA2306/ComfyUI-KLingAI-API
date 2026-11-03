@@ -11,7 +11,7 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 
 # Workflow台帳と用語
 
-制作目標、制作案件、収集元の設定はmainの `config/registry.json` に保存します。収集した候補と制作履歴はcatalogの `data/workflow_registry.json` に保存し、ローカルの `.cache/workflow_registry.json` は作業コピーとして使います。保存・復旧・競合統合は[台帳の保全・復旧](../design/durability.md)に記載します。
+制作目標、制作案件、収集元の設定は`main` ブランチの `config/registry.json` に保存します。収集した候補と制作履歴は`catalog` ブランチの `data/workflow_registry.json` に保存し、ローカルの `.cache/workflow_registry.json` は作業コピーとして使います。保存・復旧・競合統合は[台帳の保全・復旧](../design/durability.md)に記載します。
 
 ## 台帳の項目
 
@@ -27,7 +27,7 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 | `projects`・`jobs`・`assets` | 制作案件、実行状態、生成素材 |
 | `rights`・`publications`・`knowledge` | 利用条件、公開の確認、再利用する知識 |
 
-公開ファイルの存在確認を「発見」、形式・ノード参照の読み取りを「静的確認」、指定した環境での実行を「実行確認」と呼びます。これらの状態は別に記録します。Issueがあることは個々のWorkflowの動作確認になりません。
+公開元の発見、候補ファイルの取得、形式・ノード参照の静的確認、指定した環境での実行確認は別の段階です。Issueの存在は個別Workflowの動作確認とは区別します。
 
 Workflowはノードを接続した処理構成です。Subgraphは再利用する部分的な構成です。この収集処理では、JSONの `definitions.subgraphs` を含む場合にBlueprintと識別します。ファイル名や分類だけで利用条件や品質を決めません。
 
