@@ -8,9 +8,13 @@ import hashlib
 import json
 import re
 import struct
+import sys
 from pathlib import Path
 from urllib.parse import quote
 from urllib.request import Request, urlopen
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+from gwp.registry import load_registry
 
 REPO_PATTERN = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 ID_PATTERN = re.compile(r"^[a-z0-9][a-z0-9_-]{1,63}$")
@@ -18,8 +22,8 @@ MAX_JSON = 3_000_000
 
 
 def manifest_entries(root: Path) -> list[dict]:
-    data = json.loads((root / "projects/vrchat-cafe/workflows.json").read_text(encoding="utf-8"))
-    entries = data["workflows"]
+    data = load_registry(root / "config/registry.json")
+    entries = data["projects"]["vrchat-cafe"]["workflows"]
     if not isinstance(entries, list) or not entries:
         raise ValueError("workflow manifest must have entries")
     ids = set()

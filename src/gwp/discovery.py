@@ -13,6 +13,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 
+from gwp.registry import load_registry
+
 BASE = "https://api.github.com"
 CANDIDATE_SUFFIXES = (".json", ".jsonc", ".png", ".webp", ".workflow")
 MODEL_KEYS = {"ckpt_name", "unet_name", "lora_name", "vae_name", "control_net_name",
@@ -374,7 +376,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Source-preserving Workflow Registry")
     parser.add_argument("command", nargs="?", choices=("sync", "search", "stats", "export"), default="sync")
     parser.add_argument("--catalog", type=Path, default=Path(".cache/workflow_registry.json"))
-    parser.add_argument("--sources", type=Path, default=Path("config/workflow_sources.json"))
+    parser.add_argument("--registry", type=Path, default=Path("config/registry.json"))
     parser.add_argument("--max-repos", type=int, default=12)
     parser.add_argument("--discovery-pages", type=int, default=1)
     parser.add_argument("--inspect-limit", type=int, default=50)
@@ -383,13 +385,13 @@ def main(argv=None):
     args = parser.parse_args(argv)
     catalog = load_catalog(args.catalog)
     if args.command == "sync":
-        settings = json.loads(args.sources.read_text(encoding="utf-8"))
+        settings = load_registry(args.registry)
         sync(API(os.environ.get("GITHUB_TOKEN")), catalog, settings,
              max_repos=args.max_repos, discovery_pages=args.discovery_pages,
              inspect_limit=args.inspect_limit)
         atomic_save(args.catalog, catalog)
     elif args.command == "export":
-        settings = json.loads(args.sources.read_text(encoding="utf-8"))
+        settings = load_registry(args.registry)
         sys.stdout.write(export_catalog(catalog, settings.get("categories", []), args.format))
     elif args.command == "search":
         for item in search(catalog, args.term):

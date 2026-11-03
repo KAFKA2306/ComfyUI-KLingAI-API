@@ -35,6 +35,16 @@ tags: [制作基盤, Workflow, ナレッジ, 8領域, uv]
 - [Workflow台帳と用語](docs/knowledge/registry.md)：データの意味と検索
 - [一次資料](docs/knowledge/sources.md)：原典と利用条件
 
+## 一元管理
+
+8つの制作ミッション・収集元・採用Workflow・制作案件は `config/registry.json` が唯一の設定台帳です。
+
+```sh
+uv run --locked python -m gwp.registry validate
+uv run --locked python -m gwp.registry summary
+uv run --locked python -m gwp.registry list --kind workflows
+```
+
 ## 必須の実行方法
 
 Python 3.11以上を使い、依存関係、仮想環境、スクリプトとテストの実行を**uv**で統一します。
