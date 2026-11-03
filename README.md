@@ -30,7 +30,7 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 
 ## 設計書と台帳
 
-[文書索引](docs/README.md)から、[全体設計](docs/design/system.md)、[台帳の保全・復旧](docs/design/durability.md)、[制作工程](docs/design/production.md)、[作品構成と演出](docs/design/creative.md)、[台帳と用語](docs/knowledge/registry.md)、[情報源](docs/knowledge/sources.md)を参照できます。
+設計書・制作手順・出典ナレッジは[文書索引](docs/README.md)にまとめています。
 
 制作目標・収集条件・制作案件の設定は、mainの[config/registry.json](config/registry.json)で管理します。収集した候補と制作履歴の正本は、catalogブランチの `data/workflow_registry.json` と同名の `.sha256` ファイルです。ローカルの `.cache/` は作業用です。
 
