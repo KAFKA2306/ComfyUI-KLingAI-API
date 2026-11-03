@@ -45,7 +45,7 @@ tags: [Workflow, 出典, VRChat]
 
 ## Workflow候補のメタデータ
 
-実装済み台帳 `data/workflow_registry.json` が保持する主な情報：
+台帳 `data/workflow_registry.json` が保持する主な情報：
 
 - 識別子、公開元リポジトリ、原典URL、パス、コミットSHA、Blob SHA、観測時点
 - 改訂履歴、形式、静的検査の状態、参照されるノードとモデル（取得できた場合）
