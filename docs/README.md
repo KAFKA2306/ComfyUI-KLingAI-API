@@ -3,7 +3,7 @@ id: "docs-index"
 title: "設計書とナレッジの索引"
 kind: "index"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["索引","設計","ナレッジ"]
 related: ["docs/design/system.md","docs/knowledge/registry.md"]
 sources: []
@@ -11,7 +11,7 @@ sources: []
 
 # 設計書とナレッジ
 
-`docs/` は、制作基盤の仕組みを定める設計書と、出典や用語を整理するナレッジに分ける。8領域の目標、収集元、制作案件と採用候補の設定は `config/registry.json` に一元化する。制作処理の実装はコード、収集・制作履歴は catalog ブランチの data/workflow_registry.json を参照する。`.cache/` は作業用の一時保存先である。同じデータを文書に複製しない。特定の制作案件を全領域の共通設計の既定例にしない。
+`docs/`には、長期運用に必要な設計書と、出典・用語を扱うナレッジだけを置く。目標や収集元の設定は`config/registry.json`、収集・制作履歴は`catalog`ブランチの`data/workflow_registry.json`に保存する。実装はコードを正本とし、文書には同じデータや作業記録を複製しない。
 
 ## 設計書
 
@@ -27,11 +27,11 @@ sources: []
 
 ## 文書の規則
 
-各Markdownファイルの先頭には、`id`、`title`、`kind`、`status`、`updated`、`tags`、`related`、`sources` を持つYAMLフロントマターを付ける。値にはJSON互換のYAMLを使う。
+各Markdownファイルには、先頭に`id`、`title`、`kind`、`status`、`updated`、`tags`、`related`、`sources`を記載する。値はJSON互換のYAMLにする。
 
-`kind` は `index`、`design`、`knowledge`、`status` は `active`、`reference` とする。`tags` には重複しない検索語を2件以上指定する。`related` は存在するリポジトリ内パス、`sources` は一次資料のHTTPS URLを記載する。
+`kind`は`index`、`design`、`knowledge`のいずれか、`status`は`active`か`reference`とする。`tags`は重複しない語を2件以上指定する。`related`には実在するリポジトリ内パス、`sources`には確認した一次資料のHTTPS URLを記す。
 
-本文は日本語で書き、固有名詞やコードの識別子は元の表記を保つ。設計上の判断と確認方法を残し、重複した説明や作業日誌はGitの履歴へ委ねる。文書と内部リンクの検査には次を使う。
+本文は日本語で書き、コードの識別子と固有名詞は変えない。判断の根拠と実行手順は残し、重複や進捗メモは載せない。メタデータと内部リンクは次のコマンドで検査する。
 
 ```sh
 uv run --locked python scripts/validate_docs.py
