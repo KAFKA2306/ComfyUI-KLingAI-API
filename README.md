@@ -3,7 +3,7 @@ id: "readme"
 title: "ComfyUI制作基盤"
 kind: "index"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["ComfyUI","Workflow","制作","8領域","uv"]
 related: ["docs/README.md","src/gwp/discovery.py"]
 sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/workflow_templates"]
@@ -11,7 +11,7 @@ sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/w
 
 # ComfyUI制作基盤：8領域の作品制作
 
-公開されているComfyUIのWorkflowを収集し、出典と改訂履歴を記録します。そのWorkflowを使い、次の8領域で作品を制作・公開することが長期目標です。
+公開されているComfyUIのWorkflowを収集し、出典と改訂履歴を記録します。収集したWorkflowを利用し、次の8領域で作品を制作・公開することが長期目標です。
 
 ## 対等な8つの長期目標
 
@@ -55,4 +55,4 @@ uv run --locked python -m gwp.discovery search --term VRChat
 
 公式とコミュニティの公開Workflowを収集し、人気や独自スコアで候補を除外しません。第三者のWorkflowやCustom Node、モデルは、収集時には実行しません。
 
-作品は素材の生成後に制作先で組み込みと品質確認を行い、公開します。仮素材だけの作品を完成品として扱わず、認証情報、モデル本体、生成メディア、個人情報はGitに保存しません。
+生成した素材は各制作先で組み込みと品質確認を行ってから公開します。仮素材だけの作品を完成品として扱わず、認証情報、モデル本体、生成メディア、個人情報はGitに保存しません。
