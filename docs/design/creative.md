@@ -26,7 +26,7 @@ sources: []
 | `units` | 各単位の `id`、`kind`、`purpose`、`deliverables`、`requires`、必要に応じて `workflow_ids` |
 | `releases` | 公開先の `id`・`mission`、必要な制作単位の `requires` |
 
-`units` の `workflow_ids` には `config/registry.json` に登録したWorkflow IDを指定します。`validate` は存在しないID、領域の不一致、依存関係の循環を検出します。モデルのライセンスや生成物の品質は、この構造検査では判定しません。
+`units` の `workflow_ids` には `config/registry.json` に登録したWorkflow IDを指定します。`validate` は未登録のWorkflow ID、制作案件に登録されていない領域、依存関係の循環を検出します。Workflow自身の領域タグと制作案件の一致、モデルの利用条件、生成物の品質は判定しません。
 
 `units[].kind` は `direction`、`asset`、`scene`、`shot`、`sound`、`interaction`、`edit`、`package` から選びます。定義は [`gwp.creative`](../../src/gwp/creative.py) にあります。
 
