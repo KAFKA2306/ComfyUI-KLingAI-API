@@ -373,9 +373,13 @@ def sync(api, catalog, settings, max_repos=12, discovery_pages=1, inspect_limit=
     discover_organizations(api, catalog, settings.get("github_organizations", []))
     discover_github(api, catalog, settings.get("github_queries", []), discovery_pages)
     # Round-robin across all discoveries; no popularity score or exclusion policy.
+    # 失敗した巡回も順番を進める。成功日時だけでは取得不能な公開元が先頭に残り続ける。
+    def last_visit(item):
+        state = catalog["repositories"].get(item["repo"].lower(), {})
+        return max(state.get("last_scanned_at", ""), state.get("last_attempted_at", ""))
+
     queue = sorted(catalog["discoveries"].values(),
-                   key=lambda item: (catalog["repositories"].get(item["repo"].lower(), {}).get("last_scanned_at", ""),
-                                     item["repo"].lower()))
+                   key=lambda item: (last_visit(item), item["repo"].lower()))
     for candidate in queue[:max_repos]:
         repo = candidate["repo"]
         key = repo.lower()
