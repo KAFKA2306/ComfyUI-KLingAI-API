@@ -18,6 +18,7 @@ sources: []
 - [全体設計](design/system.md)：公開Workflowの収集から制作までの処理と責任分担
 - [制作工程への接続](design/production.md)：ComfyUIへの投入、出力回収、制作先への受け渡し
 - [VRChat小型カフェ](design/vrchat-cafe.md)：作品の制作手順と公開を確認する条件
+- [作品構成と演出](design/creative.md)：制作単位の依存関係と変更の影響
 
 ## ナレッジ
 
