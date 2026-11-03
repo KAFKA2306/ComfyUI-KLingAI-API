@@ -25,6 +25,8 @@ sources: []
 | `units` | 制作単位ごとの目的、成果物、依存先、参照元 |
 | `releases` | 公開先の識別子と、公開に必要な制作単位 |
 
+`workflow_ids` は一元台帳 `config/registry.json` の登録済みWorkflow IDを参照する。存在しないIDや、制作案件と一致しない領域は `validate` で検出する。ライセンスや品質の良否をここでは判定しない。
+
 制作単位には、例えば `architecture`（建築メッシュ）、`cup`（陶器カップ）、`lighting`（照明）、`world-assembly`（Unityへの統合）がある。`lighting` は建築と家具が必要で、`world-assembly` は照明、歩行設定、カップ、環境音がそろってから進める。
 
 ## 依存関係を確認する

@@ -62,12 +62,12 @@
       "continuity_refs": [
         "materials"
       ],
-      "origin_refs": [
-        "github:comfy-org/workflow_templates:templates/3d_hunyuan3d_image_to_model.json",
-        "github:comfy-org/workflow_templates:templates/3d_pixal3d_trellis2_image_to_model.json"
-      ],
       "deliverables": [
         "確認可能な3D小物と材質"
+      ],
+      "workflow_ids": [
+        "cup-hunyuan3d",
+        "cup-trellis2"
       ]
     },
     {
