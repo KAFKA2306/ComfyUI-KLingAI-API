@@ -5,7 +5,7 @@ kind: "design"
 status: "active"
 updated: "2026-11-03"
 tags: ["作品構成","演出","制作単位","依存関係"]
-related: ["src/gwp/creative.py","projects/vrchat-cafe/creative.json","docs/design/production.md"]
+related: ["src/gwp/creative.py","config/registry.json","docs/design/production.md"]
 sources: []
 ---
 
@@ -15,7 +15,7 @@ sources: []
 
 ## 制作仕様のデータ
 
-[カフェの制作仕様](../../projects/vrchat-cafe/creative.json)は、作品の構成と必要な成果物を記述するJSONである。
+各制作案件の `creative.json` は、その作品の構成と必要な成果物を記述する。案件IDと領域は [一元台帳](../../config/registry.json) の `projects` と対応させる。
 
 | キー | 内容 |
 | --- | --- |
@@ -27,16 +27,18 @@ sources: []
 
 `workflow_ids` は一元台帳 `config/registry.json` の登録済みWorkflow IDを参照する。存在しないIDや、制作案件と一致しない領域は `validate` で検出する。ライセンスや品質の良否をここでは判定しない。
 
-制作単位には、例えば `architecture`（建築メッシュ）、`cup`（陶器カップ）、`lighting`（照明）、`world-assembly`（Unityへの統合）がある。`lighting` は建築と家具が必要で、`world-assembly` は照明、歩行設定、カップ、環境音がそろってから進める。
+制作単位の依存先は、作品の実際の要求から定義する。例えば映像作品では脚本・音声・編集、3Dモデルでは形状・材質・書き出しを別の制作単位にできる。
 
 ## 依存関係を確認する
 
 Pythonの実行には `uv` を使う。
 
+既存の制作仕様ファイルを `PLAN`、調べる制作単位IDを `UNIT` に指定する。
+
 ```sh
-uv run --locked python -m gwp.creative validate --plan projects/vrchat-cafe/creative.json
-uv run --locked python -m gwp.creative order --plan projects/vrchat-cafe/creative.json
-uv run --locked python -m gwp.creative impact --plan projects/vrchat-cafe/creative.json --unit cup
+uv run --locked python -m gwp.creative validate --plan "$PLAN"
+uv run --locked python -m gwp.creative order --plan "$PLAN"
+uv run --locked python -m gwp.creative impact --plan "$PLAN" --unit "$UNIT"
 ```
 
 `validate` は必須項目、参照先、依存関係の循環を確認する。`order` は制作単位の依存関係から実施順を返す。`impact` は指定した単位を変更したとき、確認し直す必要がある単位と公開先を返す。
