@@ -27,8 +27,18 @@ cleanup() {
 trap cleanup EXIT
 git worktree add --detach "$WORKTREE" "refs/remotes/origin/${BRANCH}" >/dev/null
 
-git -C "$WORKTREE" config user.name "github-actions[bot]"
-git -C "$WORKTREE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+# ローカルのGit設定は変更しない。コミット単位で実行者を指定する。
+if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+  AUTHOR_NAME="github-actions[bot]"
+  AUTHOR_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
+else
+  AUTHOR_NAME="${GIT_AUTHOR_NAME:-$(git config user.name || true)}"
+  AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL:-$(git config user.email || true)}"
+  if [[ -z "$AUTHOR_NAME" || -z "$AUTHOR_EMAIL" ]]; then
+    echo "Gitのuser.nameとuser.emailを設定してください" >&2
+    exit 1
+  fi
+fi
 
 for attempt in 1 2 3 4 5; do
   git fetch --no-tags origin "refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}"
@@ -44,7 +54,8 @@ for attempt in 1 2 3 4 5; do
     echo "正本に未反映の差分はありません"
     exit 0
   fi
-  git -C "$WORKTREE" commit -m "data: 台帳の変更を競合統合して保全" >/dev/null
+  git -C "$WORKTREE" -c user.name="$AUTHOR_NAME" -c user.email="$AUTHOR_EMAIL" \
+    commit -m "data: 台帳の変更を競合統合して保全" >/dev/null
   if git -C "$WORKTREE" push origin "HEAD:refs/heads/${BRANCH}"; then
     echo "catalog正本へ反映しました"
     exit 0
