@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "note": "Discovery tags derived from titles, paths and observed node names; they are not verified functional capabilities or quality scores.",
+  "categories": [
+    {
+      "id": "youtube",
+      "title": "YouTube",
+      "keywords": [
+        "youtube",
+        "shorts",
+        "social video",
+        "t2v",
+        "i2v",
+        "video",
+        "ltx",
+        "wanvideo",
+        "talking",
+        "avatar_video"
+      ]
+    },
+    {
+      "id": "podcast",
+      "title": "Podcast / Audio",
+      "keywords": [
+        "podcast",
+        "audio",
+        "tts",
+        "chatterbox",
+        "voice",
+        "speech",
+        "lip sync",
+        "lipsync",
+        "whisper",
+        "sound"
+      ]
+    },
+    {
+      "id": "movies",
+      "title": "Movies / Film",
+      "keywords": [
+        "cinematic",
+        "film",
+        "movie",
+        "video",
+        "wan",
+        "ltx",
+        "animate",
+        "motion",
+        "frame",
+        "camera"
+      ]
+    },
+    {
+      "id": "vrchat",
+      "title": "VRChat",
+      "keywords": [
+        "vrchat",
+        "unity",
+        "vrc",
+        "world",
+        "avatar"
+      ]
+    },
+    {
+      "id": "avatars",
+      "title": "Avatars",
+      "keywords": [
+        "avatar",
+        "character",
+        "face",
+        "portrait",
+        "rigging",
+        "expression",
+        "vrm",
+        "humanoid"
+      ]
+    },
+    {
+      "id": "booth",
+      "title": "BOOTH Products",
+      "keywords": [
+        "booth",
+        "product",
+        "merch",
+        "texture",
+        "illustration",
+        "3d",
+        "mesh",
+        "upscale",
+        "pbr"
+      ]
+    },
+    {
+      "id": "3d-models",
+      "title": "3D Models",
+      "keywords": [
+        "3d",
+        "trellis",
+        "hunyuan3d",
+        "tripo",
+        "meshy",
+        "mesh",
+        "pbr",
+        "texture",
+        "glb",
+        "obj"
+      ]
+    },
+    {
+      "id": "chill-world",
+      "title": "Chill World",
+      "keywords": [
+        "chill",
+        "panorama",
+        "360",
+        "environment",
+        "landscape",
+        "skybox",
+        "background",
+        "scenery",
+        "interior"
+      ]
+    },
+    {
+      "id": "game-world",
+      "title": "Game World",
+      "keywords": [
+        "game",
+        "world",
+        "environment",
+        "terrain",
+        "dungeon",
+        "level",
+        "landscape",
+        "panorama",
+        "360"
+      ]
+    },
+    {
+      "id": "game-assets",
+      "title": "Game Assets",
+      "keywords": [
+        "asset",
+        "prop",
+        "3d",
+        "mesh",
+        "texture",
+        "weapon",
+        "item",
+        "pbr",
+        "sprite"
+      ]
+    }
+  ]
+}

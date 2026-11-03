@@ -7,12 +7,35 @@
     "Comfy-Org/awesome-comfy",
     "neuregex/freefield",
     "aimpowerment/comfyui-workflows",
-    "ltdrdata/ComfyUI-Impact-Pack"
+    "ltdrdata/ComfyUI-Impact-Pack",
+    "Comfy-Org/example_workflows",
+    "Comfy-Org/creative-campus",
+    "ZHO-ZHO-ZHO/ComfyUI-Workflows-ZHO",
+    "cubiq/ComfyUI_Workflows",
+    "yolain/ComfyUI-Yolain-Workflows",
+    "wyrde/wyrde-comfyui-workflows",
+    "Kosinkadink/ComfyUI-VideoHelperSuite",
+    "kijai/ComfyUI-WanVideoWrapper",
+    "kijai/ComfyUI-HunyuanVideoWrapper",
+    "AEmotionStudio/ComfyUI-VRChat-Assets",
+    "Alex92908/image-to-3d-comfyui",
+    "skyiron/ComfyUI-TTS-Audio-Suite",
+    "wildminder/ComfyUI-Chatterbox",
+    "cubiq/ComfyUI_IPAdapter_plus",
+    "Fannovel16/comfyui_controlnet_aux",
+    "pjecuacion/comfyui_workflows"
   ],
   "github_queries": [
     "topic:comfyui-workflow",
     "topic:comfyui-workflows",
-    "comfyui workflow in:name,description"
+    "comfyui workflow in:name,description",
+    "ComfyUI video workflow in:name,description",
+    "ComfyUI audio TTS in:name,description",
+    "ComfyUI 3D mesh in:name,description",
+    "ComfyUI VRChat avatar in:name,description",
+    "ComfyUI environment panorama in:name,description",
+    "ComfyUI game assets in:name,description",
+    "ComfyUI subgraph blueprint in:name,description"
   ],
   "metadata_feeds": [
     {
@@ -55,6 +78,21 @@
     {
       "id": "openart",
       "url": "https://openart.ai/workflows",
+      "status": "index-only-no-verified-api"
+    },
+    {
+      "id": "comfyworkflows",
+      "url": "https://www.comfyworkflows.com/",
+      "status": "index-only-no-verified-api"
+    },
+    {
+      "id": "civitai-workflows",
+      "url": "https://civitai.com/",
+      "status": "model-metadata-feed-not-workflow-json"
+    },
+    {
+      "id": "openart-workflows",
+      "url": "https://openart.ai/",
       "status": "index-only-no-verified-api"
     }
   ]
