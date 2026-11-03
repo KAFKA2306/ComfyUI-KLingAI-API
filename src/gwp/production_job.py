@@ -1,9 +1,9 @@
-"""制作対象別のWorkflowを準備・投入・回収するCLI。"""
+"""任意の制作先でWorkflowを準備・投入・回収するCLI。"""
 import argparse
 import json
 from pathlib import Path
 
-from gwp.production import LocalComfyUI, collect_job, handoff_job, prepare, submit_job, targets
+from gwp.production import LocalComfyUI, collect_job, handoff_job, prepare, submit_job
 
 
 def read_json(path):
@@ -13,10 +13,9 @@ def read_json(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="action", required=True)
-    commands.add_parser("targets", help="対応する制作プロジェクト")
     for action in ("plan", "submit"):
         cmd = commands.add_parser(action)
-        cmd.add_argument("--target", required=True, choices=sorted(targets()))
+        cmd.add_argument("--target", required=True, help="任意の制作先識別子（英小文字・数字・_-、最大64文字）")
         cmd.add_argument("--workflow", required=True, help="ComfyUIのExport Workflow (API)によるJSON")
         cmd.add_argument("--patch", help="ノードIDとスカラー入力値のJSON")
         if action == "submit":
@@ -31,9 +30,7 @@ def main():
     cmd.add_argument("--project-root", required=True)
     args = parser.parse_args()
     try:
-        if args.action == "targets":
-            result = targets()
-        elif args.action in ("plan", "submit"):
+        if args.action in ("plan", "submit"):
             graph = read_json(args.workflow)
             patch = read_json(args.patch) if args.patch else {}
             if args.action == "plan":

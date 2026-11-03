@@ -12,7 +12,6 @@ from urllib.request import Request, urlopen
 
 from gwp.comfyui import ComfyUIClient
 
-ROOT = Path(__file__).resolve().parents[2]
 EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".mp4", ".webm", ".wav", ".flac", ".ogg"}
 MAX_FILE_BYTES = 256 * 1024 * 1024
 
@@ -22,13 +21,14 @@ def digest(value):
                                      separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
-def targets():
-    return json.loads((ROOT / "config/production_targets.json").read_text(encoding="utf-8"))["targets"]
+def valid_target(target):
+    """制作先を固定リストに制限せず、安全な識別子だけを受け付ける。"""
+    return isinstance(target, str) and re.fullmatch(r"[a-z0-9][a-z0-9_-]{0,63}", target) is not None
 
 
 def prepare(target, graph, patches=None):
-    if target not in targets():
-        raise ValueError("制作先が未登録です")
+    if not valid_target(target):
+        raise ValueError("制作先には英小文字・数字・ハイフン・下線のみ使用できます（1～64文字）")
     if not isinstance(graph, dict) or not graph or "nodes" in graph or "definitions" in graph:
         raise ValueError("ComfyUIで Export Workflow (API) を実行したJSONが必要です")
     for node_id, node in graph.items():
@@ -53,9 +53,7 @@ def prepare(target, graph, patches=None):
             if type(value) is float and not math.isfinite(value):
                 raise ValueError("NaN/Infinityは禁止です")
             original[key] = value
-    config = targets()[target]
-    meta = {"target": target, "repository": config["repository"],
-            "handoff": config["handoff"], "completionAuthority": config["completionAuthority"],
+    meta = {"target": target,
             "originalSha256": digest(graph), "submittedSha256": digest(updated),
             "patchSha256": digest(patches), "nodes": len(graph),
             "state": "PREPARED_NOT_EXECUTED"}
@@ -101,7 +99,7 @@ def collect_job(receipt, backend, output_root):
     if not isinstance(receipt, dict) or receipt.get("state") != "SUBMITTED_NOT_COMPLETE":
         raise ValueError("送信済みreceiptを指定してください")
     target, prompt_id = receipt.get("target"), receipt.get("promptId")
-    if target not in targets() or not isinstance(prompt_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", prompt_id):
+    if not valid_target(target) or not isinstance(prompt_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", prompt_id):
         raise ValueError("receiptのtarget/promptIdが不正です")
     history = backend.history(prompt_id)
     job = history.get(prompt_id) if isinstance(history, dict) else None
@@ -145,11 +143,9 @@ def collect_job(receipt, backend, output_root):
             (staging / local_name).write_bytes(raw)
             records.append({"file": local_name, "nodeId": node_id,
                             "sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw)})
-        manifest = {"schemaVersion": 1, "target": target, "repository": targets()[target]["repository"],
-                    "handoff": targets()[target]["handoff"], "promptId": prompt_id,
+        manifest = {"schemaVersion": 1, "target": target, "promptId": prompt_id,
                     "workflowSha256": receipt.get("submittedSha256"), "files": records,
-                    "state": "GENERATED_UNVERIFIED",
-                    "completionAuthority": targets()[target]["completionAuthority"]}
+                    "state": "GENERATED_UNVERIFIED"}
         (staging / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         os.rename(staging, destination)
     return manifest
@@ -160,8 +156,7 @@ def handoff_job(manifest_path, project_root):
     manifest_path = Path(manifest_path).resolve()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     target, prompt_id = manifest.get("target"), manifest.get("promptId")
-    cfg = targets()
-    if target not in cfg or manifest.get("state") != "GENERATED_UNVERIFIED":
+    if not valid_target(target) or manifest.get("state") != "GENERATED_UNVERIFIED":
         raise ValueError("正規の生成物manifestが必要です")
     if not isinstance(prompt_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", prompt_id):
         raise ValueError("不正なpromptIdです")
@@ -169,10 +164,9 @@ def handoff_job(manifest_path, project_root):
     if not isinstance(files, list) or not 1 <= len(files) <= 100:
         raise ValueError("不正なファイル一覧です")
     project = Path(project_root).resolve()
-    marker = project / cfg[target]["projectMarker"]
-    if not marker.is_file():
-        raise ValueError("制作repoの識別ファイルが見つかりません")
-    destination = project / cfg[target]["stagingRoot"] / target / prompt_id
+    if not project.is_dir():
+        raise ValueError("受け渡し先のプロジェクトが存在しません")
+    destination = project / ".artifacts" / "comfyui" / target / prompt_id
     if destination.exists():
         raise FileExistsError("既存出力は上書きできません")
     checked = []
@@ -199,8 +193,7 @@ def handoff_job(manifest_path, project_root):
         for name, raw in checked:
             (staging / name).write_bytes(raw)
         receipt = {
-            "schemaVersion": 1, "target": target, "repository": cfg[target]["repository"],
-            "promptId": prompt_id, "workflowSha256": manifest.get("workflowSha256"),
+            "schemaVersion": 1, "target": target, "promptId": prompt_id, "workflowSha256": manifest.get("workflowSha256"),
             "originManifestSha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
             "files": [{"file": name, "sha256": hashlib.sha256(raw).hexdigest()} for name, raw in checked],
             "state": "STAGED_UNREVIEWED",
