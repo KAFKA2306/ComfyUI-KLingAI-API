@@ -15,7 +15,7 @@ sources: []
 
 ## 制作仕様
 
-各制作案件の `creative.json` には、次の情報を記述します。`project_id` と制作領域は、[一元台帳](../../config/registry.json)の `projects` と対応させます。
+各制作案件の `creative.json` には、次の情報を記述します。コマンドを実行する前に、`project_id` と制作領域を[設定台帳](../../config/registry.json)の `projects` に登録してください。
 
 | 項目 | 記述する内容 |
 | --- | --- |
@@ -31,7 +31,7 @@ sources: []
 
 ## 制作順と変更の影響
 
-次の `PLAN` は実在する制作仕様ファイル、`UNIT` はその中の制作単位IDに置き換えます。
+次の `PLAN` には登録済みの作品の制作仕様ファイル、`UNIT` にはそのファイル内の制作単位IDを指定します。
 
 ```sh
 PLAN=/path/to/creative.json
