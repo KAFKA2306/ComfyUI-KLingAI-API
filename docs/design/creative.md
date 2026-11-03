@@ -34,6 +34,8 @@ sources: []
 次の `PLAN` は実在する制作仕様ファイル、`UNIT` はその中の制作単位IDに置き換えます。
 
 ```sh
+PLAN=/path/to/creative.json
+UNIT=unit-id
 uv run --locked python -m gwp.creative validate --plan "$PLAN"
 uv run --locked python -m gwp.creative order --plan "$PLAN"
 uv run --locked python -m gwp.creative impact --plan "$PLAN" --unit "$UNIT"

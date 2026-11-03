@@ -46,6 +46,7 @@ uv run --locked python -m gwp.discovery export --catalog .cache/workflow_registr
 ```
 
 CSVとJSONの書き出し結果は閲覧用です。正本として編集せず、必要なときに台帳から再生成します。収集対象の件数はGitHub検索と巡回の上限に左右されます。
+
 ## Workflow候補の絞り込み
 
 `gwp.select` は台帳を変更せず、8領域の用途、公開元の人気、更新時期から表示順を決めます。検索に使う指標と作品の品質は区別してください。

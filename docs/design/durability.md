@@ -44,6 +44,8 @@ uv run --locked python -m gwp.state verify --catalog .cache/restored.json
 作品、採用Workflow、依存モデル、実行ジョブ、権利、公開の履歴は `gwp.ledger` で更新します。更新したローカル台帳は `scripts/catalog_publish.sh` でcatalogへ統合します。操作例では、`PROJECT_ID` に実際の案件ID、`PAYLOAD` にその案件のJSONファイルを指定します。
 
 ```sh
+PROJECT_ID=project-id
+PAYLOAD=/path/to/project.json
 git fetch origin catalog
 mkdir -p .cache
 git show origin/catalog:data/workflow_registry.json > .cache/edit.json
@@ -68,6 +70,7 @@ bash scripts/catalog_publish.sh .cache/edit.json
 ## バックアップと検索
 
 ```sh
+BACKUP_DIR=/path/to/independent/backup
 uv run --locked python -m gwp.state backup --catalog .cache/restored.json --output "$BACKUP_DIR"
 uv run --locked python -m gwp.ledger query --catalog .cache/restored.json --section artifacts --term VRChat
 ```
