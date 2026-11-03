@@ -1,0 +1,651 @@
+{
+  "count": 30,
+  "inspected": [
+    {
+      "blob_sha": "a8183c9b8b69a86a2023833a65eeeb52acd5e03a",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/creative-campus:Xindi-zhang:Drifters_styleTransfer.json",
+      "models": [
+        "SD1.5\\animatediff\\v3_sd15_adapter.ckpt",
+        "base\\control_v11p_sd15_lineart.pth",
+        "image_encoder.safetensors",
+        "juggernaut_reborn.safetensors",
+        "mm-Stabilized_high.pth",
+        "other\\control_v1p_sd15_qrcode_monster.safetensors",
+        "vae-ft-mse-840000-ema-pruned.safetensors"
+      ],
+      "node_count": 51,
+      "node_types": [
+        "ADE_AnimateDiffLoaderWithContext",
+        "ADE_AnimateDiffUniformContextOptions",
+        "CLIPTextEncode",
+        "CLIPVisionLoader",
+        "CheckpointLoaderSimpleWithNoiseSelect",
+        "ControlNetApplyAdvanced",
+        "ControlNetLoaderAdvanced",
+        "GetNode",
+        "IPAdapterAdvanced",
+        "IPAdapterUnifiedLoader",
+        "ImageBatchMulti",
+        "ImageInvert",
+        "ImageScale",
+        "KSampler",
+        "LineArtPreprocessor",
+        "LoadImage",
+        "LoraLoader",
+        "MiDaS-DepthMapPreprocessor",
+        "Note",
+        "PreviewImage",
+        "PrimitiveNode",
+        "SaveImage",
+        "SetNode",
+        "VAEDecode",
+        "VAEEncode",
+        "VAELoader",
+        "VHS_LoadImagesPath",
+        "VHS_VideoCombine"
+      ]
+    },
+    {
+      "blob_sha": "544107f926f24aee9bba5fab5aca6e53cebb8652",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/creative-campus:xindi-zhang:Drifters_stylizedMorphing.json",
+      "models": [
+        "AnimateLCM_sd15_t2v.ckpt",
+        "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "SD1.5\\animatediff\\v3_sd15_adapter.ckpt",
+        "base\\control_sd15_depth_anything_fp16.safetensors",
+        "base\\control_v11p_sd15_lineart.pth",
+        "juggernaut_reborn.safetensors",
+        "other\\control_v1p_sd15_qrcode_monster.safetensors",
+        "vae-ft-mse-840000-ema-pruned.safetensors"
+      ],
+      "node_count": 64,
+      "node_types": [
+        "ACN_AdvancedControlNetApply_v2",
+        "ADE_ApplyAnimateDiffModel",
+        "ADE_LoadAnimateDiffModel",
+        "ADE_StandardUniformContextOptions",
+        "ADE_UseEvolvedSampling",
+        "Anything Everywhere",
+        "BatchPromptSchedule",
+        "CLIPTextEncode",
+        "CLIPVisionLoader",
+        "CheckpointLoaderSimple",
+        "ControlNetLoader",
+        "GetNode",
+        "IPAdapterAdvanced",
+        "IPAdapterUnifiedLoader",
+        "Image To Mask",
+        "ImageScale",
+        "ImpactMakeImageBatch",
+        "Int Literal",
+        "KSampler",
+        "LineArtPreprocessor",
+        "LoadImage",
+        "LoraLoader",
+        "MiDaS-DepthMapPreprocessor",
+        "Note",
+        "PreviewImage",
+        "Reroute",
+        "SaveImage",
+        "SetNode",
+        "VAEDecode",
+        "VAEEncode",
+        "VAELoader",
+        "VHS_LoadImagesPath",
+        "VHS_VideoCombine"
+      ]
+    },
+    {
+      "blob_sha": "05e0735765525eb44c211747a01fab4cf2f6c122",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/example_workflows:api_nodes/moonvalley/api_moonvalley_image_to_video.json",
+      "models": [],
+      "node_count": 4,
+      "node_types": [
+        "LoadImage",
+        "MarkdownNote",
+        "MoonvalleyImg2VideoNode",
+        "SaveVideo"
+      ]
+    },
+    {
+      "blob_sha": "b725f006f1d396b2dda15218699b87d12b733348",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/example_workflows:api_nodes/moonvalley/api_moonvalley_text_to_video.json",
+      "models": [],
+      "node_count": 3,
+      "node_types": [
+        "MarkdownNote",
+        "MoonvalleyTxt2VideoNode",
+        "SaveVideo"
+      ]
+    },
+    {
+      "blob_sha": "cb59618615a92dd210324528fa94db525c92d473",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/example_workflows:api_nodes/moonvalley/api_moonvalley_video_to_video.json",
+      "models": [],
+      "node_count": 4,
+      "node_types": [
+        "LoadVideo",
+        "MarkdownNote",
+        "MoonvalleyVideo2VideoNode",
+        "SaveVideo"
+      ]
+    },
+    {
+      "blob_sha": "b4f72c2a4a2ebed8877da43a0ef72ad1c877f39f",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/example_workflows:api_nodes/rodin/rodin_image_to_model.json",
+      "models": [],
+      "node_count": 22,
+      "node_types": [
+        "ImageBatch",
+        "LoadImage",
+        "MarkdownNote",
+        "Note",
+        "Preview3D",
+        "Rodin3D_Detail",
+        "Rodin3D_Regular",
+        "Rodin3D_Sketch",
+        "Rodin3D_Smooth"
+      ]
+    },
+    {
+      "blob_sha": "30add5b0515dc7cd64bb981b753a96b1bf7feba8",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/workflow_templates:blueprints/audio_generation_stable_audio_3_medium.json",
+      "models": [],
+      "node_count": 1,
+      "node_types": [
+        "8b66c757-fe2f-4184-91f3-479a19deb565"
+      ]
+    },
+    {
+      "blob_sha": "e561fe63410e1ccd27dbeab09d2c682963ca5d40",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/workflow_templates:blueprints/audio_generation_stable_audio_3_medium_base.json",
+      "models": [],
+      "node_count": 1,
+      "node_types": [
+        "8b66c757-fe2f-4184-91f3-479a19deb565"
+      ]
+    },
+    {
+      "blob_sha": "78fc52f29062037c86848acd160dffb6ecadf267",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/workflow_templates:blueprints/brightness_and_contrast.json",
+      "models": [],
+      "node_count": 1,
+      "node_types": [
+        "916dff42-6166-4d45-b028-04eaf69fbb35"
+      ]
+    },
+    {
+      "blob_sha": "c95ea5883d15698fcdb3f637edb5f92b7b14512f",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/workflow_templates:blueprints/canny_to_image_z_image_turbo.json",
+      "models": [
+        "Z-Image-Turbo-Fun-Controlnet-Union.safetensors",
+        "ae.safetensors",
+        "qwen_3_4b.safetensors",
+        "z_image_turbo_bf16.safetensors"
+      ],
+      "node_count": 1,
+      "node_types": [
+        "c84f7959-3738-422b-ba6e-5808b5e90101"
+      ]
+    },
+    {
+      "blob_sha": "03aa2d6a81360482def25b28e22db08c5b8828fd",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/workflows:cloud/flux-image_upscaler.json",
+      "models": [],
+      "node_count": 4,
+      "node_types": [
+        "0de46bcd-5e3c-4d77-8c05-a0acca942e19",
+        "LoadImage",
+        "SaveImage"
+      ]
+    },
+    {
+      "blob_sha": "6c96d44973c86779f31cc5984ac087863bcf8dc9",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/workflows:cloud/qwen_image_edit_2509.json",
+      "models": [],
+      "node_count": 3,
+      "node_types": [
+        "LoadImage",
+        "SaveImage",
+        "bb0520ec-493e-47fe-a009-85b2549425f1"
+      ]
+    },
+    {
+      "blob_sha": "d5e0f12658ee99dd1955e03b5c0b98690f875a91",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/workflows:tutorial_workflows/automated_music_video_generator-wan_22_animate-visualfrisson.json",
+      "models": [
+        "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "Wan2_1_VAE_bf16.safetensors",
+        "Wan2_2-Animate-14B_fp8_scaled_e4m3fn_KJ_v2.safetensors",
+        "sam2_hiera_base_plus.safetensors",
+        "umt5-xxl-enc-bf16.safetensors",
+        "vitpose_h_wholebody_model.onnx",
+        "wan\\Wan14B_RealismBoost.safetensors",
+        "wan\\Wan21_Uni3C_controlnet_fp16.safetensors",
+        "wan\\lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+        "wan\\style\\WanAnimate_relight_lora_fp16.safetensors",
+        "yolov10m.onnx"
+      ],
+      "node_count": 127,
+      "node_types": [
+        "BlockifyMask",
+        "CLIPVisionLoader",
+        "Display Int (rgthree)",
+        "DownloadAndLoadSAM2Model",
+        "DrawMaskOnImage",
+        "DrawViTPose",
+        "FL_Audio_BPM_Analyzer",
+        "FL_Audio_Music_Video_Sequencer",
+        "FL_Audio_Shot_Iterator",
+        "FL_ImageRandomizer",
+        "Float",
+        "GetNode",
+        "GrowMask",
+        "INTConstant",
+        "ImageBlend",
+        "ImageConcanate",
+        "ImageConcatMulti",
+        "ImageResizeKJv2",
+        "LoadImage",
+        "MarkdownNote",
+        "MathExpression|pysssss",
+        "Note",
+        "OnnxDetectionModelLoader",
+        "PointsEditor",
+        "PoseAndFaceDetection",
+        "PreviewImage",
+        "PrimitiveInt",
+        "PrimitiveStringMultiline",
+        "Reroute",
+        "Sam2Segmentation",
+        "SetNode",
+        "StringConcatenate",
+        "VHS_LoadVideo",
+        "VHS_VideoCombine",
+        "WanVideoAnimateEmbeds",
+        "WanVideoBlockSwap",
+        "WanVideoClipVisionEncode",
+        "WanVideoContextOptions",
+        "WanVideoDecode",
+        "WanVideoEncode",
+        "WanVideoLoraSelectMulti",
+        "WanVideoModelLoader",
+        "WanVideoSampler",
+        "WanVideoTextEncodeCached",
+        "WanVideoTorchCompileSettings",
+        "WanVideoUni3C_ControlnetLoader",
+        "WanVideoUni3C_embeds",
+        "WanVideoVAELoader"
+      ]
+    },
+    {
+      "blob_sha": "363db0d0239d164d605271a8bed5fffba182b3b2",
+      "format": "comfyui_ui",
+      "id": "Comfy-Org/workflows:tutorial_workflows/get_comfy_with_comfy-consistent_character_dataset_generator.json",
+      "models": [],
+      "node_count": 4,
+      "node_types": [
+        "3348510d-d3af-4ecb-bbef-112a538db824",
+        "LoadImage",
+        "PrimitiveStringMultiline",
+        "SaveImage"
+      ]
+    },
+    {
+      "blob_sha": "f04c2d066f59bf729a54fc9fec7ac1600672de50",
+      "format": "comfyui_ui",
+      "id": "comfyanonymous/ComfyUI_examples:cosmos/image_to_video_cosmos_7B.json",
+      "models": [
+        "Cosmos-1_0-Diffusion-7B-Video2World.safetensors",
+        "cosmos_cv8x8x8_1.0.safetensors",
+        "oldt5_xxl_fp8_e4m3fn_scaled.safetensors"
+      ],
+      "node_count": 16,
+      "node_types": [
+        "CLIPLoader",
+        "CLIPTextEncode",
+        "CosmosImageToVideoLatent",
+        "KSampler",
+        "LTXVConditioning",
+        "LoadImage",
+        "ModelSamplingContinuousEDM",
+        "Note",
+        "SaveAnimatedPNG",
+        "SaveAnimatedWEBP",
+        "UNETLoader",
+        "VAEDecode",
+        "VAELoader"
+      ]
+    },
+    {
+      "blob_sha": "48e435eecbf0fbed43dc1dac6d405c31fef6892c",
+      "format": "comfyui_ui",
+      "id": "comfyanonymous/ComfyUI_examples:cosmos/text_to_video_cosmos_7B.json",
+      "models": [
+        "Cosmos-1_0-Diffusion-7B-Text2World.safetensors",
+        "cosmos_cv8x8x8_1.0.safetensors",
+        "oldt5_xxl_fp8_e4m3fn_scaled.safetensors"
+      ],
+      "node_count": 15,
+      "node_types": [
+        "CLIPLoader",
+        "CLIPTextEncode",
+        "EmptyCosmosLatentVideo",
+        "KSampler",
+        "LTXVConditioning",
+        "ModelSamplingContinuousEDM",
+        "Note",
+        "SaveAnimatedPNG",
+        "SaveAnimatedWEBP",
+        "UNETLoader",
+        "VAEDecode",
+        "VAELoader"
+      ]
+    },
+    {
+      "blob_sha": "f7d8bdddf53cb7b2cb757931457a67ac74540701",
+      "format": "comfyui_ui",
+      "id": "comfyanonymous/ComfyUI_examples:cosmos_predict2/cosmos_predict2_2b_i2v_example.json",
+      "models": [
+        "cosmos_predict2_2B_video2world_480p_16fps.safetensors",
+        "oldt5_xxl_fp8_e4m3fn_scaled.safetensors",
+        "wan_2.1_vae.safetensors"
+      ],
+      "node_count": 11,
+      "node_types": [
+        "CLIPLoader",
+        "CLIPTextEncode",
+        "CosmosPredict2ImageToVideoLatent",
+        "KSampler",
+        "LoadImage",
+        "SaveAnimatedWEBP",
+        "SaveWEBM",
+        "UNETLoader",
+        "VAEDecode",
+        "VAELoader"
+      ]
+    },
+    {
+      "blob_sha": "96ba7f74f45f771ed6588c5dbcae946891573c81",
+      "format": "comfyui_ui",
+      "id": "cubiq/ComfyUI_Workflows:basic/basic_latent_batch.json",
+      "models": [
+        "v1-5-pruned-emaonly.safetensors",
+        "vae-ft-mse-840000-ema-pruned.safetensors"
+      ],
+      "node_count": 11,
+      "node_types": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "LatentFromBatch",
+        "PreviewImage",
+        "SaveImage",
+        "VAEDecode",
+        "VAELoader"
+      ]
+    },
+    {
+      "blob_sha": "10b4c2762b7cbe5d35332c7d859895fe7bc45566",
+      "format": "comfyui_ui",
+      "id": "cubiq/ComfyUI_Workflows:basic/basic_lora.json",
+      "models": [
+        "dreamshaper_8Inpainting.safetensors",
+        "ghibli_style_offset.safetensors",
+        "vae-ft-mse-840000-ema-pruned.safetensors"
+      ],
+      "node_count": 9,
+      "node_types": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "LoraLoader",
+        "SaveImage",
+        "VAEDecode",
+        "VAELoader"
+      ]
+    },
+    {
+      "blob_sha": "51dc3f83dd2d93ec40ba03da05bb307aa5189179",
+      "format": "comfyui_ui",
+      "id": "cubiq/ComfyUI_Workflows:basic/basic_parametrized.json",
+      "models": [
+        "v1-5-pruned-emaonly.safetensors",
+        "vae-ft-mse-840000-ema-pruned.safetensors"
+      ],
+      "node_count": 15,
+      "node_types": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "PrimitiveNode",
+        "SaveImage",
+        "VAEDecode",
+        "VAELoader"
+      ]
+    },
+    {
+      "blob_sha": "cf8b8f5fed12dbe632106b573a38d8d443975614",
+      "format": "comfyui_ui",
+      "id": "wyrde/wyrde-comfyui-workflows:basics/building-up/basic-workflow-v03.json",
+      "models": [
+        "v1-5-pruned-emaonly.safetensors"
+      ],
+      "node_count": 11,
+      "node_types": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "Reroute",
+        "SaveImage",
+        "VAEDecode"
+      ]
+    },
+    {
+      "blob_sha": "0a69d797449c7ce89934c9c77d78064312788864",
+      "format": "comfyui_ui",
+      "id": "wyrde/wyrde-comfyui-workflows:basics/building-up/basic-workflow-vae-lora-latent-hrf.json",
+      "models": [
+        "mPixel_v10PixelArt.safetensors",
+        "v1-5-pruned-emaonly.safetensors",
+        "vae-ft-mse-840000-ema-pruned.safetensors"
+      ],
+      "node_count": 21,
+      "node_types": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "LatentUpscale",
+        "LoraLoader",
+        "Reroute",
+        "SaveImage",
+        "VAEDecode",
+        "VAELoader"
+      ]
+    },
+    {
+      "blob_sha": "5ef4aaccc7d0fb86f604052dccf8834c70b8eeee",
+      "format": "comfyui_ui",
+      "id": "wyrde/wyrde-comfyui-workflows:basics/building-up/basic-workflow-vae-lora-latentupscale-v03.json",
+      "models": [
+        "_style__\\mPixel_v10PixelArt.safetensors",
+        "anythingV5_PrtRE.safetensors",
+        "blessed2.vae.pt"
+      ],
+      "node_count": 31,
+      "node_types": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "LatentUpscale",
+        "LoraLoader",
+        "Reroute",
+        "SaveImage",
+        "VAEDecode",
+        "VAELoader"
+      ]
+    },
+    {
+      "blob_sha": "631e34efa2518473b644476f5471b6b33a8cd38e",
+      "format": "comfyui_ui",
+      "id": "yolain/ComfyUI-Yolain-Workflows:workflows/1_basic/1-10背景去除.json",
+      "models": [],
+      "node_count": 2,
+      "node_types": [
+        "easy imageRemBg",
+        "easy loadImageBase64"
+      ]
+    },
+    {
+      "blob_sha": "463c459ab78acaa13c31118579e2f103f977b1b2",
+      "format": "comfyui_ui",
+      "id": "yolain/ComfyUI-Yolain-Workflows:workflows/1_basic/1-11重绘_扩图.json",
+      "models": [
+        "Inpainting\\dreamshaper_8Inpainting.safetensors"
+      ],
+      "node_count": 11,
+      "node_types": [
+        "ImagePadForOutpaint",
+        "InvertMask",
+        "easy a1111Loader",
+        "easy imageInterrogator",
+        "easy imageRemBg",
+        "easy kSamplerInpainting",
+        "easy loadImageBase64",
+        "easy preSampling"
+      ]
+    },
+    {
+      "blob_sha": "f6437a37231ee983ae113064e5809ede78a239c1",
+      "format": "comfyui_ui",
+      "id": "yolain/ComfyUI-Yolain-Workflows:workflows/1_basic/1-12噪声注入.json",
+      "models": [
+        "speed\\lcm_lora_v1-5.safetensors"
+      ],
+      "node_count": 5,
+      "node_types": [
+        "easy a1111Loader",
+        "easy kSampler",
+        "easy preSamplingNoiseIn",
+        "easy styleAlignedBatchAlign"
+      ]
+    },
+    {
+      "blob_sha": "05d9bffa52bc8715dd1c33db7f3386c44284bb6a",
+      "format": "comfyui_ui",
+      "id": "ZHO-ZHO-ZHO/ComfyUI-Workflows-ZHO:CosXL Edit + ArtGallery 1.0【Zho】.json",
+      "models": [
+        "cosxl_edit.safetensors"
+      ],
+      "node_count": 21,
+      "node_types": [
+        "Any Switch (rgthree)",
+        "ArtistsImage_Zho",
+        "BasicScheduler",
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "ConcatText_Zho",
+        "DualCFGGuider",
+        "Fast Bypasser (rgthree)",
+        "InstructPixToPixConditioning",
+        "KSamplerSelect",
+        "LoadImage",
+        "MovementsImage_Zho",
+        "PreviewImage",
+        "PrimitiveNode",
+        "RandomNoise",
+        "SamplerCustomAdvanced",
+        "StylesImage_Zho",
+        "VAEDecode"
+      ]
+    },
+    {
+      "blob_sha": "55072cadc41d9c87b23c44ad780dab8fde126b1a",
+      "format": "comfyui_ui",
+      "id": "ZHO-ZHO-ZHO/ComfyUI-Workflows-ZHO:CRM Comfy 3D【Zho】.json",
+      "models": [
+        "CRM.pth",
+        "ccm-diffusion.pth",
+        "pixel-diffusion.pth"
+      ],
+      "node_count": 15,
+      "node_types": [
+        "BRIA_RMBG_ModelLoader_Zho",
+        "BRIA_RMBG_Zho",
+        "LoadImage",
+        "PreviewImage",
+        "SplitImageWithAlpha",
+        "[Comfy3D] CRM CCMs MVDiffusion Model",
+        "[Comfy3D] CRM Images MVDiffusion Model",
+        "[Comfy3D] Convolutional Reconstruction Model",
+        "[Comfy3D] Load CRM MVDiffusion Model",
+        "[Comfy3D] Load Convolutional Reconstruction Model",
+        "[Comfy3D] Preview 3DMesh",
+        "[Comfy3D] Save 3D Mesh",
+        "[Comfy3D] Switch Mesh Axis"
+      ]
+    },
+    {
+      "blob_sha": "7e94543646159b7d5ccbc0260e75cb351879808f",
+      "format": "comfyui_ui",
+      "id": "ZHO-ZHO-ZHO/ComfyUI-Workflows-ZHO:FLUX.1 DEV 1.0【Zho】.json",
+      "models": [
+        "clip_l.safetensors",
+        "t5xxl_fp16.safetensors"
+      ],
+      "node_count": 9,
+      "node_types": [
+        "BasicGuider",
+        "CLIPTextEncode",
+        "DualCLIPLoader",
+        "EmptyLatentImage",
+        "PreviewImage",
+        "UNETLoader",
+        "VAEDecode",
+        "VAELoader",
+        "workflow/FLUX"
+      ]
+    },
+    {
+      "blob_sha": "b921e4db908aefe3a6a36d764139073048ccd03a",
+      "format": "comfyui_ui",
+      "id": "ZHO-ZHO-ZHO/ComfyUI-Workflows-ZHO:FLUX.1 SCHNELL 1.0【Zho】.json",
+      "models": [
+        "clip_l.safetensors",
+        "t5xxl_fp16.safetensors"
+      ],
+      "node_count": 9,
+      "node_types": [
+        "BasicGuider",
+        "CLIPTextEncode",
+        "DualCLIPLoader",
+        "EmptyLatentImage",
+        "PreviewImage",
+        "UNETLoader",
+        "VAEDecode",
+        "VAELoader",
+        "workflow/FLUX"
+      ]
+    }
+  ],
+  "schema_version": 1
+}
