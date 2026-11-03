@@ -14,13 +14,15 @@ The Unity Editor script generates a **6 × 6 × 3 m** room with a doorway, windo
 
 ## Source-preserving AI workflow path
 
+Python CLI requires `uv sync --locked` first. Every Python command must use `uv run --locked`.
+
 The canonical discovery catalog remains [`src/gwp/discovery.py`](../../src/gwp/discovery.py). This project's shortlist only identifies workflows to try; it never removes candidates from the global catalog.
 
 ```sh
-python scripts/cafe_pipeline.py check
-python scripts/cafe_pipeline.py snapshot  # downloads pinned original JSON + provenance, not model weights
-python scripts/cafe_pipeline.py check --strict
-python scripts/cafe_pipeline.py glb --file path/to/ComfyUI/output/cup.glb
+uv run --locked python scripts/cafe_pipeline.py check
+uv run --locked python scripts/cafe_pipeline.py snapshot  # downloads pinned original JSON + provenance, not model weights
+uv run --locked python scripts/cafe_pipeline.py check --strict
+uv run --locked python scripts/cafe_pipeline.py glb --file path/to/ComfyUI/output/cup.glb
 ```
 
 For the first AI object, use the original Hunyuan3D Image-to-Model UI workflow in ComfyUI. Download the model noted in that workflow and use an original coffee-cup reference image. Run manually after inspecting dependencies and licenses. Save the generated GLB plus a separate record of upstream source, model license and creation parameters. The 12 GB RTX 3060 has **not** been verified for this model. Pixal3D/TRELLIS2 is an alternative; Qwen 360 is environment reference only, not collision geometry.

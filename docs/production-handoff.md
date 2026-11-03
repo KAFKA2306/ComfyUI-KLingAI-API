@@ -17,13 +17,13 @@ ComfyUI生成の完了を製品完成に置き換えません。最終判定は�
 1. 公式やコミュニティの配布元と更新履歴をカタログで確認する。未検証Workflowを自動実行しない。
 2. 必要モデルとCustom Nodeを自分のComfyUIで確認する。商用利用・再配布可否は配布元のライセンスで確認する。
 3. ComfyUIのFileメニューから Export Workflow (API) を選び、API形式JSONを保存する。普通のSave形式は受け付けない。
-4. 以下のコマンドで準備・生成・出力回収を行う。
+4. `uv sync --locked` で環境を用意し、以下の `uv run --locked` コマンドで準備・生成・出力回収を行う。Pythonの直接実行は禁止する。
 
 ~~~sh
-python scripts/production_job.py targets
-python scripts/production_job.py plan --target vrmine-cafe --workflow workflow-api.json
-python scripts/production_job.py submit --target vrmine-cafe --workflow workflow-api.json --receipt .artifacts/receipt.json
-python scripts/production_job.py collect --receipt .artifacts/receipt.json --output-root .artifacts/output
+uv run --locked python scripts/production_job.py targets
+uv run --locked python scripts/production_job.py plan --target vrmine-cafe --workflow workflow-api.json
+uv run --locked python scripts/production_job.py submit --target vrmine-cafe --workflow workflow-api.json --receipt .artifacts/receipt.json
+uv run --locked python scripts/production_job.py collect --receipt .artifacts/receipt.json --output-root .artifacts/output
 ~~~
 
 入力文字列などを変更するときは、同じnode IDに対して変更する入力だけを示したJSONを --patch で渡します。例: {"6":{"text":"warm cafe wall texture"}}。対象IDと入力名は選んだWorkflowを調べて指定してください。結線の差し替えは受け付けません。
@@ -45,3 +45,13 @@ submitは127.0.0.1またはlocalhostのComfyUIへ実際にジョブを投入し�
 - https://github.com/Comfy-Org/workflow_templates
 - https://github.com/Comfy-Org/docs/blob/main/development/api-development/workflow-api-format.mdx
 - https://docs.comfygit.org/
+
+## 自動受け渡し
+
+collect後に handoff コマンドで既存repoへ生成候補を自動コピーします。例えば vrmine の場合:
+
+~~~sh
+uv run --locked python scripts/production_job.py handoff --manifest .artifacts/output/vrmine-cafe/<promptId>/manifest.json --project-root ../vrmine
+~~~
+
+image2outfit と tripo-3d は --project-root ../image2outfit を使用します。ファイルのSHA-256を再検証し、各repoの非追跡作業領域（.image2outfit/comfyui または .artifacts/comfyui）へコピーします。生成候補は STAGED_UNREVIEWED として保存し、既存製品の正本・品質判定を変更しません。
