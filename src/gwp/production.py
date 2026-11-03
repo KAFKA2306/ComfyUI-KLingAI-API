@@ -153,3 +153,60 @@ def collect_job(receipt, backend, output_root):
         (staging / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         os.rename(staging, destination)
     return manifest
+
+
+def handoff_job(manifest_path, project_root):
+    """検証済み生成素材を既存制作repoの非追跡作業領域へコピーする。"""
+    manifest_path = Path(manifest_path).resolve()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    target, prompt_id = manifest.get("target"), manifest.get("promptId")
+    cfg = targets()
+    if target not in cfg or manifest.get("state") != "GENERATED_UNVERIFIED":
+        raise ValueError("正規の生成物manifestが必要です")
+    if not isinstance(prompt_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", prompt_id):
+        raise ValueError("不正なpromptIdです")
+    files = manifest.get("files")
+    if not isinstance(files, list) or not 1 <= len(files) <= 100:
+        raise ValueError("不正なファイル一覧です")
+    project = Path(project_root).resolve()
+    marker = project / cfg[target]["projectMarker"]
+    if not marker.is_file():
+        raise ValueError("制作repoの識別ファイルが見つかりません")
+    destination = project / cfg[target]["stagingRoot"] / target / prompt_id
+    if destination.exists():
+        raise FileExistsError("既存出力は上書きできません")
+    checked = []
+    for item in files:
+        if not isinstance(item, dict):
+            raise ValueError("不正なファイル情報です")
+        name, expected = item.get("file"), item.get("sha256")
+        if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z0-9_-]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm|wav|flac|ogg)", name, re.I):
+            raise ValueError("ファイル名が不正です")
+        if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected):
+            raise ValueError("SHA-256が不正です")
+        source = manifest_path.parent / name
+        if not source.is_file() or source.is_symlink():
+            raise ValueError("生成ファイルが見つかりません")
+        raw = source.read_bytes()
+        if not 0 < len(raw) <= MAX_FILE_BYTES or hashlib.sha256(raw).hexdigest() != expected:
+            raise ValueError("SHA-256検証失敗")
+        checked.append((name, raw))
+    if len(set(name for name, _ in checked)) != len(checked):
+        raise ValueError("生成ファイル名が重複しています")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=destination.parent) as temporary:
+        staging = Path(temporary)
+        for name, raw in checked:
+            (staging / name).write_bytes(raw)
+        receipt = {
+            "schemaVersion": 1, "target": target, "repository": cfg[target]["repository"],
+            "promptId": prompt_id, "workflowSha256": manifest.get("workflowSha256"),
+            "originManifestSha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+            "files": [{"file": name, "sha256": hashlib.sha256(raw).hexdigest()} for name, raw in checked],
+            "state": "STAGED_UNREVIEWED",
+            "note": "素材の受け渡しのみ。既存製品の正本と品質判定は変更しません。"
+        }
+        (staging / "handoff.json").write_text(
+            json.dumps(receipt, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        os.rename(staging, destination)
+    return {"destination": str(destination), **receipt}

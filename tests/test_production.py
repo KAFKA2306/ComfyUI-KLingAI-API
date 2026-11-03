@@ -76,5 +76,39 @@ class ProductionTests(unittest.TestCase):
                 collect_job(submit_job("image2outfit", GRAPH, {}, backend, "test"), backend, Path(directory))
 
 
+    def test_handoff_copies_only_hash_verified_assets(self):
+        from gwp.production import handoff_job
+        backend = FakeBackend()
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            output = directory / "outputs"
+            receipt = submit_job("vrmine-cafe", GRAPH, {}, backend, "test")
+            collect_job(receipt, backend, output)
+            manifest_path = output / "vrmine-cafe" / "test-123" / "manifest.json"
+            project = directory / "vrmine"
+            (project / "config").mkdir(parents=True)
+            (project / "config" / "quality-gates.json").write_text("{}")
+            handoff = handoff_job(manifest_path, project)
+            self.assertEqual(handoff["state"], "STAGED_UNREVIEWED")
+            self.assertEqual((Path(handoff["destination"]) / "002-2.png").exists(), False)
+            self.assertEqual((Path(handoff["destination"]) / "001-2.png").read_bytes(), b"image-bytes")
+            with self.assertRaises(FileExistsError):
+                handoff_job(manifest_path, project)
+
+    def test_handoff_rejects_modified_source_bytes(self):
+        from gwp.production import handoff_job
+        backend = FakeBackend()
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            output = directory / "outputs"
+            collect_job(submit_job("image2outfit", GRAPH, {}, backend, "test"), backend, output)
+            manifest_path = output / "image2outfit" / "test-123" / "manifest.json"
+            (manifest_path.parent / "001-2.png").write_bytes(b"tampered")
+            project = directory / "image2outfit"
+            (project / "config").mkdir(parents=True)
+            (project / "config" / "genworks-handoff-policy.json").write_text("{}")
+            with self.assertRaises(ValueError):
+                handoff_job(manifest_path, project)
+
 if __name__ == "__main__":
     unittest.main()

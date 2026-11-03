@@ -45,3 +45,13 @@ submitは127.0.0.1またはlocalhostのComfyUIへ実際にジョブを投入し�
 - https://github.com/Comfy-Org/workflow_templates
 - https://github.com/Comfy-Org/docs/blob/main/development/api-development/workflow-api-format.mdx
 - https://docs.comfygit.org/
+
+## 自動受け渡し
+
+collect後に handoff コマンドで既存repoへ生成候補を自動コピーします。例えば vrmine の場合:
+
+~~~sh
+python scripts/production_job.py handoff --manifest .artifacts/output/vrmine-cafe/<promptId>/manifest.json --project-root ../vrmine
+~~~
+
+image2outfit と tripo-3d は --project-root ../image2outfit を使用します。ファイルのSHA-256を再検証し、各repoの非追跡作業領域（.image2outfit/comfyui または .artifacts/comfyui）へコピーします。生成候補は STAGED_UNREVIEWED として保存し、既存製品の正本・品質判定を変更しません。
