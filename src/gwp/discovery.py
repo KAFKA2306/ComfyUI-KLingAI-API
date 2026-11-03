@@ -127,7 +127,7 @@ def record_file(catalog, repo, commit_sha, item, stamp):
     path = item["path"]
     if not path.lower().endswith(CANDIDATE_SUFFIXES):
         return False
-    item_id = digest("github:" + repo.lower() + ":" + path)
+    item_id = "github:" + repo.lower() + ":" + path
     previous = catalog["artifacts"].get(item_id)
     blob = item["sha"]
     if previous is not None and previous["blob_sha"] == blob:
