@@ -33,3 +33,11 @@ python scripts/build_catalog.py
 ~~~
 
 Python 3.11以上、外部Python依存は不要です。モデル・動画・音声・画像・秘密情報はGitにコミットしません。
+
+生成結果を既存制作repoの作業領域に検証付きで渡す場合:
+
+~~~sh
+python scripts/production_job.py handoff --manifest .artifacts/output/vrmine-cafe/<promptId>/manifest.json --project-root ../vrmine
+~~~
+
+移管後も品質判定は未完了です。

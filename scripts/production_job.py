@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from gwp.production import LocalComfyUI, collect_job, prepare, submit_job, targets
+from gwp.production import LocalComfyUI, collect_job, handoff_job, prepare, submit_job, targets
 
 
 def read_json(path):
@@ -28,6 +28,9 @@ def main():
     cmd.add_argument("--receipt", required=True)
     cmd.add_argument("--output-root", required=True)
     cmd.add_argument("--server", default="http://127.0.0.1:8188")
+    cmd = commands.add_parser("handoff")
+    cmd.add_argument("--manifest", required=True)
+    cmd.add_argument("--project-root", required=True)
     args = parser.parse_args()
     try:
         if args.action == "targets":
@@ -44,8 +47,10 @@ def main():
                 result = submit_job(args.target, graph, patch, LocalComfyUI(args.server), "comfy-workflows-factory")
                 receipt_path.parent.mkdir(parents=True, exist_ok=True)
                 receipt_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        else:
+        elif args.action == "collect":
             result = collect_job(read_json(args.receipt), LocalComfyUI(args.server), Path(args.output_root))
+        else:
+            result = handoff_job(args.manifest, args.project_root)
         print(json.dumps(result, ensure_ascii=False, indent=2))
     except (ValueError, FileNotFoundError, FileExistsError, OSError) as error:
         parser.exit(2, f"失敗: {error}\n")
