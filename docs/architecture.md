@@ -14,7 +14,7 @@ tags: [アーキテクチャ, データの正本, 出典追跡, Workflow, 自動
 ~~~text
 公開元（公式・コミュニティ）
     ↓ 発見・記録（第三者コードは実行しない）
-出典台帳：data/workflow_registry.json
+出典台帳：.cache/workflow_registry.json
     ↓ 版と用途の検索（候補を排除しない）
 制作要求：8領域それぞれ独立
     ↓ Workflow・依存関係・利用条件の確認
@@ -32,14 +32,14 @@ Blender / Unity / 動画・音声編集 / 配布先の固有工程
 | 責務 | 正本・実装 | 用途 |
 | --- | --- | --- |
 | 収集元と用途検索語 | `config/workflow_sources.json` | 公開元、取得方法、検索用分類 |
-| Workflow候補と版 | `data/workflow_registry.json` | 出典付き候補の機械可読な正本 |
+| Workflow候補と版 | `.cache/workflow_registry.json` | `sync`が生成・更新する候補台帳 |
 | 収集と検索 | `src/gwp/discovery.py` | GitHub等の公開情報を取得し検索・CSV出力 |
 | 定期更新 | `.github/workflows/collect.yml` | 6時間ごとの収集ジョブと検証 |
 | 生成・受け渡し | `src/gwp/production.py`, `src/gwp/production_job.py` | ローカルComfyUIへ投入、回収、ハッシュ確認、指定先への転送 |
 | VRChatカフェの候補 | `projects/vrchat-cafe/workflows.json` | Workflow候補の用途と出典。素材生成・制作・公開の完了証拠ではない |
 | カフェ素材の取得・変換 | `projects/vrchat-cafe/cafe_pipeline.py`, `projects/vrchat-cafe/blender_cafe_asset.py` | Workflowの出典保存、GLB形式確認、GLBからFBXへの変換。Unityシーンの完成やVRChat公開は行わない |
 
-**生成された索引・作業ログを別の正本として増殖させない。** CSVは `uv run --locked python -m gwp.discovery export` で都度再生成します。Markdownは設計・手順の正本であり、収集データそのものの複製ではありません。
+収集台帳は`sync`で生成し、GitHub Actionsではキャッシュに保存します。CSVは`uv run --locked python -m gwp.discovery export`で必要なときに書き出します。設計と手順はMarkdownにまとめ、台帳の内容は転記しません。
 
 ## 境界と交換可能性
 
@@ -52,7 +52,7 @@ Blender / Unity / 動画・音声編集 / 配布先の固有工程
 7. ComfyUIやモデルを交換しても、出典、制作要求、完成判定、公開実績は失わない。
 
 
-## 運用を壊さないためのルール
+## 変更時に守ること
 
 - 大容量メディア、モデル、認証情報、機密情報はGitへ入れない。
 - 既存データの正本は上表に一本化する。別の台帳を無断で作らない。
