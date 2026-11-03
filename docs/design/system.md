@@ -19,12 +19,12 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 | --- | --- |
 | 収集条件 | `config/registry.json`：公開元、検索語、用途の分類 |
 | 発見・静的確認 | `src/gwp/discovery.py`：候補の列挙、改訂履歴、JSON形式の確認 |
-| 取得結果 | `.cache/workflow_registry.json`：出典URL、コミットSHA、Blob SHA、探索状態 |
+| 永続台帳 | `catalog:data/workflow_registry.json`：出典・改訂・探索状態・採用・制作・公開履歴 |
 | 検索・出力 | `gwp.discovery search / export`：取得結果から検索し、CSV・JSONを生成 |
 | 素材生成 | `src/gwp/production.py`：選んだAPI形式WorkflowをローカルComfyUIに投入 |
 | 作品の完成 | Blender、Unity、制作先の編集環境と公開サービスで確認 |
 
-収集結果の既定保存先 `.cache/workflow_registry.json` はGit管理外のキャッシュである。[定期収集](../../.github/workflows/collect.yml)は6時間ごとに実行し、前回のキャッシュの復元を試みる。GitHub Actionsの収集成果物は1日で期限切れになるため、長期間の記録が保管されていることをこの仕組みだけで保証しない。
+収集結果は[定期収集](../../.github/workflows/collect.yml)で6時間ごとに更新し、Gitの専用ブランチに確定する。`.cache/`は作業用の一時保存先であり、キャッシュ消滅を履歴の消滅としない。別媒体への保全、復旧、更新競合、版の管理は[台帳保全設計](durability.md)に定める。
 
 ## 出典と実行の境界
 

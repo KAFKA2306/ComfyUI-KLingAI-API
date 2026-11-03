@@ -11,7 +11,7 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 
 # Workflow台帳と用語
 
-公開Workflowの出典と改訂を検索するデータは、既定で `.cache/workflow_registry.json` に生成する。8領域の目標、制作案件、Workflow候補、収集条件、検索分類は `config/registry.json` に集約する。`workflows` は案件から独立して登録する候補一覧、`projects` は制作する案件の記録であり、特定の領域を必須とはしない。キャッシュはGitへコミットされず、長期間の保管を保証するものではない。
+8領域の目標・制作案件・収集条件・検索分類は main の `config/registry.json` を設定正本とする。収集した出典、改訂履歴、制作・公開履歴は catalog ブランチの `data/workflow_registry.json` に永続保存する。ローカルの `.cache/workflow_registry.json` は一時的な作業コピーであり、正本ではない。保存・復旧手順は[台帳の保全設計](../design/durability.md)に定める。
 
 ## 収集データの構造
 
@@ -24,6 +24,11 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 | `feeds` | モデル情報。WorkflowのJSONを取得した意味ではない |
 | `references` | 自動取得の対象として確認されていない参考先 |
 | `search_progress` | 検索の進行状況とAPIの失敗 |
+| `content_index` | 同じBlob SHAを持つ複数の公開元 |
+| `events` | 追記・訂正の変更前後と根拠 |
+| `adoptions`・`models`・`dependencies`・`environments` | 固定版の採用と実行依存 |
+| `projects`・`jobs`・`assets` | 制作、実行、生成素材の来歴 |
+| `rights`・`publications`・`knowledge` | 権利の根拠、公開証拠、再利用する知識 |
 
 Workflowはノードを接続した処理構成、Subgraphは再利用できる部分的な構成を指す。Blueprintは、この収集処理では `definitions.subgraphs` を含むJSONとして識別する。名称やファイルの形式だけでは、動作や品質は判断できない。
 
@@ -35,6 +40,7 @@ Workflowはノードを接続した処理構成、Subgraphは再利用できる�
 
 ```sh
 uv run --locked python -m gwp.discovery sync
+uv run --locked python -m gwp.state verify --catalog .cache/workflow_registry.json
 uv run --locked python -m gwp.discovery stats
 uv run --locked python -m gwp.discovery search --term VRChat
 uv run --locked python -m gwp.discovery export --format csv > .cache/workflow_registry.csv

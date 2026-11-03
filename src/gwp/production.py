@@ -5,6 +5,7 @@ import math
 import os
 import re
 import tempfile
+import shutil
 from copy import deepcopy
 from pathlib import Path
 from urllib.parse import quote, urlencode, urlsplit
@@ -14,6 +15,7 @@ from gwp.comfyui import ComfyUIClient
 
 EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".mp4", ".webm", ".wav", ".flac", ".ogg", ".glb", ".fbx", ".obj"}
 MAX_FILE_BYTES = 256 * 1024 * 1024
+MAX_STREAM_BYTES = 16 * 1024 * 1024 * 1024
 
 
 def digest(value):
@@ -77,6 +79,32 @@ class LocalComfyUI:
         with urlopen(Request(self.base_url + "/history/" + quote(prompt_id, safe="")), timeout=30) as res:
             return json.load(res)
 
+    def queue(self):
+        with urlopen(Request(self.base_url + "/queue"), timeout=30) as response:
+            return json.load(response)
+
+    def download_to(self, filename, subfolder, file_type, destination):
+        """長尺動画・3Dファイルを少量ずつ受信し、SHA-256を逐次検証する。"""
+        url = self.base_url + "/view?" + urlencode({
+            "filename": filename, "subfolder": subfolder, "type": file_type})
+        hasher = hashlib.sha256()
+        size = 0
+        with urlopen(Request(url), timeout=120) as response, Path(destination).open("xb") as output:
+            while True:
+                chunk = response.read(1024 * 1024)
+                if not chunk:
+                    break
+                size += len(chunk)
+                if size > MAX_STREAM_BYTES:
+                    raise ValueError("大容量出力が16GiBの安全上限を超えました")
+                hasher.update(chunk)
+                output.write(chunk)
+            output.flush()
+            os.fsync(output.fileno())
+        if size == 0:
+            raise ValueError("空の生成物です")
+        return {"sha256": hasher.hexdigest(), "bytes": size}
+
     def download(self, filename, subfolder, file_type):
         url = self.base_url + "/view?" + urlencode({"filename": filename, "subfolder": subfolder, "type": file_type})
         with urlopen(Request(url), timeout=60) as res:
@@ -138,13 +166,19 @@ def collect_job(receipt, backend, output_root):
                 raise ValueError("不正なsubfolderです")
             if kind != "output" or Path(name).suffix.lower() not in EXTENSIONS:
                 raise ValueError("未対応の出力形式です")
-            raw = backend.download(name, subfolder, kind)
-            if not isinstance(raw, bytes) or not 0 < len(raw) <= MAX_FILE_BYTES:
-                raise ValueError("不正な出力データです")
             local_name = f"{n:03d}-{re.sub(r'[^A-Za-z0-9_-]', '_', node_id)}{Path(name).suffix.lower()}"
-            (staging / local_name).write_bytes(raw)
-            records.append({"file": local_name, "nodeId": node_id,
-                            "sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw)})
+            output = staging / local_name
+            if hasattr(backend, "download_to"):
+                info = backend.download_to(name, subfolder, kind, output)
+                if not isinstance(info, dict) or not 0 < info.get("bytes", 0) <= MAX_STREAM_BYTES:
+                    raise ValueError("ストリーム回収サイズが不正です")
+            else:
+                raw = backend.download(name, subfolder, kind)
+                if not isinstance(raw, bytes) or not 0 < len(raw) <= MAX_FILE_BYTES:
+                    raise ValueError("不正な出力データです")
+                output.write_bytes(raw)
+                info = {"sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw)}
+            records.append({"file": local_name, "nodeId": node_id, **info})
         manifest = {"schemaVersion": 1, "target": target, "promptId": prompt_id,
                     "workflowSha256": receipt.get("submittedSha256"), "files": records,
                     "state": "GENERATED_UNVERIFIED"}
@@ -183,21 +217,28 @@ def handoff_job(manifest_path, project_root):
         source = manifest_path.parent / name
         if not source.is_file() or source.is_symlink():
             raise ValueError("生成ファイルが見つかりません")
-        raw = source.read_bytes()
-        if not 0 < len(raw) <= MAX_FILE_BYTES or hashlib.sha256(raw).hexdigest() != expected:
+        digest = hashlib.sha256()
+        size = 0
+        with source.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                size += len(chunk)
+                if size > MAX_STREAM_BYTES:
+                    raise ValueError("転送上限16GiBを超えました")
+                digest.update(chunk)
+        if size == 0 or digest.hexdigest() != expected:
             raise ValueError("SHA-256検証失敗")
-        checked.append((name, raw))
-    if len(set(name for name, _ in checked)) != len(checked):
+        checked.append((name, source, expected))
+    if len(set(name for name, _, _ in checked)) != len(checked):
         raise ValueError("生成ファイル名が重複しています")
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=destination.parent) as temporary:
         staging = Path(temporary)
-        for name, raw in checked:
-            (staging / name).write_bytes(raw)
+        for name, source, expected in checked:
+            shutil.copyfile(source, staging / name)
         receipt = {
             "schemaVersion": 1, "target": target, "promptId": prompt_id, "workflowSha256": manifest.get("workflowSha256"),
             "originManifestSha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
-            "files": [{"file": name, "sha256": hashlib.sha256(raw).hexdigest()} for name, raw in checked],
+            "files": [{"file": name, "sha256": expected} for name, _, expected in checked],
             "state": "STAGED_UNREVIEWED",
             "note": "素材の受け渡しのみ。既存製品の正本と品質判定は変更しません。"
         }
