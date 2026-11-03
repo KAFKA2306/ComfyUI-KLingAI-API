@@ -5,7 +5,7 @@ kind: "design"
 status: "active"
 updated: "2026-11-03"
 tags: ["設計","Workflow","出典","ComfyUI"]
-related: ["config/workflow_sources.json","src/gwp/discovery.py","src/gwp/production.py","data/workflow_registry.json"]
+related: ["config/workflow_sources.json","src/gwp/discovery.py","src/gwp/production.py"]
 sources: ["https://github.com/Comfy-Org/workflow_templates"]
 ---
 
@@ -17,7 +17,7 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 | --- | --- |
 | 情報源 | `config/workflow_sources.json`：公開先、検索語、参考先、用途分類 |
 | 発見 | `src/gwp/discovery.py`：候補ファイルの列挙と構造の静的確認 |
-| 台帳 | `data/workflow_registry.json`：出典、コミットSHA、Blob SHA、改訂、探索状態 |
+| 台帳 | `.cache/workflow_registry.json`（実行時キャッシュ）：出典、コミットSHA、Blob SHA、改訂、探索状態 |
 | 閲覧 | `gwp.discovery search / export`：既存台帳から検索・CSV/JSON出力 |
 | 素材生成 | `src/gwp/production.py`：選択されたAPI形式Workflowのみをローカル実行 |
 | 完成・公開 | Blender・Unity・各制作リポジトリ・公開サービスで別に確認 |
