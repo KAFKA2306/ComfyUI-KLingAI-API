@@ -37,8 +37,8 @@ Blender / Unity / 動画・音声編集 / 配布先の固有工程
 | 定期更新 | `.github/workflows/collect.yml` | 6時間ごとの収集ジョブと検証 |
 | 生成可能な制作先 | `config/production_targets.json` | 受け渡し対象と完成判定の責任先 |
 | 生成・受け渡し | `src/gwp/production.py`, `src/gwp/production_job.py` | ローカルComfyUIへ投入、回収、ハッシュ確認、限定的な転送 |
-| VRChatカフェ | `projects/vrchat-cafe/workflows.json`, `projects/vrchat-cafe/publication.json` | 候補と公開確認状態 |
-| カフェ制作補助 | `projects/vrchat-cafe/cafe_pipeline.py`, `projects/vrchat-cafe/blender_cafe_asset.py`, `projects/vrchat-cafe/GWPCafeBuilder.cs` | 出典取得、GLB形式確認、シーン生成の補助 |
+| VRChatカフェの候補 | `projects/vrchat-cafe/workflows.json` | Workflow候補の用途と出典。素材生成・制作・公開の完了証拠ではない |
+| カフェ素材の取得・変換 | `projects/vrchat-cafe/cafe_pipeline.py`, `projects/vrchat-cafe/blender_cafe_asset.py` | Workflowの出典保存、GLB形式確認、GLBからFBXへの変換。Unityシーンの完成やVRChat公開は行わない |
 
 **生成された索引・作業ログを別の正本として増殖させない。** CSVは `uv run --locked python -m gwp.discovery export` で都度再生成します。Markdownは設計・手順の正本であり、収集データそのものの複製ではありません。
 
@@ -49,7 +49,7 @@ Blender / Unity / 動画・音声編集 / 配布先の固有工程
 3. 入力形式を確認してから、固定版のWorkflowと必要モデル・Custom Nodeを採用する。
 4. 収集と実行を分離する。未知の外部コードを無条件にインストール・実行しない。
 5. 結果を版、入力、環境、出力ハッシュ、測定値と一緒に保存する。未測定値は空欄とする。
-6. 品質判定と公開は制作先の責務とする。画像が生成できてもVRChatワールド完成にはならない。
+6. 品質判定と公開は制作先の責務とする。画像が生成できてもVRChatワールド完成にはならない。実際の制作素材が不足したら制作を未完了とし、Unity標準形状だけのシーンなどで自動的に補わない。
 7. ComfyUIやモデルを交換しても、出典、制作要求、完成判定、公開実績は失わない。
 
 
