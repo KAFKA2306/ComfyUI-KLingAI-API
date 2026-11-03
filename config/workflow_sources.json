@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "github_repos": [
+    "Comfy-Org/workflow_templates",
+    "Comfy-Org/workflows",
+    "comfyanonymous/ComfyUI_examples",
+    "Comfy-Org/awesome-comfy",
+    "neuregex/freefield",
+    "aimpowerment/comfyui-workflows",
+    "ltdrdata/ComfyUI-Impact-Pack"
+  ],
+  "github_queries": [
+    "topic:comfyui-workflow",
+    "topic:comfyui-workflows",
+    "comfyui workflow in:name,description"
+  ],
+  "metadata_feeds": [
+    {
+      "id": "huggingface-comfyui",
+      "kind": "huggingface-models",
+      "url": "https://huggingface.co/api/models?search=comfyui&limit=100"
+    },
+    {
+      "id": "civitai-comfyui",
+      "kind": "civitai-models",
+      "url": "https://civitai.com/api/v1/models?query=ComfyUI&limit=100"
+    }
+  ],
+  "reference_sources": [
+    {
+      "id": "runninghub",
+      "url": "https://www.runninghub.ai/workflows",
+      "status": "index-only-no-verified-api"
+    },
+    {
+      "id": "reddit",
+      "url": "https://www.reddit.com/r/comfyui/",
+      "status": "index-only-no-verified-api"
+    },
+    {
+      "id": "comfy-registry",
+      "url": "https://registry.comfy.org/",
+      "status": "index-only-no-verified-api"
+    },
+    {
+      "id": "comfy-workflows",
+      "url": "https://comfy.org/workflows",
+      "status": "index-only-no-verified-api"
+    },
+    {
+      "id": "huggingface-spaces",
+      "url": "https://huggingface.co/spaces",
+      "status": "index-only-no-verified-api"
+    },
+    {
+      "id": "openart",
+      "url": "https://openart.ai/workflows",
+      "status": "index-only-no-verified-api"
+    }
+  ]
+}

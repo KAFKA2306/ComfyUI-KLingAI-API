@@ -1,0 +1,43 @@
+name: Workflow Source Discovery
+
+on:
+  schedule:
+    - cron: '17 16 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: workflow-discovery-main
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Collect source references only (never execute third-party workflows)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PYTHONPATH=src python -m gwp.discovery sync --max-repos 12 --discovery-pages 1 --inspect-limit 50
+          PYTHONPATH=src python -m gwp.discovery stats
+      - name: Commit metadata updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/workflow_registry.json
+          if git diff --cached --quiet; then
+            echo "No catalog changes"
+            exit 0
+          fi
+          git commit -m "data: sync upstream workflow source references"
+          git pull --rebase origin main
+          git push origin HEAD:main
