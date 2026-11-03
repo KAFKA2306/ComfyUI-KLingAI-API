@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "project_id": "vrchat-cafe",
+  "title": "雨上がりの夜の小さなカフェ",
+  "missions": [
+    "vrchat-world"
+  ],
+  "continuity": {
+    "color-light": "室内の暖色照明と、雨上がりの窓外の寒色を対比させ、全素材を同じ照明条件で確認する",
+    "materials": "木のカウンター、深緑の椅子張地、陶器のカップを実寸と反射特性で統一する",
+    "spatial-audio": "店内の静かな環境音と窓外の雨音を別レイヤーにし、位置に応じて確認する"
+  },
+  "units": [
+    {
+      "id": "art-direction",
+      "kind": "direction",
+      "purpose": "滞在したくなる夜の静けさを美術・照明・音で統一する",
+      "deliverables": [
+        "美術・空間・音の参照仕様"
+      ],
+      "continuity_refs": [
+        "color-light",
+        "materials",
+        "spatial-audio"
+      ]
+    },
+    {
+      "id": "architecture",
+      "kind": "asset",
+      "purpose": "入口・窓・床・天井を持つ実寸の建築メッシュを制作する",
+      "requires": [
+        "art-direction"
+      ],
+      "continuity_refs": [
+        "materials"
+      ],
+      "deliverables": [
+        "実際に使用可能な建築メッシュと材質"
+      ]
+    },
+    {
+      "id": "furniture",
+      "kind": "asset",
+      "purpose": "客席・椅子・カウンターの統一感と通路を設計する",
+      "requires": [
+        "art-direction"
+      ],
+      "continuity_refs": [
+        "materials"
+      ],
+      "deliverables": [
+        "実際の家具メッシュと材質"
+      ]
+    },
+    {
+      "id": "cup",
+      "kind": "asset",
+      "purpose": "陶器カップをカウンターの縮尺・質感と揃える",
+      "requires": [
+        "art-direction"
+      ],
+      "continuity_refs": [
+        "materials"
+      ],
+      "origin_refs": [
+        "github:comfy-org/workflow_templates:templates/3d_hunyuan3d_image_to_model.json",
+        "github:comfy-org/workflow_templates:templates/3d_pixal3d_trellis2_image_to_model.json"
+      ],
+      "deliverables": [
+        "確認可能な3D小物と材質"
+      ]
+    },
+    {
+      "id": "room-audio",
+      "kind": "sound",
+      "purpose": "雨音と店内環境音を位置によって分離する",
+      "requires": [
+        "art-direction"
+      ],
+      "continuity_refs": [
+        "spatial-audio"
+      ],
+      "deliverables": [
+        "実音源と空間音声設定"
+      ]
+    },
+    {
+      "id": "lighting",
+      "kind": "scene",
+      "purpose": "室内の暖色と窓外の寒色を実際の建築・家具に合わせる",
+      "requires": [
+        "architecture",
+        "furniture"
+      ],
+      "continuity_refs": [
+        "color-light"
+      ],
+      "deliverables": [
+        "照明設定を組み込んだUnityシーン"
+      ]
+    },
+    {
+      "id": "walkable",
+      "kind": "interaction",
+      "purpose": "入口から席までの歩行、壁・家具との衝突とスポーンを設定する",
+      "requires": [
+        "architecture",
+        "furniture"
+      ],
+      "deliverables": [
+        "歩行・衝突・スポーン設定"
+      ]
+    },
+    {
+      "id": "world-assembly",
+      "kind": "scene",
+      "purpose": "建築・家具・小物・音・照明・導線を一つの空間に統合する",
+      "requires": [
+        "lighting",
+        "walkable",
+        "cup",
+        "room-audio"
+      ],
+      "continuity_refs": [
+        "color-light",
+        "materials",
+        "spatial-audio"
+      ],
+      "deliverables": [
+        "実素材が統合されたUnityワールド"
+      ]
+    },
+    {
+      "id": "world-package",
+      "kind": "package",
+      "purpose": "Build & Testの実機検証に供しVRChatへ公開できる形へ仕上げる",
+      "requires": [
+        "world-assembly"
+      ],
+      "deliverables": [
+        "検証可能なUnityプロジェクトとワールドビルド"
+      ]
+    }
+  ],
+  "releases": [
+    {
+      "id": "vrchat-public-world",
+      "mission": "vrchat-world",
+      "requires": [
+        "world-package"
+      ]
+    }
+  ]
+}

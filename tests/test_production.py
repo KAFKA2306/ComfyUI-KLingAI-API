@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from gwp.production import handoff_job, prepare
+from gwp.production import collect_job, handoff_job, prepare
 
 GRAPH = {"1": {"class_type": "SaveImage", "inputs": {"filename_prefix": "test"}}}
 
@@ -48,6 +48,23 @@ class ProductionTests(unittest.TestCase):
             second.mkdir()
             with self.assertRaises(ValueError):
                 handoff_job(manifest, second)
+
+    def test_glb_transfer_from_meshes_output(self):
+        class Backend:
+            def history(self, prompt_id):
+                return {prompt_id: {"status": {"status_str": "success", "completed": True},
+                                    "outputs": {"17": {"meshes": [{"filename": "cup.glb", "subfolder": "", "type": "output"}]}}}
+            def download(self, filename, subfolder, file_type):
+                return b"glTF-test-bytes"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            result = collect_job({"state": "SUBMITTED_NOT_COMPLETE", "target": "vrchat",
+                                  "promptId": "job-1", "submittedSha256": "a"}, Backend(), root / "out")
+            self.assertEqual(len(result["files"]), 1)
+            project = root / "project"
+            project.mkdir()
+            receipt = handoff_job(root / "out/vrchat/job-1/manifest.json", project)
+            self.assertTrue((Path(receipt["destination"]) / result["files"][0]["file"]).is_file())
 
 
 if __name__ == "__main__":
