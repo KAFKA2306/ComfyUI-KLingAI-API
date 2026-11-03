@@ -3,7 +3,7 @@ id: "design-production"
 title: "ComfyUIと制作工程の接続"
 kind: "design"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["制作","素材","受け渡し","uv"]
 related: ["src/gwp/production_job.py","src/gwp/production.py"]
 sources: ["https://github.com/Comfy-Org/workflow_templates"]
@@ -15,7 +15,7 @@ ComfyUIで生成した画像、動画、音声、3Dファイルを制作先へ�
 
 ## API形式のWorkflowを実行する
 
-Pythonの実行には `uv` を使う。ComfyUIを `http://127.0.0.1:8188` で起動し、使うWorkflowを「Export Workflow (API)」で `workflow-api.json` に保存する。`--target` には制作案件の識別子を指定する。使用できる文字は英小文字・数字・`-`・`_`、長さは1～64文字である。
+Pythonの実行には `uv` を使う。ComfyUIを `http://127.0.0.1:8188` で起動し、使うWorkflowを「Export Workflow (API)」で `workflow-api.json` に保存する。`--target` には出力先を識別する名前を指定する。制作案件の登録は必要ない。使用できる文字は英小文字・数字・`-`・`_`、長さは1～64文字である。
 
 例では、制作案件の識別子に `project-identifier` を使う。
 
