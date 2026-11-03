@@ -3,7 +3,7 @@ id: "knowledge-registry"
 title: "Workflow台帳と用語"
 kind: "knowledge"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["Workflow","ナレッジ","メタデータ","検索"]
 related: ["src/gwp/discovery.py","config/registry.json"]
 sources: ["https://github.com/Comfy-Org/workflows"]
@@ -11,7 +11,7 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 
 # Workflow台帳と用語
 
-8領域の目標・制作案件・収集条件・検索分類は main の `config/registry.json` を設定正本とする。収集した出典、改訂履歴、制作・公開履歴は catalog ブランチの `data/workflow_registry.json` に永続保存する。ローカルの `.cache/workflow_registry.json` は一時的な作業コピーであり、正本ではない。保存・復旧手順は[台帳の保全設計](../design/durability.md)に定める。
+設定は`main`の`config/registry.json`、収集・改訂・制作・公開履歴は`catalog`の`data/workflow_registry.json`に置く。`.cache/workflow_registry.json`は作業コピーであり、復旧には使わない。保存と復旧の手順は[台帳の保全設計](../design/durability.md)を参照する。
 
 ## 収集データの構造
 
@@ -30,13 +30,13 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 | `projects`・`jobs`・`assets` | 制作、実行、生成素材の来歴 |
 | `rights`・`publications`・`knowledge` | 権利の根拠、公開証拠、再利用する知識 |
 
-Workflowはノードを接続した処理構成、Subgraphは再利用できる部分的な構成を指す。Blueprintは、この収集処理では `definitions.subgraphs` を含むJSONとして識別する。名称やファイルの形式だけでは、動作や品質は判断できない。
+Workflowはノードを接続した処理構成、Subgraphは再利用する部分構成を指す。収集器は`definitions.subgraphs`を含むJSONをBlueprintとして分類する。分類結果だけで動作や品質を判断しない。
 
-発見は公開ファイルの存在を確認したこと、静的確認はファイルの形式や参照を読んだこと、実行確認は指定した環境で動作を確かめたことを指す。用途タグは候補を探すために使い、ランキングや採用可否の判定には使わない。作者や出典が違う候補は別に記録する。
+「発見」は公開ファイルの存在確認、「静的確認」は形式・参照の読み取り、「実行確認」は指定環境での動作確認を指す。用途タグは検索用であり、順位や採否を決めない。同じ内容でも作者や出典が違えば別の候補として残す。
 
 ## 検索と出力
 
-リポジトリのルートで、Pythonのコマンドを `uv` から実行する。
+リポジトリのルートで`uv`から実行する。
 
 ```sh
 uv run --locked python -m gwp.discovery sync
@@ -47,4 +47,4 @@ uv run --locked python -m gwp.discovery export --format csv > .cache/workflow_re
 uv run --locked python -m gwp.discovery export --format json > .cache/workflow_registry_export.json
 ```
 
-収集結果はGitHub検索の件数上限と巡回数の制約を受ける。エクスポートした一覧は収集データから再生成し、別の正本として編集しない。
+検索APIには件数上限があり、巡回数にも制限を設けている。エクスポートしたCSV・JSONは再生成可能な出力であり、正本として編集しない。
