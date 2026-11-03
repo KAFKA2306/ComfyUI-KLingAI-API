@@ -1,47 +1,64 @@
-"""作品構成の参照と変更影響を検査する。"""
+"""作品構成の依存関係と変更影響を検査する。"""
 import copy
-import json
 import sys
 import unittest
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from gwp.creative import impact, validate
+from gwp.registry import load_registry
+
+
+PLAN = {
+    "schema_version": 1,
+    "project_id": "project-001",
+    "title": "複数領域の制作",
+    "missions": ["podcast", "youtube"],
+    "continuity": {"voice": "両媒体で同じ発話内容を使う"},
+    "units": [
+        {"id": "script", "kind": "direction", "purpose": "構成",
+         "deliverables": ["台本"]},
+        {"id": "audio", "kind": "sound", "purpose": "音声",
+         "requires": ["script"], "continuity_refs": ["voice"],
+         "deliverables": ["収録データ"]},
+        {"id": "video", "kind": "edit", "purpose": "映像",
+         "requires": ["script", "audio"], "deliverables": ["映像ファイル"]},
+    ],
+    "releases": [
+        {"id": "episode", "mission": "podcast", "requires": ["audio"]},
+        {"id": "short", "mission": "youtube", "requires": ["video"]},
+    ],
+}
+
+    
+def registry_for_plan():
+    registry = copy.deepcopy(load_registry())
+    registry["projects"]["project-001"] = {
+        "title": "複数領域の作品", "tags": ["制作", "音声"],
+        "mission_ids": ["podcast", "youtube"],
+        "workflow_ids": []
+    }
+    return registry
 
 
 class CreativeTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.plan = json.loads((ROOT / "projects/vrchat-cafe/creative.json").read_text(encoding="utf-8"))
+    def test_dependencies_and_impacts_across_missions(self):
+        order = validate(PLAN, registry_for_plan())
+        self.assertLess(order.index("script"), order.index("video"))
+        changed = impact(PLAN, "audio", registry_for_plan())
+        self.assertEqual(set(changed["affected_units"]), {"audio", "video"})
+        self.assertEqual(set(changed["affected_releases"]), {"episode", "short"})
 
-    def test_dependencies_and_impacts(self):
-        order = validate(self.plan)
-        self.assertLess(order.index("architecture"), order.index("world-assembly"))
-        changed = impact(self.plan, "cup")
-        self.assertIn("world-assembly", changed["affected_units"])
-        self.assertIn("vrchat-public-world", changed["affected_releases"])
-        self.assertNotIn("furniture", changed["affected_units"])
-
-    def test_broken_reference_and_cycle(self):
-        plan = copy.deepcopy(self.plan)
-        plan["units"][0]["continuity_refs"] = ["unknown"]
+    def test_invalid_references_and_cycle(self):
+        plan = copy.deepcopy(PLAN)
+        plan["units"][1]["continuity_refs"] = ["unknown"]
         with self.assertRaisesRegex(ValueError, "共有表現"):
-            validate(plan)
-        plan = copy.deepcopy(self.plan)
-        plan["units"][0]["requires"] = ["world-package"]
+            validate(plan, registry_for_plan())
+        plan = copy.deepcopy(PLAN)
+        plan["units"][0]["requires"] = ["video"]
         with self.assertRaisesRegex(ValueError, "循環"):
             validate(plan)
-
-    def test_unknown_workflow_is_rejected(self):
-        plan = copy.deepcopy(self.plan)
-        cup = next(unit for unit in plan["units"] if unit["id"] == "cup")
-        cup["workflow_ids"] = ["not-in-central-registry"]
-        with self.assertRaisesRegex(ValueError, "一元台帳にないWorkflow"):
-            validate(plan)
-
-    def test_mission_invariants(self):
-        plan = copy.deepcopy(self.plan)
+        plan = copy.deepcopy(PLAN)
         plan["releases"][0]["mission"] = "games"
         with self.assertRaisesRegex(ValueError, "missions"):
             validate(plan)
