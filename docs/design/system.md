@@ -11,30 +11,27 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 
 # Workflowの収集と制作基盤の設計
 
-公開されたWorkflow、Subgraph、Blueprintを出典付きで収集し、8つの制作領域で再利用します。制作領域は独立して進め、収集結果と制作の知識を共有します。公開元の人気や独自の点数で収集対象を除外しません。
+公開されたWorkflow、Subgraph、Blueprintの出典と改訂を記録し、8つの制作領域で再利用する。制作目標、収集元、制作案件、採用候補は `config/registry.json` で管理する。人気や独自スコアを基準に収集候補を除外しない。
 
-## 情報の保存先
+## 情報の流れ
 
-| 役割 | 正本・実装 |
+| 処理 | ファイルと役割 |
 | --- | --- |
-| 目標・案件・収集条件 | mainの `config/registry.json` |
-| 発見・静的確認 | `src/gwp/discovery.py` |
-| 出典・改訂・制作履歴 | catalogの `data/workflow_registry.json` |
-| 台帳の保存・復元 | `src/gwp/state.py`、`scripts/catalog_sync.sh`、`scripts/catalog_publish.sh` |
-| 台帳の検索・出力 | `gwp.discovery search`・`export`、用途別の並べ替えは `gwp.select` |
-| 素材の生成・受け渡し | `src/gwp/production.py`、`src/gwp/production_job.py` |
-| 作品構成と変更影響 | `src/gwp/creative.py` |
+| 収集条件 | `config/registry.json`：公開元、検索語、用途の分類 |
+| 発見・静的確認 | `src/gwp/discovery.py`：候補の列挙、改訂履歴、JSON形式の確認 |
+| 永続台帳 | `catalog:data/workflow_registry.json`：出典・改訂・探索状態・採用・制作・公開履歴 |
+| 検索・出力 | `gwp.discovery search / export`：取得結果から検索し、CSV・JSONを生成 |
+| 素材生成 | `src/gwp/production.py`：選んだAPI形式WorkflowをローカルComfyUIに投入 |
+| 作品の完成 | Blender、Unity、制作先の編集環境と公開サービスで確認 |
 
-収集処理は[GitHub Actions](../../.github/workflows/collect.yml)から6時間おきとmain更新時に起動します。`scripts/catalog_sync.sh` がcatalogの正本を取得して差分を追加します。`gwp.discovery sync` を直接実行した場合はローカルの台帳が更新されるため、永続保存には別途 `scripts/catalog_publish.sh` が必要です。
+[収集ジョブ](../../.github/workflows/collect.yml)は6時間ごとに起動し、成功した更新を `catalog` ブランチへ保存する。ローカルの `.cache/` は作業用である。別媒体へのバックアップ、復旧、同時更新の処理は[台帳の保全・復旧](durability.md)に定める。
 
-更新競合、バックアップ、別PCからの復元は[台帳の保全・復旧](durability.md)で扱います。
+## 出典と実行の境界
 
-## 収集から作品公開まで
+- 原典のリポジトリ、パス、固定コミット、Blob SHAを記録し、異なる作者の出典を一つにまとめない。
+- 未分類の候補や取得・解析の失敗も記録する。APIエラーを候補が存在しない証拠として扱わない。
+- ファイルの静的確認と、モデルを使った実行確認を区別する。静的確認だけでは品質や商用利用条件は確定しない。
+- 収集時に第三者のWorkflow、Custom Node、モデルを自動で導入・実行しない。
+- GitHub検索と巡回には件数の上限がある。収集結果を世界中のWorkflowの完全な一覧とは呼ばない。
 
-1. 公開元のファイルを探索し、出典URL、固定コミット、Blob SHA、改訂履歴を保存します。
-2. 候補の形式と依存モデルを調べ、作品の用途に合うWorkflowを選びます。
-3. 利用条件を確かめ、API形式のWorkflowをローカルComfyUIで実行します。
-4. 出力のハッシュを記録し、制作先の編集環境へ渡します。
-5. 制作先で品質と動作を検証し、公開先のURLと確認結果を保存します。
-
-ファイルの静的確認だけで実行や商用利用を認めることはできません。未分類のファイルや取得失敗は台帳に残します。GitHub検索と巡回には上限があるため、収集結果が公開Workflowの全件を含むとは扱いません。
+制作への接続と完成条件の扱いは[制作工程への接続](production.md)に定める。
