@@ -1,4 +1,4 @@
-# Architecture
+# Comfy Workflow Atlas architecture
 
 ## Boundaries
 

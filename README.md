@@ -1,6 +1,6 @@
-# Generative Workflow Platform: Workflow-first Registry
+# Comfy Workflow Atlas
 
-Continuous, source-preserving discovery of ComfyUI workflows, blueprints, custom-node examples, model references and public issue evidence. The former Kling-specific implementation was replaced earlier; historical commits remain in Git history.
+Comfy Workflow Atlas is a source-preserving catalog of real-world ComfyUI workflows, subgraphs, blueprints, custom-node examples, model references, and public implementation evidence. The original Kling-specific implementation was replaced; its history remains available in Git.
 
 **Workflow first. No proprietary quality scores, filtering, rankings, or execution of third-party workflows.** Every indexed candidate remains available with its origin and inspection state. Unsupported or inaccessible sources remain visible as unsynced references.
 
