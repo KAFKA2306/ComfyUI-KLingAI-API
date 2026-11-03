@@ -25,6 +25,24 @@ GitHub以外のUSB、NAS、クラウドフォルダにも定期的に別媒体�
 
 収集は最新台帳から別の候補ファイルを生成する。保存では同期書き込み、原子的な置換、正常版の退避を行う。Gitへpushが競合した場合は最新の正本を取得し、ID・改訂・別原典ごとに統合して再試行する。旧スキーマは既存IDを保持したまま移行する。追記と訂正は区別し、訂正には変更前後の値、SHA-256、日時、根拠URLを残す。
 
+## 制作・公開履歴の確定
+
+制作・採用・モデル・権利・公開の更新は、`catalog`から取得した作業台帳に`gwp.ledger put`で記録し、`scripts/catalog_publish.sh`で`catalog`の正本へ統合する。入力台帳と同名の`.sha256`が必須であり、署名の不一致や欠損は送信前に停止する。収集処理も同じ公開手順を使う。
+
+異なるPCが同時に更新した場合は、最新の`catalog`を再取得してID・改訂・イベント単位で統合し、pushが競合した場合だけ再試行する。処理が失敗しても入力台帳を消さない。作品や公開物の更新は`main`に直接書き込まない。
+
+```sh
+git fetch origin catalog
+mkdir -p .cache
+git show origin/catalog:data/workflow_registry.json > .cache/edit.json
+git show origin/catalog:data/workflow_registry.json.sha256 > .cache/edit.json.sha256
+uv run --locked python -m gwp.state verify --catalog .cache/edit.json
+uv run --locked python -m gwp.ledger put --catalog .cache/edit.json --section projects --id sample-project --payload /path/to/project.json
+bash scripts/catalog_publish.sh .cache/edit.json
+```
+
+`/path/to/project.json`には実際の制作案件の記録を指定し、`sample-project`は固有の案件IDに置き換える。既存IDの訂正には`--change-kind correction`を付け、変更前後の値をイベントに保持する。
+
 ## 発見・検索・改訂
 
 完全な原典ファイル一覧を取得できた場合にだけファイルの削除を認定する。APIの失敗や途中停止を削除扱いにしない。GitHub検索の1,000件制限は作成日期間の二分で回避し、未走査ページを記録する。分割しても上限を超える期間は未網羅と記録する。PNGに埋め込まれたWorkflowは静的に抽出し、探索中に実行しない。
