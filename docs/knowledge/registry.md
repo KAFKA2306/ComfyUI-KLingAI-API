@@ -48,3 +48,20 @@ uv run --locked python -m gwp.discovery export --format json > .cache/workflow_r
 ```
 
 収集結果はGitHub検索の件数上限と巡回数の制約を受ける。エクスポートした一覧は収集データから再生成し、別の正本として編集しない。
+
+## Workflowの選定と絞り込み
+
+収集台帳は削除・上書きせず、用途の手掛かりで閲覧候補を抽出する。最新・人気・適性は別々の情報であり、品質の自動採点や採用判断を意味しない。
+
+```sh
+uv run --locked python -m gwp.select --mission 3d-models --sort suitable --inspected-only
+uv run --locked python -m gwp.select --mission youtube --sort popular --min-stars 1
+uv run --locked python -m gwp.select --mission vrchat-world --sort latest --updated-within-days 90
+uv run --locked python -m gwp.select --mission games --sort suitable --format csv > .cache/game-workflows.csv
+```
+
+`--mission` にはREADMEに示した8領域の識別子を使う。`--sort suitable` は対応する検索語、明示的な用途登録、静的形式確認との一致を順序に利用する。`popular` はGitHubリポジトリのスター数、`latest` はリポジトリの最終push日を使う。どちらもWorkflow単体の利用者数、更新日、作品品質とは異なる。条件を掛ける場合は `--min-stars` と `--updated-within-days` を明示する。指標が欠損している候補は閾値指定時に一致しない。
+
+既定では公開元のGitHubメタデータをその場で照会する。`--offline` では台帳中に利用できる公開元メタデータだけを利用し、存在しない値は推定しない。`--inspected-only` は `workflow-ui`、`workflow-api`、`blueprint` と静的に確認されたものだけを表示する。指定しなければ未検査の候補も保持して表示できる。設定正本に登録済みで収集台帳にない原典候補は `registry-only` と表示し、実行確認済みとはみなさない。
+
+原典の利用条件はGitHubリポジトリのライセンスだけでは確定しない。モデル・Custom Node・制作物への利用許諾、GPUでの実行と出力品質は別に確認する。
