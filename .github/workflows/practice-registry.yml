@@ -1,0 +1,70 @@
+name: Discover ComfyUI community practices
+
+on:
+  schedule:
+    - cron: '19 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/practice_registry.py'
+      - 'scripts/validate_registry.py'
+      - 'config/practice-sources.json'
+      - '.github/workflows/practice-registry.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: practice-registry-sync
+  cancel-in-progress: false
+
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Gather official and community practices
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/practice_registry.py
+      - name: Statically inspect workflow and blueprint JSON
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/audit_practices.py
+      - name: Validate snapshot
+        run: |
+          python -m unittest discover -s tests -v
+          python scripts/validate_registry.py
+          python -m compileall -q scripts src
+          git diff --check
+      - name: Publish source-only registry updates
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git add registry/official.json registry/community.json registry/practices.json registry/insights.json registry/highlights.md dependencies/sources.lock.json
+          if git diff --cached --quiet; then
+            echo "All catalog references are current"
+            exit 0
+          fi
+          branch="automation/practice-registry-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c "$branch"
+          git commit -m 'chore: synchronize observed ComfyUI practices'
+          git push origin "$branch"
+          if url="$(gh pr create --base main --head "$branch" --title \
+            'chore: refresh official and community practice catalog' --body \
+            'Metadata only. Checks passed. No external Python/node code or model was installed or run.')"; then
+            gh pr merge "$url" --squash --delete-branch
+          else
+            echo "::warning::Bot PR creation is disabled. Falling back to validated metadata-only fast-forward."
+            git push origin HEAD:main
+            git push origin --delete "$branch" || true
+          fi
