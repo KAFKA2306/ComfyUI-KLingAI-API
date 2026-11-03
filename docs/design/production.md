@@ -26,11 +26,11 @@ ComfyUIの責任は素材の生成です。画像・動画・GLBの生成成功�
 ComfyUIから **Export Workflow (API)** したJSONを指定し、Python実行には必ず `uv` を使います。
 
 ```sh
-uv run --locked python src/gwp/production_job.py targets
-uv run --locked python src/gwp/production_job.py plan --target vrmine-cafe --workflow workflow-api.json
-uv run --locked python src/gwp/production_job.py submit --target vrmine-cafe --workflow workflow-api.json --receipt .artifacts/receipt.json
-uv run --locked python src/gwp/production_job.py collect --receipt .artifacts/receipt.json --output-root .artifacts/output
-uv run --locked python src/gwp/production_job.py handoff --manifest .artifacts/output/vrmine-cafe/＜promptId＞/manifest.json --project-root ../vrmine
+uv run --locked python -m gwp.production_job targets
+uv run --locked python -m gwp.production_job plan --target vrmine-cafe --workflow workflow-api.json
+uv run --locked python -m gwp.production_job submit --target vrmine-cafe --workflow workflow-api.json --receipt .artifacts/receipt.json
+uv run --locked python -m gwp.production_job collect --receipt .artifacts/receipt.json --output-root .artifacts/output
+uv run --locked python -m gwp.production_job handoff --manifest .artifacts/output/vrmine-cafe/＜promptId＞/manifest.json --project-root ../vrmine
 ```
 
 `plan` は実行せず検査し、`submit` はローカルのComfyUIへ送信します。`collect` は成功履歴を検査してSHA-256付きの出力を回収します。`handoff` は対象リポジトリを識別し、素材を指定の非追跡領域に受け渡します。
