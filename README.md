@@ -1,61 +1,57 @@
 ---
-id: readme
-title: ComfyUI Workflows Factory
-type: entrypoint
-status: active
-updated: 2026-11-03
-tags: [制作基盤, Workflow, ナレッジ, 8領域, uv]
+id: "readme"
+title: "ComfyUI制作基盤"
+kind: "index"
+status: "active"
+updated: "2026-11-03"
+tags: ["ComfyUI","Workflow","制作","8領域","uv"]
+related: ["docs/README.md","src/gwp/discovery.py"]
+sources: ["https://github.com/Comfy-Org/ComfyUI","https://github.com/Comfy-Org/workflow_templates"]
 ---
 
-# ComfyUI Workflows Factory
+# ComfyUI制作基盤：8領域の作品制作
 
-公開されているComfyUIのWorkflowを探し、出典と改訂履歴を記録して制作に活用します。8つの領域で作品を同時並列に制作・公開し、使ったWorkflowと手順を次の制作にも生かすためのリポジトリです。
+公開Workflowを出典と改訂を保って収集し、作品の制作に利用します。最終的な成果は収集件数ではなく、次の8領域で完成させて公開する作品です。
 
 ## 対等な8つの長期目標
 
-| 領域 | 完成して公開するもの |
+| 領域 | 公開する作品 |
 | --- | --- |
 | VRChatワールド | カフェ、Chill World、探索・交流ワールド |
 | アバター・衣装 | VRM、衣装、アクセサリー |
-| BOOTH商品 | 販売・配布できる3D素材、背景、デジタル商品 |
+| BOOTH商品 | 3D素材、背景、デジタル商品 |
 | YouTube・Shorts | 解説、短編、キャラクター動画 |
 | Podcast・音声 | 音声番組、ナレーション、音響素材 |
 | 映画・アニメーション | 短編、連続映像、映像作品 |
 | 3Dモデル | キャラクター、建築、家具、ゲーム向けモデル |
-| ゲーム制作 | ゲーム本体、世界、キャラクター、UI、素材 |
+| ゲーム制作 | ゲーム本体、ワールド、キャラクター、UI、素材 |
 
-8領域は対等です。領域ごとに制作・検証・公開を進め、VRChatカフェの完成を他の領域の開始条件にはしません。
+8領域は独立して制作します。VRChatカフェは制作案件の一つであり、他領域の着手条件ではありません。
 
-## 文書の正本
+## 設計書とナレッジ
 
-- [設計書・ナレッジの索引](docs/README.md)：文書のメタデータとタグ規約
-- [システム設計](docs/design/system.md)：出典収集と実行の境界
-- [制作工程](docs/design/production.md)：ローカル生成・受け渡し
-- [作品構成と演出](docs/design/creative.md)：各領域の表現・制作依存の管理
-- [VRChatカフェ設計](docs/design/vrchat-cafe.md)：出典候補と形式検査
-- [Workflow台帳と用語](docs/knowledge/registry.md)：データの意味と検索
-- [一次資料](docs/knowledge/sources.md)：原典と利用条件
+[文書索引](docs/README.md)から、[全体設計](docs/design/system.md)、[制作工程](docs/design/production.md)、[作品構成と演出](docs/design/creative.md)、[VRChatカフェ設計](docs/design/vrchat-cafe.md)、[台帳と用語](docs/knowledge/registry.md)、[情報源](docs/knowledge/sources.md)を参照できます。
 
-## 一元管理
+8領域、収集元、採用Workflow、制作案件の設定正本は`config/registry.json`です。収集結果の再生成可能なキャッシュは`.cache/workflow_registry.json`です。両者の役割は[全体設計](docs/design/system.md)で定義します。
 
-8つの制作ミッション・収集元・採用Workflow・制作案件は `config/registry.json` が唯一の設定台帳です。
+## 実行方法
 
-```sh
-uv run --locked python -m gwp.registry validate
-uv run --locked python -m gwp.registry summary
-uv run --locked python -m gwp.registry list --kind workflows
-```
-
-## 必須の実行方法
-
-Python 3.11以上を使い、依存関係、仮想環境、スクリプトとテストの実行を**uv**で統一します。
+Python 3.11以上を使います。環境構築、依存関係、スクリプト、テストは`uv`経由で実行します。
 
 ~~~sh
 uv sync --locked
-uv run --locked python -m unittest discover -s tests -v
+uv run --locked python -m gwp.registry validate
+uv run --locked python -m gwp.registry summary
+uv run --locked python scripts/validate_docs.py
+uv run --locked python -m gwp.discovery sync
 uv run --locked python -m gwp.discovery stats
 uv run --locked python -m gwp.discovery search --term VRChat
-uv run --locked python -m gwp.discovery export > workflows.csv
 ~~~
 
-収集更新は `uv run --locked python -m gwp.discovery sync`。ネットワークを使用し、`.cache/workflow_registry.json`を更新します。実際の制作コマンドは[制作工程](docs/design/production.md)に集約します。
+`sync`はネットワークに接続します。制作先への素材の受け渡しは[制作工程](docs/design/production.md)で説明します。
+
+## 制作の原則
+
+公式とコミュニティ双方の公開Workflowを収集し、人気や独自採点を理由に候補を除外しません。発見しただけの第三者Workflow、Custom Node、モデルを自動実行しません。
+
+素材の生成、作品への組み込み、品質の確認、公開は別工程です。単色の仮素材や空のシーンを実素材の代わりに完成扱いしません。認証情報、モデル本体、生成メディア、個人情報はGitに含めません。

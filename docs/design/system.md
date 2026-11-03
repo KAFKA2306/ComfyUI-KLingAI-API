@@ -24,7 +24,7 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 | 素材生成 | `src/gwp/production.py`：選んだAPI形式WorkflowをローカルComfyUIに投入 |
 | 作品の完成 | Blender、Unity、制作先の編集環境と公開サービスで確認 |
 
-収集結果の既定保存先 `.cache/workflow_registry.json` はGit管理外のキャッシュである。[定期収集](../../.github/workflows/collect.yml)は6時間ごとに実行し、前回のキャッシュを復元する。GitHub Actionsの収集成果物は1日で期限切れになるため、長期間の記録が保管されていることをこの仕組みだけで保証しない。
+収集結果の既定保存先 `.cache/workflow_registry.json` はGit管理外のキャッシュである。[定期収集](../../.github/workflows/collect.yml)は6時間ごとに実行し、前回のキャッシュの復元を試みる。GitHub Actionsの収集成果物は1日で期限切れになるため、長期間の記録が保管されていることをこの仕組みだけで保証しない。
 
 ## 出典と実行の境界
 
