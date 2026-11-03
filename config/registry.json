@@ -1,5 +1,63 @@
 {
-  "version": 1,
+  "schema_version": 1,
+  "missions": {
+    "vrchat-world": {
+      "title": "VRChatワールド",
+      "tags": [
+        "VRChat",
+        "ワールド"
+      ]
+    },
+    "avatars": {
+      "title": "アバター・衣装",
+      "tags": [
+        "アバター",
+        "衣装"
+      ]
+    },
+    "booth": {
+      "title": "BOOTH商品",
+      "tags": [
+        "BOOTH",
+        "商品"
+      ]
+    },
+    "youtube": {
+      "title": "YouTube・Shorts",
+      "tags": [
+        "YouTube",
+        "動画"
+      ]
+    },
+    "podcast": {
+      "title": "Podcast・音声",
+      "tags": [
+        "Podcast",
+        "音声"
+      ]
+    },
+    "movies": {
+      "title": "映画・アニメーション",
+      "tags": [
+        "映画",
+        "映像"
+      ]
+    },
+    "3d-models": {
+      "title": "3Dモデル",
+      "tags": [
+        "3D",
+        "メッシュ"
+      ]
+    },
+    "games": {
+      "title": "ゲーム制作",
+      "tags": [
+        "ゲーム",
+        "ワールド"
+      ]
+    }
+  },
   "github_repos": [
     "Comfy-Org/workflow_templates",
     "Comfy-Org/workflows",
@@ -255,5 +313,93 @@
         "sprite"
       ]
     }
-  ]
+  ],
+  "projects": {
+    "vrchat-cafe": {
+      "title": "VRChat小型カフェ",
+      "mission_ids": [
+        "vrchat-world"
+      ],
+      "tags": [
+        "VRChat",
+        "カフェ",
+        "3D"
+      ],
+      "status": "制作中・公開未確認",
+      "workflows": [
+        {
+          "id": "cup-hunyuan3d",
+          "repository": "Comfy-Org/workflow_templates",
+          "path": "templates/3d_hunyuan3d_image_to_model.json",
+          "purpose": "入力画像からコーヒーカップのGLBを生成する候補",
+          "mode": "local",
+          "output": "GLB",
+          "hardware_validation": "not-tested",
+          "commercial_terms": "review-upstream-model-license",
+          "source_key": "github:comfy-org/workflow_templates:templates/3d_hunyuan3d_image_to_model.json",
+          "mission_ids": [
+            "vrchat-world",
+            "3d-models"
+          ],
+          "tags": [
+            "VRChat",
+            "カフェ",
+            "3D"
+          ],
+          "status": "候補",
+          "license": "未確認"
+        },
+        {
+          "id": "cup-trellis2",
+          "repository": "Comfy-Org/workflow_templates",
+          "path": "templates/3d_pixal3d_trellis2_image_to_model.json",
+          "purpose": "メッシュとテクスチャ生成の代替候補",
+          "mode": "local",
+          "output": "3D mesh",
+          "hardware_validation": "not-tested",
+          "commercial_terms": "review-upstream-model-license",
+          "source_key": "github:comfy-org/workflow_templates:templates/3d_pixal3d_trellis2_image_to_model.json",
+          "mission_ids": [
+            "vrchat-world",
+            "3d-models"
+          ],
+          "tags": [
+            "VRChat",
+            "カフェ",
+            "3D"
+          ],
+          "status": "候補",
+          "license": "未確認"
+        },
+        {
+          "id": "panorama-qwen",
+          "repository": "Comfy-Org/workflow_templates",
+          "path": "templates/template_qwen_Image_2512_360_lora.json",
+          "purpose": "カフェ背景の360度画像を作る参照候補。衝突判定には使わない",
+          "mode": "local",
+          "output": "PNG panorama",
+          "hardware_validation": "not-tested",
+          "commercial_terms": "review-upstream-model-license",
+          "source_key": "github:comfy-org/workflow_templates:templates/template_qwen_Image_2512_360_lora.json",
+          "mission_ids": [
+            "vrchat-world",
+            "3d-models"
+          ],
+          "tags": [
+            "VRChat",
+            "背景",
+            "360度"
+          ],
+          "status": "候補",
+          "license": "未確認"
+        }
+      ],
+      "publication": {
+        "world_url": null,
+        "public_visibility": "not_public",
+        "upload": "not_run",
+        "unity_build_test": "not_run"
+      }
+    }
+  }
 }
