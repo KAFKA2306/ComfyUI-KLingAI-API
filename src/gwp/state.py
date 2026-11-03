@@ -250,9 +250,10 @@ def restore(path, backup):
     source = Path(backup)
     candidate = load_catalog(source, allow_missing=False)
     path = Path(path)
+    previous = None
     if path.exists():
         try:
-            load_catalog(path, allow_missing=False)
+            previous = load_catalog(path, allow_missing=False)
         except ValueError:
             quarantine = path.with_name(path.name + ".corrupt")
             if quarantine.exists():
@@ -261,8 +262,11 @@ def restore(path, backup):
             marker = path.with_name(path.name + ".sha256")
             if marker.exists():
                 marker.replace(quarantine.with_name(quarantine.name + ".sha256"))
+        else:
+            # 正常な現行版に古いバックアップを上書きするとIDと改訂履歴が失われる。
+            candidate = merge_catalog(previous, candidate)
     atomic_save(path, candidate, preserve=True)
-    return health(candidate)
+    return health(candidate, previous)
 
 
 def backup(path, destination):
