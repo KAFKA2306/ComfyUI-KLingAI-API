@@ -24,6 +24,7 @@ jobs:
         run: uv sync --locked
       - name: テストと構文の確認
         run: |
+          bash -n scripts/catalog_sync.sh scripts/catalog_publish.sh
           uv run --locked python -m unittest discover -s tests -v
           uv run --locked python -m compileall -q src
           uv run --locked python scripts/validate_docs.py
