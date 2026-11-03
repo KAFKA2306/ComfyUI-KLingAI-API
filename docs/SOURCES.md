@@ -24,4 +24,4 @@ The last three are **discovery surfaces**, not guaranteed sources of downloadabl
 - `config/use-cases.json`: editable keyword dictionary. Categorization is a search aid, never a quality rating.
 - Production/BOOTH requires separate licensing verification. VRChat/world creation also requires Blender, Unity, VRChat SDK, rigging, performance checks and upload.
 
-Run `python scripts/practice_registry.py`, then `python scripts/audit_practices.py`, then `python scripts/build_catalog.py`. The GitHub Action schedules this and keeps generated indices in Git.
+For the current collector run `PYTHONPATH=src python -m gwp.discovery sync`, followed by `python scripts/build_catalog.py`. The GitHub Action performs both automatically every six hours. The older `scripts/practice_registry.py` and `scripts/audit_practices.py` belong to a retired, signal-scored collector and are not part of the active scheduled pipeline.

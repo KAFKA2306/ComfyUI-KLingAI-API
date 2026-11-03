@@ -27,7 +27,7 @@ PYTHONPATH=src python -m gwp.discovery search --term KSampler
 python -m unittest discover -s tests -v
 ```
 
-GitHub Actions runs daily at 16:17 UTC (01:17 JST) and also permits manual dispatch. It commits reference-only catalog updates; it never runs third-party code or models. GitHub repository search API can expose at most 1,000 results per search query: coverage is limited and not presented as exhaustive. The configured maximum of 12 repositories per run is a **processing queue size**, not a rejection criterion; discovered repositories persist in `discoveries`.
+GitHub Actions runs every six hours at minute 17 UTC (01:17, 07:17, 13:17 and 19:17 JST), and also permits manual dispatch. It commits reference-only catalog updates; it never runs third-party code or models. GitHub repository search API can expose at most 1,000 results per search query: coverage is limited and not presented as exhaustive. The configured maximum of 24 repositories per run is a **processing queue size**, not a rejection criterion; discovered repositories persist in `discoveries`.
 
 ## Known coverage gaps
 - PNG/WebP may have embedded graph metadata. They are indexed as pending, not yet decoded.
