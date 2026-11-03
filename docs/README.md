@@ -3,7 +3,7 @@ id: "docs-index"
 title: "設計書とナレッジの索引"
 kind: "index"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["索引","設計","ナレッジ"]
 related: ["docs/design/system.md","docs/knowledge/registry.md"]
 sources: []
