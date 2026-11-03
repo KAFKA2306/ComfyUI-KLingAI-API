@@ -1,4 +1,4 @@
-name: Validate Comfy Workflow Atlas
+name: Validate ComfyUI Workflows Factory
 on:
   push:
   pull_request:

@@ -1,4 +1,4 @@
-# Comfy Workflow Atlas
+# ComfyUI Workflows Factory
 
 Workflow-first 2026 discovery for **YouTube, VRChat, BOOTH, Podcast, 3D Models, Movies, Chill Worlds, Game Worlds, Avatars and game assets**. The former Kling-specific implementation was retired; its Git history remains accessible.
 
