@@ -3,7 +3,7 @@ id: "knowledge-registry"
 title: "Workflow台帳と用語"
 kind: "knowledge"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["Workflow","ナレッジ","メタデータ","検索"]
 related: ["src/gwp/discovery.py","config/registry.json"]
 sources: ["https://github.com/Comfy-Org/workflows"]
@@ -47,4 +47,4 @@ uv run --locked python -m gwp.discovery export --format csv > .cache/workflow_re
 uv run --locked python -m gwp.discovery export --format json > .cache/workflow_registry_export.json
 ```
 
-GitHub検索の件数上限や巡回範囲の制約により、収集一覧は公開Workflowの全件を示すものではない。CSV・JSONの出力は保存台帳から生成し、別の正本として編集しない。
+GitHub検索の件数上限や巡回範囲の制約により、収集一覧は公開Workflowの全件を示すものではない。CSV・JSONは台帳の作業用コピーから生成し、別の正本として編集しない。
