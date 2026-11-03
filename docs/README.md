@@ -1,6 +1,6 @@
 ---
 id: "docs-index"
-title: "設計・ナレッジ索引"
+title: "設計書とナレッジの索引"
 kind: "index"
 status: "active"
 updated: "2026-11-03"
@@ -11,24 +11,28 @@ sources: []
 
 # 設計書とナレッジ
 
-`docs/` は設計書とナレッジの2分類に限定します。人が編集する設定の正本は `config/registry.json` です。収集結果は `.cache/workflow_registry.json` から再生成します。コードとテストで動作を検証します。Markdownには判断と確認方法だけを残します。
+`docs/` は、制作基盤の仕組みを定める設計書と、出典や用語を整理するナレッジに分ける。8領域の目標、収集元、制作案件と採用候補の設定は `config/registry.json` に一元化する。制作処理の実装はコード、公開情報の取得結果は `.cache/workflow_registry.json` を参照する。同じデータを文書に複製しない。
 
 ## 設計書
 
-- [全体設計](design/system.md)：収集から制作までの責任分担
-- [制作工程への接続](design/production.md)：API Workflowの実行・回収・受け渡し
-- [VRChat小型カフェ](design/vrchat-cafe.md)：候補Workflowと形式検査
-- [作品構成と演出](design/creative.md)：美術・素材・シーン・変更影響をつなぐ制作仕様
+- [全体設計](design/system.md)：公開Workflowの収集から制作までの処理と責任分担
+- [制作工程への接続](design/production.md)：ComfyUIへの投入、出力回収、制作先への受け渡し
+- [VRChat小型カフェ](design/vrchat-cafe.md)：作品の制作手順と公開を確認する条件
+- [作品構成と演出](design/creative.md)：制作単位の依存関係と変更の影響
 
 ## ナレッジ
 
-- [Workflow台帳と用語](knowledge/registry.md)：データ構造・検索と検証状態
-- [一次資料と情報源](knowledge/sources.md)：出典の扱いとライセンス
+- [Workflow台帳と用語](knowledge/registry.md)：収集データの構造、状態、検索方法
+- [一次資料と情報源](knowledge/sources.md)：公開元の区分、原典と利用条件の確認
 
 ## 文書の規則
 
-全て日本語で記述し、先頭にYAML Front Matterを付けます。`id`、`title`、`kind`、`status`、`updated`、`tags`、`related`、`sources` が必須です。値はJSON互換のYAML形式にします。
+各Markdownファイルの先頭には、`id`、`title`、`kind`、`status`、`updated`、`tags`、`related`、`sources` を持つYAMLフロントマターを付ける。値にはJSON互換のYAMLを使う。
 
-`kind` は `index`、`design`、`knowledge`。`status` は `active`、`reference`。`tags` は重複のない2件以上の検索語であり、採用可否の判定には使いません。`related` は存在するリポジトリ内パス、`sources` は一次資料のHTTPS URLです。
+`kind` は `index`、`design`、`knowledge`、`status` は `active`、`reference` とする。`tags` には重複しない検索語を2件以上指定する。`related` は存在するリポジトリ内パス、`sources` は一次資料のHTTPS URLを記載する。
 
-設計書にはコードか一次資料の根拠を示し、根拠のない現況・予定・作業メモを記載しません。`uv run --locked python scripts/validate_docs.py` でメタデータとリンクを検証します。
+本文は日本語で書き、固有名詞やコードの識別子は元の表記を保つ。設計上の判断と確認方法を残し、重複した説明や作業日誌はGitの履歴へ委ねる。文書と内部リンクの検査には次を使う。
+
+```sh
+uv run --locked python scripts/validate_docs.py
+```
