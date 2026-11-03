@@ -71,8 +71,3 @@ uv run --locked python -m gwp.select --mission games --sort latest --updated-wit
 
 `popular` はGitHubリポジトリのスター数、`latest` はリポジトリの最終push日時を使います。Workflow単体の人気や更新時刻を示すものではありません。絞り込みの条件は[台帳と用語](docs/knowledge/registry.md)にまとめています。
 
-## 制作の原則
-
-公式とコミュニティの公開Workflowを収集し、人気や独自の点数で候補を除外しません。外部のWorkflow、モデル、Custom Nodeは、利用条件と実行環境を確認してから使用します。
-
-素材の生成、作品への組み込み、品質確認、公開は別の工程として扱います。必要な素材がない場合、単色の仮素材や空のシーンを完成作品の代わりにしません。認証情報、モデル本体、生成メディア、個人情報はGitへ保存しません。

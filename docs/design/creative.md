@@ -19,15 +19,16 @@ sources: []
 
 | 項目 | 記述する内容 |
 | --- | --- |
+| `schema_version` | `1` を指定する |
 | `project_id`・`title` | 案件IDと作品名 |
 | `missions` | 作品が属する制作領域 |
 | `continuity` | 素材や場面で共有する美術、人物、音の条件 |
-| `units` | 制作単位の目的、必要な成果物、依存先、Workflow参照 |
-| `releases` | 公開先と、その公開に必要な制作単位 |
+| `units` | 各単位の `id`、`kind`、`purpose`、`deliverables`、`requires`、必要に応じて `workflow_ids` |
+| `releases` | 公開先の `id`・`mission`、必要な制作単位の `requires` |
 
 `units` の `workflow_ids` には `config/registry.json` に登録したWorkflow IDを指定します。`validate` は存在しないID、領域の不一致、依存関係の循環を検出します。モデルのライセンスや生成物の品質は、この構造検査では判定しません。
 
-例えば3Dワールドなら、建築と家具を制作した後に照明を設定し、音や衝突判定と統合します。動画では台本、ショット、音声、字幕を別の制作単位に分けられます。各領域で実際に必要な工程だけを定義します。
+`units[].kind` は `direction`、`asset`、`scene`、`shot`、`sound`、`interaction`、`edit`、`package` から選びます。定義は [`gwp.creative`](../../src/gwp/creative.py) にあります。
 
 ## 制作順と変更の影響
 
