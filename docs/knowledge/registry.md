@@ -50,6 +50,8 @@ CSVとJSONの書き出し結果は閲覧用です。正本として編集せず�
 
 `gwp.select` は台帳を変更せず、8領域の用途、公開元の人気、更新時期から表示順を決めます。検索に使う指標と作品の品質は区別してください。
 
+`--mission` に指定するIDは `vrchat-world`、`avatars`、`booth`、`youtube`、`podcast`、`movies`、`3d-models`、`games` です。
+
 ```sh
 uv run --locked python -m gwp.select --mission 3d-models --sort suitable --inspected-only
 uv run --locked python -m gwp.select --mission youtube --sort popular --min-stars 1
