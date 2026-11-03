@@ -3,7 +3,7 @@ id: "knowledge-sources"
 title: "一次資料と情報源"
 kind: "knowledge"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["出典","一次資料","ComfyUI","ライセンス"]
 related: ["config/registry.json","docs/knowledge/registry.md"]
 sources: ["https://github.com/Comfy-Org/workflow_templates","https://github.com/comfyanonymous/ComfyUI_examples"]
@@ -11,16 +11,16 @@ sources: ["https://github.com/Comfy-Org/workflow_templates","https://github.com/
 
 # 一次資料と情報源
 
-取得対象の一覧と検索条件は `config/registry.json` で管理する。公開元を追加・変更する場合は、その設定を更新する。Markdownに同じ一覧を複製しない。
+公開元と検索条件は`config/registry.json`に置く。情報源を追加・変更するときは設定を更新し、Markdownに同じ一覧を写さない。
 
 ## Workflowの公開元
 
-公式の入口には[Comfy-Orgのテンプレート](https://github.com/Comfy-Org/workflow_templates)、[公開Workflow](https://github.com/Comfy-Org/workflows)、[ComfyUIの作例](https://github.com/comfyanonymous/ComfyUI_examples)がある。[Comfy-Orgのリポジトリ一覧](https://github.com/orgs/Comfy-Org/repositories)では関連する公開元を確認できる。
+公式の参照先は[Comfy-Orgのテンプレート](https://github.com/Comfy-Org/workflow_templates)、[公開Workflow](https://github.com/Comfy-Org/workflows)、[ComfyUIの作例](https://github.com/comfyanonymous/ComfyUI_examples)。関連するリポジトリは[Comfy-Orgの一覧](https://github.com/orgs/Comfy-Org/repositories)からたどれる。
 
-コミュニティのWorkflowは、設定したリポジトリと検索語から探す。取得したファイルには原典URL、固定コミット、パス、Blob SHAを結び付ける。更新や削除があっても、取得できなかった事実を候補の品質評価へ置き換えない。
+コミュニティの候補は設定したリポジトリと検索語で探し、原典URL・固定コミット・パス・Blob SHAを記録する。取得できなかった場合は原因を残し、品質の判定に使わない。
 
 ## モデル情報と参考サイト
 
-Hugging FaceとCivitaiのAPIから得るのはモデルのメタデータであり、Workflowファイルを取得したことにはならない。RunningHub、Reddit、Comfy Registry、OpenArtなどは、確認済みの取得APIがない場合は参考先として扱う。
+Hugging FaceとCivitaiのAPIから得るのはモデルのメタデータであり、Workflow本体ではない。RunningHub、Reddit、Comfy Registry、OpenArtは、取得APIを確認できるまでは参考先として記録する。
 
-Workflowを見つけても、実行可能性、再配布の許可、商用利用の許可までは確定しない。採用時にはWorkflow、依存モデル、Custom Node、生成素材について、原典の利用条件をそれぞれ調べる。GitHubのスター数やIssueの存在だけで個別Workflowの品質を断定しない。
+採用するときはWorkflow、依存モデル、Custom Node、生成素材の利用条件を原典ごとに確かめる。公開されている事実だけでは、実行可否や再配布・商用利用の許可は分からない。GitHubのスター数やIssue数も品質の証明にはならない。
