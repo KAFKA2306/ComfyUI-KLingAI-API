@@ -110,6 +110,24 @@ class CatalogDurabilityTests(unittest.TestCase):
                 set(merged["search_progress"][key]["overflows"]),
                 {"created:2026-11-01", "created:2026-11-02"})
 
+    def test_merge_rebuilds_content_index_for_legacy_revisions(self):
+        legacy = {"schema_version": 1, "artifacts": {
+            "old": {"id": "old", "source": "github:alice/workflows",
+                    "path": "old.json", "blob_sha": "b" * 40,
+                    "revisions": [{"blob_sha": "a" * 40,
+                                   "commit_sha": "1" * 40,
+                                   "observed_at": "2026-11-01"},
+                                  {"blob_sha": "b" * 40,
+                                   "commit_sha": "2" * 40,
+                                   "observed_at": "2026-11-02"}]}}}
+        current = empty_catalog()
+        current["artifacts"]["new"] = {"id": "new", "blob_sha": "c" * 40}
+        restored = merge_catalog(current, legacy)
+        self.assertEqual(set(restored["artifacts"]), {"old", "new"})
+        for blob in ("a" * 40, "b" * 40):
+            self.assertIn("old", restored["content_index"][blob])
+        self.assertIn("new", restored["content_index"]["c" * 40])
+
     def test_migrate_old_schema_without_removing_candidates(self):
         before = {"schema_version": 1, "artifacts": {"old": {"id": "old", "revisions": []}}}
         with tempfile.TemporaryDirectory() as root:

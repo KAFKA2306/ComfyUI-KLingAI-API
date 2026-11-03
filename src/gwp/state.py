@@ -208,6 +208,20 @@ def merge_catalog(current, incoming):
     for section in SECTIONS:
         if len(out[section]) < max(len(a[section]), len(b[section])):
             raise AssertionError("統合で記録が消失しました")
+    # 旧版の台帳にはcontent_indexが存在しない場合がある。
+    # 復元した候補と過去改訂をBlob SHAから必ず引けるように再構築する。
+    for artifact_id, artifact in out["artifacts"].items():
+        blobs = {artifact.get("blob_sha")}
+        blobs.update(rev.get("blob_sha") for rev in artifact.get("revisions", [])
+                     if isinstance(rev, dict))
+        for blob in blobs:
+            if not isinstance(blob, str) or not blob:
+                continue
+            references = out["content_index"].setdefault(blob, [])
+            if not isinstance(references, list):
+                raise ValueError("内容索引の形式が不正です: " + blob)
+            if artifact_id not in references:
+                references.append(artifact_id)
     # 制作台帳の訂正履歴はイベントが正本。同時編集では双方を残したうえで
     # 最新の確定イベントから表示用の現在値を再構成する。
     latest = {}
