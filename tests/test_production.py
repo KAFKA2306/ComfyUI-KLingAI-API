@@ -53,7 +53,7 @@ class ProductionTests(unittest.TestCase):
         class Backend:
             def history(self, prompt_id):
                 return {prompt_id: {"status": {"status_str": "success", "completed": True},
-                                    "outputs": {"17": {"meshes": [{"filename": "cup.glb", "subfolder": "", "type": "output"}]}}}
+                                    "outputs": {"17": {"meshes": [{"filename": "cup.glb", "subfolder": "", "type": "output"}]}}}}
             def download(self, filename, subfolder, file_type):
                 return b"glTF-test-bytes"
         with tempfile.TemporaryDirectory() as temporary:
