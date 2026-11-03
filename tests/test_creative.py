@@ -30,7 +30,6 @@ PLAN = {
     ],
 }
 
-    
 def registry_for_plan():
     registry = copy.deepcopy(load_registry())
     registry["projects"]["project-001"] = {
@@ -57,11 +56,19 @@ class CreativeTests(unittest.TestCase):
         plan = copy.deepcopy(PLAN)
         plan["units"][0]["requires"] = ["video"]
         with self.assertRaisesRegex(ValueError, "循環"):
-            validate(plan)
+            validate(plan, registry_for_plan())
         plan = copy.deepcopy(PLAN)
         plan["releases"][0]["mission"] = "games"
         with self.assertRaisesRegex(ValueError, "missions"):
-            validate(plan)
+            validate(plan, registry_for_plan())
+
+    def test_unregistered_project_and_unknown_workflow(self):
+        with self.assertRaisesRegex(ValueError, "制作案件"):
+            validate(PLAN)
+        plan = copy.deepcopy(PLAN)
+        plan["units"][1]["workflow_ids"] = ["unknown-workflow"]
+        with self.assertRaisesRegex(ValueError, "一元台帳にないWorkflow"):
+            validate(plan, registry_for_plan())
 
 
 if __name__ == "__main__":
