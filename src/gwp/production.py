@@ -188,7 +188,7 @@ def collect_job(receipt, backend, output_root):
 
 
 def handoff_job(manifest_path, project_root):
-    """検証済み生成素材を既存制作repoの非追跡作業領域へコピーする。"""
+    """生成素材のSHA-256を照合し、指定された制作先の作業領域へコピーする。"""
     manifest_path = Path(manifest_path).resolve()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     target, prompt_id = manifest.get("target"), manifest.get("promptId")
