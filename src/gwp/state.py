@@ -292,11 +292,11 @@ def backup(path, destination):
     digest = checksum(current)
     dest = destination / (digest + ".json")
     if dest.exists():
-        if checksum(load_catalog(dest, allow_missing=False)) != digest:
+        if checksum(load_catalog(dest, allow_missing=False, require_checksum=True)) != digest:
             raise ValueError("既存バックアップが破損しています")
         return dest
     atomic_save(dest, current, preserve=False)
-    if checksum(load_catalog(dest, allow_missing=False)) != digest:
+    if checksum(load_catalog(dest, allow_missing=False, require_checksum=True)) != digest:
         raise IOError("バックアップの再検証に失敗しました")
     return dest
 

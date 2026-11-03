@@ -28,6 +28,21 @@ class CatalogDurabilityTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "SHA-256検証ファイル"):
                 restore(target, source)
 
+    def test_existing_backup_without_checksum_is_rejected_without_overwrite(self):
+        with tempfile.TemporaryDirectory() as root:
+            source = Path(root) / "source.json"
+            atomic_save(source, empty_catalog())
+            archived = backup(source, Path(root) / "independent")
+            saved_bytes = archived.read_bytes()
+            marker = archived.with_name(archived.name + ".sha256")
+            marker.unlink()
+
+            with self.assertRaisesRegex(ValueError, "SHA-256検証ファイル"):
+                backup(source, archived.parent)
+
+            self.assertEqual(archived.read_bytes(), saved_bytes)
+            self.assertFalse(marker.exists())
+
     def test_atomic_update_backup_corruption_restore(self):
         with tempfile.TemporaryDirectory() as root:
             file = Path(root) / "registry.json"
