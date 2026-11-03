@@ -3,7 +3,7 @@ id: "design-durable-registry"
 title: "台帳の保全・復旧・制作履歴の設計"
 kind: "design"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["台帳", "差分収集", "保全", "復旧", "制作履歴", "公開証拠"]
 related: ["src/gwp/state.py", "src/gwp/ledger.py", "src/gwp/discovery.py", "scripts/catalog_sync.sh", ".github/workflows/collect.yml"]
 sources: ["https://docs.github.com/en/rest/git/trees", "https://docs.github.com/en/rest/search/search", "https://docs.github.com/en/actions/reference/dependency-caching-reference"]
@@ -55,7 +55,7 @@ bash scripts/catalog_publish.sh .cache/edit.json
 
 `jobs` にはWorkflow、入力、Seed、`client_id`、`prompt_id`、実行環境、ジョブ状態を記録する。送信結果が不明な場合は `submission_unknown` とし、サーバー側の状態を確認してから再送を判断する。生成ファイルごとにSHA-256を照合し、回収が一部にとどまる場合は全件成功と記録しない。
 
-8領域の作品構成は `projects` と `gwp.creative` で扱う。素材・場面・音声・編集・配布物の依存関係を記録し、`assets` には素材のハッシュと保管先、`rights` には版ごとの権利根拠、`knowledge` には確認した知識を登録する。必要な素材が不足している作品は完成として記録しない。
+8領域の作品構成は `projects` と `gwp.creative` で扱う。素材・場面・音声・編集・配布物の依存関係を記録し、`assets` には素材のハッシュ、生成時の入力、保管先、`rights` には版ごとの権利根拠、`knowledge` には確認した知識を登録する。必要な素材が不足している作品は完成として記録しない。
 
 `publications` に公開を記録する際は、作品URL、公開先、確認日時、確認方法、一次証拠URLを登録する。通信が切れて結果を確認できない場合は `upload_unknown` とし、重複投稿を避ける。非公開化や新版公開は変更として追記し、過去の記録を残す。権利上の指摘を受けた場合は `gwp.ledger lineage` で関連する素材と公開先を調べる。
 
