@@ -28,7 +28,7 @@ uv run --locked python -m gwp.production_job submit --target "$TARGET" --workflo
 uv run --locked python -m gwp.production_job collect --receipt "$RECEIPT" --output-root "$OUTPUT_ROOT"
 ```
 
-`plan` は入力を検査する。`submit` はComfyUIへ実行を依頼し、戻されたジョブIDをreceiptに保存する。`collect` はジョブの成功履歴を確認してからファイルを回収し、それぞれのSHA-256を記録する。送信後、`collect` がジョブの成功履歴を確認してファイルを回収する。処理が終わっていなければ、完了後に改めて`collect`を実行する。
+`plan`はWorkflowと入力値を検査する。`submit`はComfyUIへ実行を依頼し、受け取ったジョブIDを`receipt`に保存する。`collect`は実行履歴で成功を確認した場合にファイルを回収し、それぞれのSHA-256を記録する。処理が終わっていなければ、完了後に`collect`を再実行する。
 
 送信中に通信が切れた場合、`receipt` に `SUBMISSION_UNKNOWN` が残る。この状態では同じWorkflowを再送せず、次のコマンドでComfyUIの実行待ち・実行中のジョブを照合する。
 
