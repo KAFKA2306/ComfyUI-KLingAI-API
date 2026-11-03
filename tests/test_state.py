@@ -58,6 +58,35 @@ class CatalogDurabilityTests(unittest.TestCase):
         self.assertEqual(len(merged["content_index"]["b" * 40]), 2)
         self.assertEqual(health(merged, a)["status"], "ok")
 
+    def test_concurrent_merge_keeps_success_timestamp_and_sha_together(self):
+        older, newer = empty_catalog(), empty_catalog()
+        older["repositories"]["a/b"] = {
+            "repo": "a/b", "last_scanned_at": "2026-11-03T12:00:00Z",
+            "last_success_at": "2026-11-03T12:00:00Z",
+            "last_success_sha": "f" * 40}
+        newer["repositories"]["a/b"] = {
+            "repo": "a/b", "last_scanned_at": "2026-11-03T12:05:00Z",
+            "last_success_at": "2026-11-03T12:05:00Z",
+            "last_success_sha": "0" * 40}
+        for first, second in ((older, newer), (newer, older)):
+            merged = merge_catalog(first, second)["repositories"]["a/b"]
+            self.assertEqual(
+                (merged["last_success_at"], merged["last_success_sha"]),
+                ("2026-11-03T12:05:00Z", "0" * 40))
+
+    def test_concurrent_merge_keeps_both_search_overflow_warnings(self):
+        left, right = empty_catalog(), empty_catalog()
+        key = "github-search:comfyui"
+        left["search_progress"][key] = {
+            "overflows": ["created:2026-11-01"], "pending": []}
+        right["search_progress"][key] = {
+            "overflows": ["created:2026-11-02"], "pending": []}
+        for first, second in ((left, right), (right, left)):
+            merged = merge_catalog(first, second)
+            self.assertEqual(
+                set(merged["search_progress"][key]["overflows"]),
+                {"created:2026-11-01", "created:2026-11-02"})
+
     def test_migrate_old_schema_without_removing_candidates(self):
         before = {"schema_version": 1, "artifacts": {"old": {"id": "old", "revisions": []}}}
         with tempfile.TemporaryDirectory() as root:

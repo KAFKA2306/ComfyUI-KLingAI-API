@@ -18,7 +18,8 @@ SECTIONS = ("repositories", "artifacts", "discoveries", "evidence", "feeds",
             "jobs", "assets", "publications", "knowledge", "rights")
 IDENTITY_FIELDS = {"id", "source", "path", "repo", "url"}
 LIST_UNION = {"revisions", "discovered_via", "node_types", "model_references",
-              "aliases", "tags", "mission_ids", "source_urls", "evidence_urls"}
+              "aliases", "tags", "mission_ids", "source_urls", "evidence_urls",
+              "overflows"}
 
 
 def empty_catalog():
@@ -172,10 +173,13 @@ def _merge_item(left, right):
         left, right = right, left
     merged = _merge_value(left, right)
     # 一度の巡回失敗は過去の成功時点と収集件数を消してはいけない。
-    for key in ("last_success_at", "last_success_sha"):
-        values = [record.get(key) for record in (left, right) if record.get(key)]
-        if values:
-            merged[key] = max(values)
+    successes = [record for record in (left, right)
+                 if record.get("last_success_at") and record.get("last_success_sha")]
+    if successes:
+        latest = max(successes, key=lambda record: (
+            record["last_success_at"], record["last_success_sha"]))
+        merged["last_success_at"] = latest["last_success_at"]
+        merged["last_success_sha"] = latest["last_success_sha"]
     return merged
 
 
