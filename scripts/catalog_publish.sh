@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 収集結果・制作履歴を同じcatalog正本へ統合し、競合時も再試行する。
+# 収集結果・制作履歴をmainの単一正本へ統合し、競合時も再試行する。
 set -euo pipefail
 
 if [[ "$#" -ne 1 || ! -f "$1" ]]; then
@@ -12,7 +12,7 @@ if [[ ! -f "${INPUT}.sha256" ]]; then
   exit 1
 fi
 
-BRANCH="${CATALOG_BRANCH:-catalog}"
+BRANCH="main"
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 uv run --locked python -m gwp.state verify --catalog "$INPUT"
@@ -55,9 +55,9 @@ for attempt in 1 2 3 4 5; do
     exit 0
   fi
   git -C "$WORKTREE" -c user.name="$AUTHOR_NAME" -c user.email="$AUTHOR_EMAIL" \
-    commit -m "data: 台帳の変更を競合統合して保全" >/dev/null
+    commit -m "data: 台帳の変更を競合統合して保全 [skip ci]" >/dev/null
   if git -C "$WORKTREE" push origin "HEAD:refs/heads/${BRANCH}"; then
-    echo "catalog正本へ反映しました"
+    echo "main正本へ反映しました"
     exit 0
   fi
   echo "更新競合のため再統合します (${attempt}/5)" >&2

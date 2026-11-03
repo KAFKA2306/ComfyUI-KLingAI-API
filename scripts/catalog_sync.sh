@@ -2,7 +2,7 @@
 # 収集台帳の永続保存。キャッシュは正本ではない。
 set -euo pipefail
 
-BRANCH="${CATALOG_BRANCH:-catalog}"
+BRANCH="main"
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 mkdir -p .cache

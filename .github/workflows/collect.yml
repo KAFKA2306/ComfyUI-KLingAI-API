@@ -2,6 +2,9 @@ name: 出典収集と動作検証
 
 on:
   push:
+    paths-ignore:
+      - 'data/workflow_registry.json'
+      - 'data/workflow_registry.json.sha256'
   pull_request:
   schedule:
     - cron: '17 */6 * * *'
@@ -56,12 +59,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash scripts/catalog_sync.sh
-      - name: 確定済みcatalogを検証してスナップショット化
+      - name: 確定済みmainを検証してスナップショット化
         run: |
           mkdir -p .cache/catalog-snapshot/data
-          git fetch --no-tags origin refs/heads/catalog:refs/remotes/origin/catalog
-          git show origin/catalog:data/workflow_registry.json > .cache/catalog-snapshot/data/workflow_registry.json
-          git show origin/catalog:data/workflow_registry.json.sha256 > .cache/catalog-snapshot/data/workflow_registry.json.sha256
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
+          git show origin/main:data/workflow_registry.json > .cache/catalog-snapshot/data/workflow_registry.json
+          git show origin/main:data/workflow_registry.json.sha256 > .cache/catalog-snapshot/data/workflow_registry.json.sha256
           uv run --locked python -m gwp.state verify --catalog .cache/catalog-snapshot/data/workflow_registry.json
       - name: 復旧可能な確定済みスナップショットを保存
         uses: actions/upload-artifact@v4
