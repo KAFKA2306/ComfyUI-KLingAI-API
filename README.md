@@ -28,12 +28,14 @@ tags: [制作基盤, Workflow, ナレッジ, 8領域, uv]
 
 ## 文書の正本
 
-- [超長期ゴール](docs/vision.md)：8領域の到達状態と成功条件
-- [アーキテクチャ](docs/architecture.md)：現行実装、正本データ、交換可能な構成
-- [ナレッジの管理](docs/knowledge.md)：出典、改訂、タグ、メタデータの規約
-- [運用手順](docs/operations.md)：uv、収集、制作、検証、公開の証拠
+- [設計とナレッジの索引](docs/README.md)：文書の統一ルールとタグ付き検索
+- [システム設計](docs/design/system.md)：現行アーキテクチャと実装境界
+- [制作工程](docs/design/production.md)：uvによる素材生成・受け渡し
+- [VRChatカフェ](docs/design/vrchat-cafe.md)：公開までの確認工程
+- [Workflow台帳](docs/knowledge/registry.md)：メタデータと用語
+- [一次資料](docs/knowledge/sources.md)：原典とライセンス
 
-重複した案内、旧名称の経緯、作業日誌は現行文書に残しません。履歴はGitで参照できます。
+設計判断の旧版はGitの履歴で追跡します。現行文書を重複させません。
 
 ## 必須の実行方法
 
@@ -47,7 +49,7 @@ uv run --locked python -m gwp.discovery search --term VRChat
 uv run --locked python -m gwp.discovery export > workflows.csv
 ~~~
 
-収集更新は `uv run --locked python -m gwp.discovery sync`。ネットワークを使用し、`data/workflow_registry.json`を更新します。実際の制作コマンドは[運用手順](docs/operations.md)に集約します。
+収集更新は `uv run --locked python -m gwp.discovery sync`。ネットワークを使用し、`data/workflow_registry.json`を更新します。実際の制作コマンドは[制作工程](docs/design/production.md)に集約します。
 
 ## 守る境界
 
