@@ -2,10 +2,11 @@
 import sys
 import unittest
 from pathlib import Path
+from urllib.error import URLError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from gwp.discovery import export_catalog, new_catalog, record_file, walk_tree, workflow_details
+from gwp.discovery import export_catalog, new_catalog, record_file, sync, walk_tree, workflow_details
 
 
 class DiscoveryTests(unittest.TestCase):
@@ -43,6 +44,43 @@ class DiscoveryTests(unittest.TestCase):
         exported = export_catalog(catalog, [{"title": "VRChat", "keywords": ["vrchat"]}], "json")
         self.assertIn("unknown.json", exported)
         self.assertIn("vrchat/embedded.png", exported)
+
+
+    def test_failed_repository_does_not_starve_unscanned_sources(self):
+        catalog = new_catalog()
+        for name in ("a/unavailable", "b/available"):
+            catalog["discoveries"][name] = {
+                "repo": name, "url": "https://github.com/" + name,
+                "discovered_via": ["configured-seed"],
+            }
+
+        class API:
+            def __init__(self):
+                self.attempts = []
+
+            def json(self, url):
+                prefix = "https://api.github.com/repos/"
+                if url == prefix + "a/unavailable":
+                    self.attempts.append("a/unavailable")
+                    raise URLError("一時的に取得できません")
+                if url == prefix + "b/available":
+                    self.attempts.append("b/available")
+                    return {"default_branch": "main"}
+                if url == prefix + "b/available/commits/main":
+                    return {"sha": "a" * 40}
+                if url == prefix + "b/available/git/trees/main?recursive=1":
+                    return {"truncated": False, "tree": []}
+                if url.startswith(prefix + "b/available/issues?"):
+                    return []
+                raise AssertionError("想定外のAPI呼び出し: " + url)
+
+        api = API()
+        sync(api, catalog, {}, max_repos=1, inspect_limit=0)
+        sync(api, catalog, {}, max_repos=1, inspect_limit=0)
+
+        self.assertEqual(api.attempts, ["a/unavailable", "b/available"])
+        self.assertIn("last_attempted_at", catalog["repositories"]["a/unavailable"])
+        self.assertIn("last_scanned_at", catalog["repositories"]["b/available"])
 
 
 if __name__ == "__main__":
