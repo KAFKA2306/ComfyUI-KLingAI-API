@@ -15,13 +15,13 @@ sources: ["https://docs.github.com/en/rest/git/trees", "https://docs.github.com/
 
 ## 正本と保存先
 
-mainの `config/registry.json` は制作目標・収集条件・制作案件の設定です。catalogブランチの `data/workflow_registry.json` と `data/workflow_registry.json.sha256` は収集結果と制作履歴の正本です。`.cache/` はローカル作業領域で、GitHub Actionsのキャッシュや成果物も正本にはしません。
+mainの `config/registry.json` は制作目標・収集条件・制作案件の設定です。mainブランチの `data/workflow_registry.json` と `data/workflow_registry.json.sha256` は収集結果と制作履歴の正本です。`.cache/` はローカル作業領域で、GitHub Actionsのキャッシュや成果物も正本にはしません。
 
 GitHubの履歴だけに依存しないよう、別媒体にも台帳を保管します。`gwp.state backup` は指定したディレクトリーへバックアップを作ります。バックアップの実行時期と保存先は運用者が管理します。生成メディアとモデル本体はGitへ入れず、台帳にはハッシュ、容量、保管場所、出典を記録します。
 
 ## 保存・差分統合
 
-`scripts/catalog_sync.sh` はcatalogの台帳を取得し、整合性を確認して公開元を差分収集します。続いて `scripts/catalog_publish.sh` が最新のcatalogと差分を統合し、Gitへ保存します。ほかのPCが先に更新した場合は、新しい台帳を再取得して統合し、最大5回再試行します。入力ファイルは成功・失敗にかかわらず残します。
+`scripts/catalog_sync.sh` はmainの台帳を取得し、整合性を確認して公開元を差分収集します。続いて `scripts/catalog_publish.sh` が最新のcatalogと差分を統合し、Gitへ保存します。ほかのPCが先に更新した場合は、新しい台帳を再取得して統合し、最大5回再試行します。入力ファイルは成功・失敗にかかわらず残します。
 
 コードの原子的なファイル置換と、Gitへの保存は別の工程です。`gwp.state` は旧版の退避、スキーマ1から2への移行、SHA-256による整合確認を扱います。台帳IDが減った場合は `status` または `verify --other` で前版と比較し、差分を調べます。
 
@@ -30,10 +30,10 @@ GitHubの履歴だけに依存しないよう、別媒体にも台帳を保管�
 次の手順はBashまたはWSLを想定します。Gitからcatalogを取得し、台帳本体と検証用ファイルを同じ場所へ保存します。
 
 ```sh
-git fetch origin catalog
+git fetch origin main
 mkdir -p .cache
-git show origin/catalog:data/workflow_registry.json > .cache/restored.json
-git show origin/catalog:data/workflow_registry.json.sha256 > .cache/restored.json.sha256
+git show origin/main:data/workflow_registry.json > .cache/restored.json
+git show origin/main:data/workflow_registry.json.sha256 > .cache/restored.json.sha256
 uv run --locked python -m gwp.state verify --catalog .cache/restored.json
 ```
 
@@ -41,15 +41,15 @@ uv run --locked python -m gwp.state verify --catalog .cache/restored.json
 
 ## 制作・公開履歴の更新
 
-作品、採用Workflow、依存モデル、実行ジョブ、権利、公開の履歴は `gwp.ledger` で更新します。更新したローカル台帳は `scripts/catalog_publish.sh` でcatalogへ統合します。操作例では、`PROJECT_ID` に実際の案件ID、`PAYLOAD` にその案件のJSONファイルを指定します。
+作品、採用Workflow、依存モデル、実行ジョブ、権利、公開の履歴は `gwp.ledger` で更新します。更新したローカル台帳は `scripts/catalog_publish.sh` でmainへ統合します。操作例では、`PROJECT_ID` に実際の案件ID、`PAYLOAD` にその案件のJSONファイルを指定します。
 
 ```sh
 PROJECT_ID=project-id
 PAYLOAD=/path/to/project.json
-git fetch origin catalog
+git fetch origin main
 mkdir -p .cache
-git show origin/catalog:data/workflow_registry.json > .cache/edit.json
-git show origin/catalog:data/workflow_registry.json.sha256 > .cache/edit.json.sha256
+git show origin/main:data/workflow_registry.json > .cache/edit.json
+git show origin/main:data/workflow_registry.json.sha256 > .cache/edit.json.sha256
 uv run --locked python -m gwp.state verify --catalog .cache/edit.json
 uv run --locked python -m gwp.ledger put --catalog .cache/edit.json --section projects --id "$PROJECT_ID" --payload "$PAYLOAD"
 bash scripts/catalog_publish.sh .cache/edit.json
