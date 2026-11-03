@@ -11,27 +11,29 @@ sources: []
 
 # 設計書とナレッジ
 
-設計書は制作基盤の動作と運用方法、ナレッジはWorkflowの出典と用語を扱います。8領域の目標・収集元・制作案件は `config/registry.json` にまとめ、収集データと制作履歴はcatalogブランチに保存します。文書へ台帳を複製しません。
+`docs/design/` は制作基盤の設計と操作手順、`docs/knowledge/` は出典と用語を扱う。
+
+8領域の目標、収集元、制作案件、採用Workflowの設定は[一元台帳](../config/registry.json)に置く。収集・制作履歴は`catalog`ブランチの`data/workflow_registry.json`に保存する。処理の詳細は実装コードを参照する。`.cache/`は作業用の一時保存先とし、正本の情報を文書へ複製しない。
 
 ## 設計書
 
-- [全体設計](design/system.md)：収集、素材生成、作品完成の責任分担
-- [台帳の保全・復旧](design/durability.md)：永続保存、PC交換、更新競合、制作・公開履歴
-- [制作工程](design/production.md)：ローカルComfyUIへの投入、回収、制作先への受け渡し
+- [全体設計](design/system.md)：公開Workflowの収集から制作までの処理と責任分担
+- [台帳の保全・復旧](design/durability.md)：永続保存、別PCからの復旧、競合統合、制作と公開の出典管理
+- [制作工程への接続](design/production.md)：ComfyUIへの投入、出力回収、制作先への受け渡し
 - [作品構成と演出](design/creative.md)：制作単位の依存関係と変更の影響
 
 ## ナレッジ
 
-- [Workflow台帳と用語](knowledge/registry.md)：記録項目、状態区分、検索方法
-- [一次資料と情報源](knowledge/sources.md)：取得元と利用条件の確認
+- [Workflow台帳と用語](knowledge/registry.md)：収集データの構造、状態、検索方法
+- [一次資料と情報源](knowledge/sources.md)：公開元の区分、原典と利用条件の確認
 
 ## 文書の規則
 
-全Markdownファイルの先頭に、`id`、`title`、`kind`、`status`、`updated`、`tags`、`related`、`sources` を含むYAMLフロントマターを付けます。値はJSON互換のYAMLで記述します。
+各Markdown文書の先頭に、`id`、`title`、`kind`、`status`、`updated`、`tags`、`related`、`sources`を持つYAMLフロントマターを付ける。値はJSON互換のYAMLで記述する。
 
-`kind` は `index`・`design`・`knowledge`、`status` は `active`・`reference` のいずれかです。`tags` は重複しない検索語を2件以上、`related` は存在するリポジトリ内のパス、`sources` は対応する一次資料のHTTPS URLを指定します。
+`kind`には`index`、`design`、`knowledge`のいずれかを指定し、`status`には`active`または`reference`を使う。`tags`は重複しない検索語を2件以上、`related`は実在するリポジトリ内のパスとする。`sources`には根拠となる一次資料のHTTPS URLを記載し、参照資料がない文書では空配列にする。
 
-本文は日本語で書き、固有名詞・コマンド・ファイル名の表記は維持します。設計判断、実行条件、確認方法を記し、進捗メモや同じ内容の説明を増やしません。文書のメタデータと内部リンクは次のコマンドで検査します。
+本文は日本語で書き、固有名詞やコードの識別子は元の表記を保つ。設計上の判断と確認方法を残し、重複した説明や作業日誌はGitの履歴へ委ねる。文書と内部リンクの検査には次を使う。
 
 ```sh
 uv run --locked python scripts/validate_docs.py
