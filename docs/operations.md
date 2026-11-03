@@ -36,17 +36,16 @@ uv run --locked python -m gwp.discovery sync --max-repos 12 --discovery-pages 1 
 
 ## ローカルComfyUIから制作先への受け渡し
 
-対応先は `config/production_targets.json` を参照してください。現在は `image2outfit`、`vrmine-cafe`、`tripo-3d` が登録されています。入力はComfyUIの **Export Workflow (API)** で保存したJSONが必要です。
+制作先の固定台帳は設けません。`--target` は生成物を整理するための任意の識別子です（英小文字・数字・`_`・`-`、1～64文字）。8つの制作領域すべてで同じCLIを利用できます。入力にはComfyUIの **Export Workflow (API)** で保存したJSONが必要です。
 
 ~~~sh
-uv run --locked python -m gwp.production_job targets
-uv run --locked python -m gwp.production_job plan --target vrmine-cafe --workflow workflow-api.json
-uv run --locked python -m gwp.production_job submit --target vrmine-cafe --workflow workflow-api.json --receipt .artifacts/receipt.json
+uv run --locked python -m gwp.production_job plan --target youtube-shorts --workflow workflow-api.json
+uv run --locked python -m gwp.production_job submit --target youtube-shorts --workflow workflow-api.json --receipt .artifacts/receipt.json
 uv run --locked python -m gwp.production_job collect --receipt .artifacts/receipt.json --output-root .artifacts/output
-uv run --locked python -m gwp.production_job handoff --manifest .artifacts/output/vrmine-cafe/<promptId>/manifest.json --project-root ../vrmine
+uv run --locked python -m gwp.production_job handoff --manifest .artifacts/output/youtube-shorts/<promptId>/manifest.json --project-root ../creative-project
 ~~~
 
-`submit` は既定でローカル `http://127.0.0.1:8188` に実行要求を送ります。コマンドの `<promptId>` は実際のreceiptから得た値に置き換えてください。生成物は検証前の状態のまま受け渡され、制作先の完成判定を上書きしません。対応する出力形式とファイルサイズには制限があります。
+`submit` は既定でローカル `http://127.0.0.1:8188` に実行要求を送ります。`<promptId>` はreceiptの値に置き換えます。受け渡し先には既存のプロジェクトディレクトリを指定します。生成物は `.artifacts/comfyui/<target>/<promptId>/` に保存し、SHA-256で内容を確認します。素材が生成できても作品の品質・完成・公開は保証されません。形式とファイルサイズの制限も維持します。
 
 ## VRChat小型カフェの公開確認
 

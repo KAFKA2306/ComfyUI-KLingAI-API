@@ -18,7 +18,7 @@ tags: [アーキテクチャ, データの正本, 出典追跡, Workflow, 自動
     ↓ 版と用途の検索（候補を排除しない）
 制作要求：8領域それぞれ独立
     ↓ Workflow・依存関係・利用条件の確認
-ローカルComfyUIで素材生成（対応先のみ実装）
+ローカルComfyUIで素材生成（制作先の固定登録は不要）
     ↓ 入出力のハッシュ・実行記録
 Blender / Unity / 動画・音声編集 / 配布先の固有工程
     ↓ 各領域固有の品質・権利・公開条件
@@ -35,8 +35,7 @@ Blender / Unity / 動画・音声編集 / 配布先の固有工程
 | Workflow候補と版 | `data/workflow_registry.json` | 出典付き候補の機械可読な正本 |
 | 収集と検索 | `src/gwp/discovery.py` | GitHub等の公開情報を取得し検索・CSV出力 |
 | 定期更新 | `.github/workflows/collect.yml` | 6時間ごとの収集ジョブと検証 |
-| 生成可能な制作先 | `config/production_targets.json` | 受け渡し対象と完成判定の責任先 |
-| 生成・受け渡し | `src/gwp/production.py`, `src/gwp/production_job.py` | ローカルComfyUIへ投入、回収、ハッシュ確認、限定的な転送 |
+| 生成・受け渡し | `src/gwp/production.py`, `src/gwp/production_job.py` | ローカルComfyUIへ投入、回収、ハッシュ確認、指定先への転送 |
 | VRChatカフェの候補 | `projects/vrchat-cafe/workflows.json` | Workflow候補の用途と出典。素材生成・制作・公開の完了証拠ではない |
 | カフェ素材の取得・変換 | `projects/vrchat-cafe/cafe_pipeline.py`, `projects/vrchat-cafe/blender_cafe_asset.py` | Workflowの出典保存、GLB形式確認、GLBからFBXへの変換。Unityシーンの完成やVRChat公開は行わない |
 
