@@ -11,7 +11,7 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 
 # Workflow台帳と用語
 
-公開Workflowの出典と改訂を検索するデータは、既定で `.cache/workflow_registry.json` に生成する。8領域の目標、制作案件、Workflow候補、収集条件、検索分類は `config/registry.json` に集約する。キャッシュはGitへコミットされず、長期間の保管を保証するものではない。
+公開Workflowの出典と改訂を検索するデータは、既定で `.cache/workflow_registry.json` に生成する。8領域の目標、制作案件、Workflow候補、収集条件、検索分類は `config/registry.json` に集約する。`workflows` は案件から独立して登録する候補一覧、`projects` は制作する案件の記録であり、特定の領域を必須とはしない。キャッシュはGitへコミットされず、長期間の保管を保証するものではない。
 
 ## 収集データの構造
 
