@@ -1,0 +1,49 @@
+name: VRChat Cafe Workflow Source Snapshots
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/cafe-workflow-snapshots.yml"
+      - "projects/vrchat-cafe/workflows.json"
+      - "scripts/cafe_pipeline.py"
+  schedule:
+    - cron: '23 17 * * 0'  # Monday 02:23 JST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cafe-workflow-snapshots-main
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch pinned original ComfyUI workflows, without execution
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/cafe_pipeline.py snapshot
+          python scripts/cafe_pipeline.py check --strict
+      - name: Commit original JSON and provenance
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects/vrchat-cafe/upstream
+          if git diff --cached --quiet; then
+            echo "Workflow source snapshots unchanged"
+            exit 0
+          fi
+          git commit -m "data: refresh pinned VRChat cafe source workflow JSON"
+          git pull --rebase origin main
+          git push origin HEAD:main

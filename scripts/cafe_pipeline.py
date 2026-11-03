@@ -6,6 +6,7 @@ import argparse
 import base64
 import hashlib
 import json
+import os
 import re
 import struct
 from pathlib import Path
@@ -35,7 +36,10 @@ def manifest_entries(root: Path) -> list[dict]:
 
 def github_json(path: str) -> dict:
     url = "https://api.github.com/" + path.lstrip("/")
-    req = Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "gwp-vrchat-cafe", "X-GitHub-Api-Version": "2022-11-28"})
+    headers = {"Accept": "application/vnd.github+json", "User-Agent": "gwp-vrchat-cafe", "X-GitHub-Api-Version": "2022-11-28"}
+    if os.environ.get("GITHUB_TOKEN"):
+        headers["Authorization"] = "Bearer " + os.environ["GITHUB_TOKEN"]
+    req = Request(url, headers=headers)
     with urlopen(req, timeout=35) as response:
         return json.load(response)
 
