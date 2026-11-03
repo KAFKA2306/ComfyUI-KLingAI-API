@@ -15,7 +15,7 @@ def repo(name):
 class RegistryTests(unittest.TestCase):
     def test_pagination(self):
         def fetch(path):
-            return [repo(str(i)) for i in range(100)] if "page=1" in path else [repo("last")]
+            return [repo(str(i)) for i in range(100)] if path.endswith("&page=1") else [repo("last")]
         self.assertEqual(len(official_repositories(fetch, "Comfy-Org")), 101)
 
     def test_path_filter(self):
