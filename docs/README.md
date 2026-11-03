@@ -6,14 +6,14 @@ status: "active"
 updated: "2026-11-04"
 tags: ["索引","設計","ナレッジ"]
 related: ["docs/design/system.md","docs/knowledge/registry.md"]
-sources: []
+sources: ["https://imoz.jp/humanizer.ja.txt"]
 ---
 
 # 設計書とナレッジ
 
 `docs/design/` は制作基盤の設計と操作手順、`docs/knowledge/` は出典と用語を扱う。
 
-8領域の目標、収集元、制作案件、採用Workflowの設定は[一元台帳](../config/registry.json)に置く。収集・制作履歴は`catalog`ブランチの`data/workflow_registry.json`に保存する。処理の詳細は実装コードを参照する。`.cache/`は作業用の一時保存先とし、正本の情報を文書へ複製しない。
+8領域の目標、収集元、制作案件、採用Workflowの設定は[一元台帳](../config/registry.json)に置く。収集・制作履歴は`main`ブランチの`data/workflow_registry.json`に保存する。処理の詳細は実装コードを参照する。`.cache/`は作業用の一時保存先とし、正本の情報を文書へ複製しない。
 
 ## 設計書
 
@@ -33,7 +33,9 @@ sources: []
 
 `kind`には`index`、`design`、`knowledge`のいずれかを指定し、`status`には`active`または`reference`を使う。`tags`は重複しない検索語を2件以上、`related`は実在するリポジトリ内のパスとする。`sources`には根拠となる一次資料のHTTPS URLを記載し、参照資料がない文書では空配列にする。
 
-本文は日本語で書き、固有名詞やコードの識別子は元の表記を保つ。設計上の判断と確認方法を残し、重複した説明や作業日誌はGitの履歴へ委ねる。文書と内部リンクの検査には次を使う。
+本文は日本語で書き、固有名詞やコードの識別子は元の表記を保つ。[推敲指針](https://imoz.jp/humanizer.ja.txt)に沿って、必要な説明を残す。
+
+実装・検証結果・作品公開を断定する場合は、対応するコード、実行結果、一次資料、公開物のURLで裏付ける。根拠のない成果報告、作業日誌、一般的な注意書きを追加しない。文書と内部リンクの検査には次を使う。
 
 ```sh
 uv run --locked python scripts/validate_docs.py

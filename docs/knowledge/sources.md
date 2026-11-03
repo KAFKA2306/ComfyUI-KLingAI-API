@@ -21,6 +21,6 @@ sources: ["https://github.com/Comfy-Org/workflow_templates","https://github.com/
 
 ## モデル情報と参考サイト
 
-Hugging FaceとCivitaiのAPIはモデルのメタデータを取得する。RunningHub、Reddit、Comfy Registry、OpenArtなどは、取得手段を確認するまでは `reference_sources` に登録した参考サイトとして扱う。
+Hugging FaceとCivitaiのモデル情報は収集台帳の `feeds` に記録する。参考サイトは [`config/registry.json`](../../config/registry.json) の `reference_sources` で管理する。
 
-Workflowを見つけても、実行可能性、再配布の許可、商用利用の許可までは確定しない。採用時にはWorkflow、依存モデル、Custom Node、生成素材について、原典の利用条件をそれぞれ調べる。GitHubのスター数やIssueの存在だけで個別Workflowの品質を断定しない。
+権利情報は `rights` に対象・ライセンス・一次証拠URLとして登録する。必須項目は [`gwp.ledger`](../../src/gwp/ledger.py) に定義する。

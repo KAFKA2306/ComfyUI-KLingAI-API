@@ -27,7 +27,7 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 | `projects`・`jobs`・`assets` | 制作案件、実行状態、生成素材 |
 | `rights`・`publications`・`knowledge` | 利用条件、公開の確認、再利用する知識 |
 
-公開ファイルの存在確認を「発見」、形式・ノード参照の読み取りを「静的確認」、指定した環境での実行を「実行確認」と呼びます。これらの状態は別に記録します。Issueがあることは個々のWorkflowの動作確認になりません。
+公開ファイルの存在確認を「発見」、形式・ノード参照の読み取りを「静的確認」、指定した環境での実行を「実行確認」と呼びます。Issue参照は `evidence` に保存し、個々のWorkflowの実行結果とは区別します。
 
 Workflowはノードを接続した処理構成です。Subgraphは再利用する部分的な構成です。この収集処理では、JSONの `definitions.subgraphs` を含む場合にBlueprintと識別します。ファイル名や分類だけで利用条件や品質を決めません。
 
@@ -45,7 +45,7 @@ uv run --locked python -m gwp.discovery export --catalog .cache/workflow_registr
 uv run --locked python -m gwp.discovery export --catalog .cache/workflow_registry.json --format json > .cache/workflows.json
 ```
 
-CSVとJSONは `.cache/` に出力する閲覧用ファイルです。正本として編集せず、必要なときに台帳から再生成します。収集対象の件数はGitHub検索と巡回の上限に左右されます。
+CSVとJSONは `.cache/` に出力し、必要なときに台帳から再生成します。
 
 ## Workflow候補の絞り込み
 

@@ -50,4 +50,4 @@ uv run --locked python -m gwp.production_job handoff --manifest "$OUTPUT_ROOT/$T
 
 `handoff` はSHA-256を照合し、制作先の `.artifacts/comfyui/<target>/<promptId>/` にファイルをコピーする。この作業領域は制作先のGit管理から除外する。回収できる拡張子は画像・動画・音声のほか、GLB・FBX・OBJを含む。3Dデータの構造や外観、利用条件は制作先で検査する。
 
-素材を受け取った制作先が、依存モデルと素材の利用条件、見た目、性能、公開条件を確認して作品を完成させる。
+
