@@ -1,32 +1,27 @@
 # Comfy Workflow Atlas
 
-Comfy Workflow Atlas is a source-preserving catalog of real-world ComfyUI workflows, subgraphs, blueprints, custom-node examples, model references, and public implementation evidence. The original Kling-specific implementation was replaced; its history remains available in Git.
+Workflow-first 2026 discovery for **YouTube, VRChat, BOOTH, Podcast, 3D Models, Movies, Chill Worlds, Game Worlds, Avatars and game assets**. The former Kling-specific implementation was retired; its Git history remains accessible.
 
-**Workflow first. No proprietary quality scores, filtering, rankings, or execution of third-party workflows.** Every indexed candidate remains available with its origin and inspection state. Unsupported or inaccessible sources remain visible as unsynced references.
+## Browse and reproduce
 
-## Included
-- Original ComfyUI API connection and versioned workflow contracts: `src/gwp/`
-- GitHub workflow source registry: `config/workflow_sources.json`
-- GitHub public-repository search + discovery queue + complete Git trees (including truncated-tree fallback)
-- SHA-pinned workflow file references, revision history, basic node/model references, image-embedded-workflow candidates
-- Public model-index discovery: Hugging Face and Civitai (metadata only)
-- Issue-reference collection (recent 30 per scanned repo, repo-wide scope)
-- UTC daily GitHub Actions collection, metadata commit to main, GitHub-hosted Python tests
-- Local JSON catalog search without subjective rank or gate
+- [Use-case index](catalog/index.md): direct links to original, pinned Workflow JSON.
+- [All candidates CSV](catalog/all-workflows.csv): complete index for Google Sheets / Excel, including unmatched entries.
+- [Use-case JSON](catalog/by-usecase.json): machine-readable cross-category IDs.
+- [Sources and limitations](docs/SOURCES.md)
+- [Source-preserving registry design](docs/workflow-first-registry.md)
 
-## Run
+The catalog merges the prior official/community snapshot and the new `data/workflow_registry.json` provenance-first crawler. It **does not filter, score or rank creators**. Every candidate, including unknown formats and PNG/WebP, stays discoverable. Category tags are exploratory, not evidence that a workflow completes an entire published product.
+
+## Automatic collection
+
+`.github/workflows/workflow-discovery.yml` runs every 6 hours and on demand. It tracks independent and official sources and revisions, inspects JSON metadata without executing upstream code, regenerates the full category index, and commits metadata changes.
+
 ```sh
 python -m unittest discover -s tests -v
 PYTHONPATH=src python -m gwp.discovery sync
 PYTHONPATH=src python -m gwp.discovery stats
 PYTHONPATH=src python -m gwp.discovery search --term flux
+python scripts/build_catalog.py
 ```
 
-Uses Python 3.11+ standard library; no external runtime package or model weight. Optional `GITHUB_TOKEN` expands API rate allowance. GitHub Actions runs daily at 01:17 JST (16:17 UTC), with optional manual dispatch. The first full source ingestion occurs when the collector runs; a blank starting catalog does not claim that every source has already been indexed.
-
-See [architecture and explicit collection gaps](docs/workflow-first-registry.md). ComfyUI workflows that come from a third party must be reviewed before running; this catalog never auto-adopts them.
-
-## Existing platform components
-- `src/gwp/comfyui.py`: local ComfyUI client
-- `src/gwp/registry.py`: immutable versioned workflow loading
-- `contracts/`, `workflows/`, `blueprints/`, `dependencies/`, `environments/`: prior platform structure
+Python 3.11+, standard library. No paid model API. GPU execution, Unity/VRChat SDK integration and BOOTH commercial-license checks are separate production steps. Original versioned contracts and optional runtime adapter remain under `src/gwp/`.

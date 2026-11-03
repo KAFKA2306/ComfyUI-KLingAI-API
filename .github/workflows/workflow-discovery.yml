@@ -2,8 +2,16 @@ name: Comfy Workflow Atlas - Source Discovery
 
 on:
   schedule:
-    - cron: '17 16 * * *'
+    - cron: '17 */6 * * *'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/gwp/discovery.py'
+      - 'scripts/build_catalog.py'
+      - 'config/workflow_sources.json'
+      - 'config/use-cases.json'
+      - '.github/workflows/workflow-discovery.yml'
 
 permissions:
   contents: write
@@ -27,13 +35,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PYTHONPATH=src python -m gwp.discovery sync --max-repos 12 --discovery-pages 1 --inspect-limit 50
+          PYTHONPATH=src python -m gwp.discovery sync --max-repos 24 --discovery-pages 1 --inspect-limit 50
           PYTHONPATH=src python -m gwp.discovery stats
+          python scripts/build_catalog.py
       - name: Commit metadata updates
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/workflow_registry.json
+          git add data/workflow_registry.json catalog/index.md catalog/by-usecase.json catalog/all-workflows.csv
           if git diff --cached --quiet; then
             echo "No catalog changes"
             exit 0
