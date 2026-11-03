@@ -6,7 +6,7 @@ status: "active"
 updated: "2026-11-04"
 tags: ["索引","設計","ナレッジ"]
 related: ["docs/design/system.md","docs/knowledge/registry.md"]
-sources: []
+sources: ["https://imoz.jp/humanizer.ja.txt"]
 ---
 
 # 設計書とナレッジ
@@ -31,7 +31,7 @@ sources: []
 
 `kind` は `index`・`design`・`knowledge`、`status` は `active`・`reference` のいずれかです。`tags` は重複しない検索語を2件以上、`related` は存在するリポジトリ内のパス、`sources` は対応する一次資料のHTTPS URLを指定します。
 
-本文は日本語で書き、固有名詞・コマンド・ファイル名の表記は維持します。設計判断、実行条件、確認方法を記し、進捗メモや同じ内容の説明を増やしません。文書のメタデータと内部リンクは次のコマンドで検査します。
+本文は日本語で書き、固有名詞・コマンド・ファイル名は原表記を保ちます。設計判断、実行条件、確認方法を記録し、作業日誌や重複した説明は残しません。改稿では[日本語の執筆・推敲ルール](https://imoz.jp/humanizer.ja.txt)に沿って、意味・条件・根拠を照合します。メタデータと内部リンクは次のコマンドで検査します。
 
 ```sh
 uv run --locked python scripts/validate_docs.py
