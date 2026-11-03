@@ -62,6 +62,14 @@ class CreativeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missions"):
             validate(plan, registry_for_plan())
 
+    def test_pipeline_references(self):
+        plan = copy.deepcopy(PLAN)
+        plan["units"][2]["pipeline_ids"] = ["podcast-to-caption-video"]
+        self.assertIn("video", validate(plan, registry_for_plan()))
+        plan["units"][2]["pipeline_ids"] = ["unknown"]
+        with self.assertRaisesRegex(ValueError, "制作パイプライン"):
+            validate(plan, registry_for_plan())
+
     def test_unregistered_project_and_unknown_workflow(self):
         with self.assertRaisesRegex(ValueError, "制作案件"):
             validate(PLAN)

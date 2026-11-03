@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from urllib.parse import urlsplit
 from pathlib import Path
 
 REGISTRY = Path(__file__).resolve().parents[2] / "config/registry.json"
@@ -21,6 +22,56 @@ def _mission_ids(row, missions, label):
     ids = row.get("mission_ids", [])
     if not isinstance(ids, list) or any(not isinstance(mid, str) or mid not in missions for mid in ids):
         raise ValueError(f"{label}: 不明なミッションがあります")
+
+
+
+def _nonempty_strings(items, label):
+    if not isinstance(items, list) or not items or any(
+        not isinstance(item, str) or not item.strip() for item in items
+    ) or len(set(items)) != len(items):
+        raise ValueError(f"{label}: 重複しない非空文字列配列が必要です")
+    return items
+
+
+def _validate_pipelines(data, missions, workflow_ids):
+    """工程間の入出力と原典を検査する。ComfyUI JSONとは別種として扱う。"""
+    rows = data.get("pipelines", [])
+    if not isinstance(rows, list):
+        raise ValueError("制作パイプラインはリストにしてください")
+    seen = set()
+    for row in rows:
+        ident = row.get("id") if isinstance(row, dict) else None
+        if not isinstance(ident, str) or not ID.fullmatch(ident) or ident in seen or ident in workflow_ids:
+            raise ValueError(f"パイプラインIDが不正または重複: {ident}")
+        seen.add(ident)
+        for field in ("title", "purpose"):
+            if not isinstance(row.get(field), str) or not row[field].strip():
+                raise ValueError(f"{ident}: {field}がありません")
+        _tags(row, ident)
+        _mission_ids(row, missions, ident)
+        available = set(_nonempty_strings(row.get("inputs"), ident + ".inputs"))
+        steps = row.get("steps")
+        if not isinstance(steps, list) or not steps:
+            raise ValueError(f"{ident}: stepsがありません")
+        for index, stage in enumerate(steps):
+            label = f"{ident}.steps[{index}]"
+            if not isinstance(stage, dict) or any(
+                not isinstance(stage.get(key), str) or not stage[key].strip()
+                for key in ("tool", "source_url", "action")
+            ):
+                raise ValueError(f"{label}: ツール・出典・操作が必要です")
+            url = urlsplit(stage["source_url"])
+            if url.scheme != "https" or not url.netloc or url.username or url.password:
+                raise ValueError(f"{label}: 認証情報を含まないHTTPS URLが必要です")
+            requires = set(_nonempty_strings(stage.get("requires"), label + ".requires"))
+            provides = set(_nonempty_strings(stage.get("provides"), label + ".provides"))
+            if not requires <= available:
+                raise ValueError(f"{label}: 未生成の入力があります: {sorted(requires - available)}")
+            available.update(provides)
+        if not set(_nonempty_strings(row.get("outputs"), ident + ".outputs")) <= available:
+            raise ValueError(f"{ident}: 工程から出力できない成果物です")
+        _nonempty_strings(row.get("checks"), ident + ".checks")
+    return seen
 
 
 def validate_registry(data):
@@ -60,6 +111,8 @@ def validate_registry(data):
                 raise ValueError(f"{wid}: {field}がありません")
         workflow_ids.add(wid)
 
+    pipeline_ids = _validate_pipelines(data, missions, workflow_ids)
+
     projects = data.get("projects")
     if not isinstance(projects, dict):
         raise ValueError("制作案件は辞書にしてください")
@@ -68,6 +121,11 @@ def validate_registry(data):
             raise ValueError(f"制作案件が不正です: {key}")
         _tags(row, key)
         _mission_ids(row, missions, key)
+        pipeline_refs = row.get("pipeline_ids", [])
+        if not isinstance(pipeline_refs, list) or any(
+            not isinstance(pid, str) or pid not in pipeline_ids for pid in pipeline_refs
+        ):
+            raise ValueError(f"{key}: 不明な制作パイプラインがあります")
         used = row.get("workflow_ids", [])
         if not isinstance(used, list) or any(not isinstance(w, str) or w not in workflow_ids for w in used):
             raise ValueError(f"{key}: 不明なWorkflowがあります")
@@ -87,14 +145,15 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="一元台帳の確認")
     parser.add_argument("command", nargs="?", default="summary", choices=("summary", "validate", "list"))
     parser.add_argument("--registry", type=Path, default=REGISTRY)
-    parser.add_argument("--kind", choices=("missions", "projects", "workflows", "sources"), default="workflows")
+    parser.add_argument("--kind", choices=("missions", "projects", "workflows", "pipelines", "sources"), default="workflows")
     args = parser.parse_args(argv)
     data = load_registry(args.registry)
     if args.command == "validate":
         result = {"status": "valid"}
     elif args.command == "summary":
         result = {"missions": len(data["missions"]), "projects": len(data["projects"]),
-                  "workflows": len(data["workflows"]), "sources": len(data["github_repos"])}
+                  "workflows": len(data["workflows"]), "pipelines": len(data.get("pipelines", [])),
+                  "sources": len(data["github_repos"])}
     elif args.kind == "sources":
         result = data["github_repos"]
     else:

@@ -554,5 +554,291 @@
       "license": "未確認",
       "hardware_validation": "not-tested"
     }
+  ],
+  "pipelines": [
+    {
+      "id": "lyrics-sync-jizura",
+      "title": "歌詞と音源から文字PV",
+      "purpose": "音源と確定歌詞を同期し、JIZURAでリリック動画を制作",
+      "tags": [
+        "LRC",
+        "歌詞",
+        "文字PV"
+      ],
+      "mission_ids": [
+        "youtube",
+        "movies"
+      ],
+      "inputs": [
+        "song.mp3",
+        "lyrics.txt"
+      ],
+      "steps": [
+        {
+          "tool": "syncalong",
+          "source_url": "https://github.com/wickeddoc/syncalong",
+          "requires": [
+            "song.mp3",
+            "lyrics.txt"
+          ],
+          "provides": [
+            "lyrics.lrc"
+          ],
+          "action": "歌詞を音源に合わせてLRCへ変換"
+        },
+        {
+          "tool": "JIZURA",
+          "source_url": "https://github.com/852wa/JIZURA",
+          "requires": [
+            "song.mp3",
+            "lyrics.lrc"
+          ],
+          "provides": [
+            "lyric-video.mp4",
+            "lyric-overlay.transparent-png"
+          ],
+          "action": "LRCと音源を読み込みMP4か透過PNG連番を書き出す"
+        }
+      ],
+      "outputs": [
+        "lyric-video.mp4",
+        "lyric-overlay.transparent-png"
+      ],
+      "checks": [
+        "歌詞と開始時刻を試聴確認する",
+        "演出と文字の欠けを確認する",
+        "音源・歌詞の公開利用権を確認する"
+      ]
+    },
+    {
+      "id": "audio-only-jizura",
+      "title": "音源から歌詞を推定して文字PV",
+      "purpose": "歌詞のない音源からLRCを作成し、手で校正して映像化",
+      "tags": [
+        "音声認識",
+        "LRC",
+        "文字PV"
+      ],
+      "mission_ids": [
+        "youtube",
+        "movies"
+      ],
+      "inputs": [
+        "song.mp3"
+      ],
+      "steps": [
+        {
+          "tool": "audio-lyrics",
+          "source_url": "https://github.com/blizzardcldasl/audio-lyrics-skill",
+          "requires": [
+            "song.mp3"
+          ],
+          "provides": [
+            "lyrics.lrc"
+          ],
+          "action": "Whisperを使い歌詞と時刻を抽出する"
+        },
+        {
+          "tool": "JIZURA",
+          "source_url": "https://github.com/852wa/JIZURA",
+          "requires": [
+            "song.mp3",
+            "lyrics.lrc"
+          ],
+          "provides": [
+            "lyric-video.mp4"
+          ],
+          "action": "校正したLRCで文字PVを生成する"
+        }
+      ],
+      "outputs": [
+        "lyric-video.mp4"
+      ],
+      "checks": [
+        "歌唱の誤認識・歌詞欠落と時刻を修正する",
+        "音源・歌詞の公開利用権を確認する"
+      ]
+    },
+    {
+      "id": "lyrics-sync-usesuno",
+      "title": "歌詞MVの別スタイル生成",
+      "purpose": "同期済みLRCと音源をMV Studioで装飾し動画にする",
+      "tags": [
+        "LRC",
+        "MV",
+        "背景"
+      ],
+      "mission_ids": [
+        "youtube",
+        "movies"
+      ],
+      "inputs": [
+        "song.mp3",
+        "lyrics.txt"
+      ],
+      "steps": [
+        {
+          "tool": "syncalong",
+          "source_url": "https://github.com/wickeddoc/syncalong",
+          "requires": [
+            "song.mp3",
+            "lyrics.txt"
+          ],
+          "provides": [
+            "lyrics.lrc"
+          ],
+          "action": "音源と歌詞を同期させる"
+        },
+        {
+          "tool": "UseSuno MV Studio",
+          "source_url": "https://github.com/UseSuno/UseSunoMVStudio",
+          "requires": [
+            "song.mp3",
+            "lyrics.lrc"
+          ],
+          "provides": [
+            "lyric-mv.mp4",
+            "lyric-mv.webm"
+          ],
+          "action": "背景とアニメーションを選択して映像を書き出す"
+        }
+      ],
+      "outputs": [
+        "lyric-mv.mp4",
+        "lyric-mv.webm"
+      ],
+      "checks": [
+        "歌詞時刻と字幕表示を確認する",
+        "ブラウザの動画エンコーダーへの対応を確認する"
+      ]
+    },
+    {
+      "id": "background-video-lyric-pv",
+      "title": "背景映像と文字PVの合成",
+      "purpose": "ComfyUIなどが出力した動画を背景素材にして歌詞を重ねる",
+      "tags": [
+        "映像合成",
+        "ComfyUI連携",
+        "LRC"
+      ],
+      "mission_ids": [
+        "youtube",
+        "movies"
+      ],
+      "inputs": [
+        "background.mp4",
+        "song.mp3",
+        "lyrics.txt"
+      ],
+      "steps": [
+        {
+          "tool": "syncalong",
+          "source_url": "https://github.com/wickeddoc/syncalong",
+          "requires": [
+            "song.mp3",
+            "lyrics.txt"
+          ],
+          "provides": [
+            "lyrics.lrc"
+          ],
+          "action": "歌詞の行頭時刻をLRCにする"
+        },
+        {
+          "tool": "Phrasync",
+          "source_url": "https://github.com/jaydemks/phrasync",
+          "requires": [
+            "background.mp4",
+            "song.mp3",
+            "lyrics.lrc"
+          ],
+          "provides": [
+            "lyric-composite.mp4"
+          ],
+          "action": "動画を背景トラックに置き、歌詞の演出と音源を合わせる"
+        }
+      ],
+      "outputs": [
+        "lyric-composite.mp4"
+      ],
+      "checks": [
+        "音源と背景のタイミングを確認する",
+        "背景映像の生成はこの工程の外にある"
+      ]
+    },
+    {
+      "id": "podcast-to-caption-video",
+      "title": "話し音声から字幕映像",
+      "purpose": "Podcast音声をローカルで文字起こしし、字幕付きMP4とSRTを作る",
+      "tags": [
+        "Podcast",
+        "字幕",
+        "音声"
+      ],
+      "mission_ids": [
+        "podcast",
+        "youtube"
+      ],
+      "inputs": [
+        "voice.mp3"
+      ],
+      "steps": [
+        {
+          "tool": "Phrasync",
+          "source_url": "https://github.com/jaydemks/phrasync",
+          "requires": [
+            "voice.mp3"
+          ],
+          "provides": [
+            "caption-video.mp4",
+            "captions.srt"
+          ],
+          "action": "認識文字を修正し、字幕と動画を書き出す"
+        }
+      ],
+      "outputs": [
+        "caption-video.mp4",
+        "captions.srt"
+      ],
+      "checks": [
+        "固有名詞・時刻・字幕の可読性を確認する"
+      ]
+    },
+    {
+      "id": "talking-head-to-shorts",
+      "title": "話し動画をShorts用に短縮",
+      "purpose": "話し動画の無音を削り、単語ごとの字幕を入れてMP4出力",
+      "tags": [
+        "Shorts",
+        "字幕",
+        "無音削除"
+      ],
+      "mission_ids": [
+        "youtube",
+        "podcast"
+      ],
+      "inputs": [
+        "talk.mp4"
+      ],
+      "steps": [
+        {
+          "tool": "clipcut",
+          "source_url": "https://github.com/dancolta/clipcut",
+          "requires": [
+            "talk.mp4"
+          ],
+          "provides": [
+            "caption-short.mp4"
+          ],
+          "action": "無音除去・単語字幕の焼き込み・MP4出力"
+        }
+      ],
+      "outputs": [
+        "caption-short.mp4"
+      ],
+      "checks": [
+        "編集プランで誤認識と削除区間を確認する",
+        "字幕の見切れと音声を確認する"
+      ]
+    }
   ]
 }

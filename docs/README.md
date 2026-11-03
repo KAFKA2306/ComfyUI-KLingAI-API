@@ -26,6 +26,7 @@ sources: ["https://imoz.jp/humanizer.ja.txt"]
 
 - [Workflow台帳と用語](knowledge/registry.md)：収集データの構造、状態、検索方法
 - [一次資料と情報源](knowledge/sources.md)：公開元の区分、原典と利用条件の確認
+- [外部ツールの制作パイプライン](knowledge/pipelines.md)：LRC、文字PV、字幕動画の工程と出典
 
 ## 文書の規則
 

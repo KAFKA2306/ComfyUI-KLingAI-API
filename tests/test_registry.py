@@ -17,6 +17,21 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(len({row["id"] for row in data["workflows"]}), len(data["workflows"]))
         self.assertEqual(len({row["source_key"] for row in data["workflows"]}), len(data["workflows"]))
 
+    def test_pipeline_inputs_and_references(self):
+        data = load_registry()
+        self.assertEqual(len(data["pipelines"]), 6)
+        broken = copy.deepcopy(data)
+        broken["pipelines"][0]["steps"][1]["requires"].append("missing.mp4")
+        with self.assertRaisesRegex(ValueError, "未生成の入力"):
+            validate_registry(broken)
+        broken = copy.deepcopy(data)
+        broken["projects"]["broken"] = {
+            "title": "制作", "tags": ["映像"], "mission_ids": ["youtube"],
+            "pipeline_ids": ["unknown"]
+        }
+        with self.assertRaisesRegex(ValueError, "制作パイプライン"):
+            validate_registry(broken)
+
     def test_invalid_source_or_references_fail(self):
         data = load_registry()
         broken = copy.deepcopy(data)

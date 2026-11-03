@@ -40,6 +40,7 @@ def validate(plan, registry=None):
     if any(x not in registry["missions"] or x not in project["mission_ids"] for x in missions):
         raise ValueError("missions が一元台帳の制作案件と一致しません")
     workflow_ids = {workflow["id"] for workflow in registry["workflows"]}
+    pipeline_ids = {pipeline["id"] for pipeline in registry.get("pipelines", [])}
     continuity = plan.get("continuity")
     if not isinstance(continuity, dict):
         raise ValueError("continuity は辞書にしてください")
@@ -65,8 +66,11 @@ def validate(plan, registry=None):
         _strings(unit.get("requires", []), f"{ident}.requires")
         _strings(unit.get("continuity_refs", []), f"{ident}.continuity_refs")
         _strings(unit.get("workflow_ids", []), f"{ident}.workflow_ids")
+        _strings(unit.get("pipeline_ids", []), f"{ident}.pipeline_ids")
         if any(wid not in workflow_ids for wid in unit.get("workflow_ids", [])):
             raise ValueError(f"{ident}: 一元台帳にないWorkflowがあります")
+        if any(pid not in pipeline_ids for pid in unit.get("pipeline_ids", [])):
+            raise ValueError(f"{ident}: 一元台帳にない制作パイプラインがあります")
         if any(ref not in continuity for ref in unit.get("continuity_refs", [])):
             raise ValueError(f"{ident}: 不明な共有表現があります")
         by_id[ident] = unit
