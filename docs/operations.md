@@ -11,7 +11,7 @@ tags: [uv, 運用, 収集, テスト, VRChat, 制作]
 
 ## 必須：uvで統一する
 
-ローカルとGitHub ActionsのPython環境管理・コマンド実行は `uv` を使用します。Python 3.11以上。モデルの依存環境は制作先ごとに別管理し、未確認モデルを一括導入しません。
+Python 3.11以上を用意し、ローカルとGitHub ActionsでPythonの環境管理とコマンド実行に`uv`を使います。モデルの依存環境は制作先ごとに管理します。
 
 ~~~sh
 uv sync --locked
@@ -30,7 +30,7 @@ CSVはUTF-8 BOM付き。Windowsや表計算で文字化けしにくい形式で�
 uv run --locked python -m gwp.discovery sync --max-repos 12 --discovery-pages 1 --inspect-limit 50
 ~~~
 
-`sync` はインターネット接続とGitHub等へのアクセスが必要です。`data/workflow_registry.json`を更新します。失敗や未解析も記録し、候補を品質スコアで排除しません。
+`sync` はインターネット接続とGitHub等へのアクセスが必要です。`.cache/workflow_registry.json`を更新します。失敗や未解析も記録し、候補を品質スコアで排除しません。
 
 `.github/workflows/collect.yml` は6時間ごと（UTC 0:17、6:17、12:17、18:17）と手動実行で収集します。GitHub Actionsの開始時刻は前後します。GPU実行・作品公開は行いません。
 
@@ -49,7 +49,7 @@ uv run --locked python -m gwp.production_job handoff --manifest .artifacts/outpu
 
 ## VRChat小型カフェの公開確認
 
-これは8領域の一つの制作案件で、他領域に先行させる必要はありません。
+VRChatカフェは8領域のうちの一案件です。他の領域と並行して制作します。
 
 1. `projects/vrchat-cafe/workflows.json` に記された候補の出典・モデル・ライセンスを確認する。
 2. `uv run --locked python projects/vrchat-cafe/cafe_pipeline.py snapshot` で候補のWorkflowを取得し、`uv run --locked python projects/vrchat-cafe/cafe_pipeline.py check --strict` で保存物の整合性を調べる。取得だけでは実行成功ではありません。
@@ -58,7 +58,7 @@ uv run --locked python -m gwp.production_job handoff --manifest .artifacts/outpu
 5. Build & Testで歩行・衝突判定・視認性・負荷と、実素材が意図どおり表示されることを実機で確認する。未実施なら合格にしない。
 6. 認可済みのVRChatアカウントで公開し、**実際の公開ワールドURL**を制作先の正本に記録する。URL未確認なら公開済みとしない。
 
-カフェ案件の公開URLが確認できない状態を「公開済み」とは扱いません。Workflow候補の収集、JSON取得、GLB変換、Unityシーン保存だけでも「作品完成」にはなりません。VRChat以外の7領域も、各公開先で同じく成果の証拠を残します。
+Workflow候補の収集やファイルの形式検査は、作品の完成を保証しません。8領域それぞれで制作先の条件を満たし、公開先のURLと公開状態を確認します。
 
 ## 検証と障害の記録
 
