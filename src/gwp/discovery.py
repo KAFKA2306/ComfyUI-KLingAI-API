@@ -373,7 +373,7 @@ def export_catalog(catalog, categories, format="csv"):
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Source-preserving Workflow Registry")
     parser.add_argument("command", nargs="?", choices=("sync", "search", "stats", "export"), default="sync")
-    parser.add_argument("--catalog", type=Path, default=Path("data/workflow_registry.json"))
+    parser.add_argument("--catalog", type=Path, default=Path(".cache/workflow_registry.json"))
     parser.add_argument("--sources", type=Path, default=Path("config/workflow_sources.json"))
     parser.add_argument("--max-repos", type=int, default=12)
     parser.add_argument("--discovery-pages", type=int, default=1)

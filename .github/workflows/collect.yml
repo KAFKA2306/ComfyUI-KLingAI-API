@@ -29,42 +29,50 @@ jobs:
           uv run --locked python -c 'import json,pathlib; [json.loads(p.read_text(encoding="utf-8")) for p in pathlib.Path(".").rglob("*.json")]'
 
   collect:
-    name: 出典の収集
+    name: 公開Workflowを収集
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 55
-    permissions:
-      contents: write
     concurrency:
-      group: workflow-registry-main
+      group: workflow-catalog
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
-          persist-credentials: true
+          persist-credentials: false
       - name: uvとPythonをセットアップ
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
           python-version: '3.11'
       - name: uv.lockに基づく環境構築
         run: uv sync --locked
-      - name: 公開情報のみを収集
+      - name: 前回の収集状態を一時キャッシュから復元
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/workflow_registry.json
+          key: workflow-catalog-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            workflow-catalog-${{ runner.os }}-
+      - name: 公開情報を収集してレポートを生成
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           uv run --locked python -m gwp.discovery sync --max-repos 12 --discovery-pages 1 --inspect-limit 50
           uv run --locked python -m gwp.discovery stats
-      - name: データを保存
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/workflow_registry.json
-          if git diff --cached --quiet; then
-            echo "変更なし"
-            exit 0
-          fi
-          git commit -m "data: 公開Workflowの出典を更新"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          uv run --locked python -m gwp.discovery export --format csv > .cache/workflow_registry.csv
+      - name: 次回収集のためにキャッシュを更新
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/workflow_registry.json
+          key: workflow-catalog-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: 収集結果を一時的に公開
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-catalog
+          path: |
+            .cache/workflow_registry.json
+            .cache/workflow_registry.csv
+          if-no-files-found: error
+          retention-days: 1

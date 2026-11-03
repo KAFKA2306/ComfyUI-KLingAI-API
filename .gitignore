@@ -6,6 +6,8 @@ __pycache__/
 !.env.example
 models/
 outputs/
+.cache/
+projects/vrchat-cafe/upstream/
 *.safetensors
 *.ckpt
 *.pt
