@@ -12,3 +12,17 @@
 6. **生成物の完成を偽らない。** 画像・音声・3D素材の生成成功は、Unityへの取り込み、VRChatでの動作検証、製品化、公開の証拠にならない。それぞれの完成条件を確認する。
 7. **復元・追試できる情報を残す。** 通信失敗を候補ゼロと扱わず、入力・出典・改訂・出力の関係を追跡できるようにする。外部成果物は必要なく複製しない。
 8. **文書は日本語の確かな原則に限る。** 日付で古くなる順位や作業日誌、推測を含む説明、重複した設計書は置かない。具体的な動作と制約はコードおよびテストで検証する。
+9. **Pythonは必ずuvで実行する。** 環境構築、依存関係管理、スクリプト、テスト、GitHub Actionsに[uv](https://docs.astral.sh/uv/getting-started/installation/)を使い、直接の`python`実行や`pip`・`poetry`での環境管理は行わない。
+
+## 環境構築と実行
+
+Python 3.11系を`uv`で管理し、`uv.lock`をGitで管理します。モデルや第三者のWorkflowはこの操作では実行しません。
+
+```sh
+uv sync --locked
+uv run --locked python -m unittest discover -s tests -v
+uv run --locked python -m gwp.discovery sync
+uv run --locked python -m gwp.discovery stats
+uv run --locked python -m gwp.discovery search --term VRChat
+uv run --locked python -m gwp.discovery export > workflows.csv
+```
