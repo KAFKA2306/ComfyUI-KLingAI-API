@@ -5,13 +5,13 @@ kind: "knowledge"
 status: "active"
 updated: "2026-11-03"
 tags: ["Workflow","ナレッジ","メタデータ","検索"]
-related: ["data/workflow_registry.json","src/gwp/discovery.py","config/workflow_sources.json"]
+related: ["src/gwp/discovery.py","config/workflow_sources.json"]
 sources: ["https://github.com/Comfy-Org/workflows"]
 ---
 
 # Workflow台帳・メタデータ・用語
 
-`data/workflow_registry.json` が発見情報の唯一の正本です。`config/workflow_sources.json` は収集対象と検索分類の設定です。
+`.cache/workflow_registry.json` は収集時に作られるキャッシュです。Gitへコミットせず、出典・改訂の記録はここから検索・再生成します。`config/workflow_sources.json` は収集対象と検索分類の設定です。
 
 | 領域 | 内容 |
 | --- | --- |
