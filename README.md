@@ -58,6 +58,7 @@ uv run --locked python -m gwp.discovery search --catalog .cache/workflow_registr
 ```
 
 収集から競合統合、catalogへの保存までの運用コマンドは `bash scripts/catalog_sync.sh` です。GitHubへの読み書き権限とネットワーク接続が必要です。`gwp.discovery sync` 単体はローカル台帳を更新し、catalogへは保存しません。収集結果の保存と復旧は[台帳の保全・復旧](docs/design/durability.md)、素材生成は[制作工程](docs/design/production.md)を参照してください。
+
 ## Workflow候補の絞り込み
 
 既存の台帳は変更せず、用途と静的確認の結果で候補を並べられます。次の例は上で取得した台帳を参照します。
