@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "name": "comfyui",
+      "repository": "https://github.com/Comfy-Org/ComfyUI",
+      "revision": null
+    },
+    {
+      "name": "workflow_templates",
+      "repository": "https://github.com/Comfy-Org/workflow_templates",
+      "revision": null
+    }
+  ],
+  "note": "Resolve and pin exact commit SHAs before deployment; null revisions must fail deployment policy."
+}
