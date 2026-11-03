@@ -28,12 +28,14 @@ tags: [制作基盤, Workflow, ナレッジ, 8領域, uv]
 
 ## 文書の正本
 
-- [超長期ゴール](docs/vision.md)：8領域の到達状態と成功条件
-- [アーキテクチャ](docs/architecture.md)：現行実装、正本データ、交換可能な構成
-- [ナレッジの管理](docs/knowledge.md)：出典、改訂、タグ、メタデータの規約
-- [運用手順](docs/operations.md)：uv、収集、制作、検証、公開の証拠
+- [設計書・ナレッジの索引](docs/README.md)：文書のメタデータとタグ規約
+- [システム設計](docs/design/system.md)：出典収集と実行の境界
+- [制作工程](docs/design/production.md)：ローカル生成・受け渡し
+- [VRChatカフェ設計](docs/design/vrchat-cafe.md)：制作と公開確認
+- [Workflow台帳と用語](docs/knowledge/registry.md)：データの意味と検索
+- [一次資料](docs/knowledge/sources.md)：原典と利用条件
 
-変更履歴はGitで確認できます。
+旧設計の経緯はGit履歴で確認します。
 
 ## 必須の実行方法
 
@@ -47,7 +49,7 @@ uv run --locked python -m gwp.discovery search --term VRChat
 uv run --locked python -m gwp.discovery export > workflows.csv
 ~~~
 
-収集更新は `uv run --locked python -m gwp.discovery sync`。ネットワークを使用し、`.cache/workflow_registry.json`を更新します。実際の制作コマンドは[運用手順](docs/operations.md)に集約します。
+収集更新は `uv run --locked python -m gwp.discovery sync`。ネットワークを使用し、`.cache/workflow_registry.json`を更新します。実際の制作コマンドは[制作工程](docs/design/production.md)に集約します。
 
 ## 制作の原則
 
