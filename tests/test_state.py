@@ -35,6 +35,29 @@ class CatalogDurabilityTests(unittest.TestCase):
             restore(file, backup)
             self.assertEqual(set(load_catalog(file)["artifacts"]), {"id-a"})
 
+    def test_restore_healthy_catalog_keeps_newer_ids_and_revisions(self):
+        with tempfile.TemporaryDirectory() as root:
+            file = Path(root) / "current.json"
+            backup = Path(root) / "backup.json"
+            older = empty_catalog()
+            record_file(older, "alice/workflows", "1" * 40,
+                        {"path": "x.json", "sha": "a" * 40}, "2026-11-01")
+            atomic_save(backup, older)
+            current = merge_catalog(older, empty_catalog())
+            record_file(current, "alice/workflows", "2" * 40,
+                        {"path": "x.json", "sha": "b" * 40}, "2026-11-02")
+            record_file(current, "bob/workflows", "3" * 40,
+                        {"path": "y.json", "sha": "c" * 40}, "2026-11-02")
+            atomic_save(file, current)
+
+            restore(file, backup)
+            recovered = load_catalog(file)
+            self.assertEqual(set(recovered["artifacts"]), set(current["artifacts"]))
+            item = recovered["artifacts"]["github:alice/workflows:x.json"]
+            self.assertEqual(item["blob_sha"], "b" * 40)
+            self.assertEqual(len(item["revisions"]), 2)
+            self.assertEqual(health(recovered, current)["status"], "ok")
+
     def test_optimistic_conflict_does_not_overwrite(self):
         with tempfile.TemporaryDirectory() as root:
             file = Path(root) / "registry.json"
