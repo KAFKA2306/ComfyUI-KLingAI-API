@@ -5,7 +5,7 @@ kind: "design"
 status: "active"
 updated: "2026-11-03"
 tags: ["VRChat","カフェ","Unity","3D"]
-related: ["projects/vrchat-cafe/workflows.json","projects/vrchat-cafe/GWPCafeBuilder.cs","projects/vrchat-cafe/cafe_pipeline.py"]
+related: ["projects/vrchat-cafe/workflows.json","projects/vrchat-cafe/cafe_pipeline.py"]
 sources: ["https://creators.vrchat.com/worlds/creating-your-first-world/","https://vcc.docs.vrchat.com/"]
 ---
 
