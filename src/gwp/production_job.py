@@ -1,10 +1,8 @@
 """制作対象別のWorkflowを準備・投入・回収するCLI。"""
 import argparse
 import json
-import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from gwp.production import LocalComfyUI, collect_job, handoff_job, prepare, submit_job, targets
 
 

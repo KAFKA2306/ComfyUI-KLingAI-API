@@ -37,3 +37,21 @@
 **8つのミッションがそれぞれ独立して制作・検証・公開まで進められ、その能力が時間とともに更新され続けること。** 一度のデモ、収集件数、スター数、生成成功だけでは達成としない。
 
 このREADMEは長期間変わらない目的と原則だけを記す。日々の操作手順、利用中のモデル、実行環境、個別作品の状態、台帳はそれぞれのコード・設定・記録で管理する。
+
+## フォルダの構成と実行
+
+フォルダは、設定(`config/`)、正本台帳(`data/`)、制作物(`projects/`)、共有実装(`src/`)、テスト(`tests/`)、GitHub Actions(`.github/`)に集約します。少量のファイルのためだけに独立したフォルダを作りません。
+
+VRChatカフェ固有の原本Workflow取得とGLB検査は `projects/vrchat-cafe/cafe_pipeline.py`、Blender変換は同じ場所の `blender_cafe_asset.py`、Unity用シーン作成は `GWPCafeBuilder.cs` です。Unity用ファイルはVCCのWorldsプロジェクトにある `Assets/Editor/` にコピーしてください。ComfyUI制作の共通CLIは `src/gwp/production_job.py` に置きます。
+
+```sh
+uv sync --locked
+uv run --locked python -m gwp.production_job targets
+uv run --locked python -m gwp.production_job plan --target vrmine-cafe --workflow workflow-api.json
+uv run --locked python projects/vrchat-cafe/cafe_pipeline.py check
+uv run --locked python projects/vrchat-cafe/cafe_pipeline.py snapshot
+```
+
+BlenderのGLB→FBX変換だけはBlenderに同梱されたPythonで行います。例: `blender --background --python projects/vrchat-cafe/blender_cafe_asset.py -- --input cup.glb --output CoffeeCup.fbx --height 0.16`。
+
+開発スクリプト、テスト、GitHub ActionsのPython実行には必ずuvを使用します。

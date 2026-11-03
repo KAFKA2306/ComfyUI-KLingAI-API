@@ -1,6 +1,6 @@
 """ComfyUIで生成したGLBをUnity向けFBXへ変換する。
 
-実行: blender --background --python scripts/blender_cafe_asset.py -- --input cup.glb --output CoffeeCup.fbx --height 0.16
+実行: blender --background --python projects/vrchat-cafe/blender_cafe_asset.py -- --input cup.glb --output CoffeeCup.fbx --height 0.16
 形式を変換するだけで、ライセンスや見た目の品質は保証しない。
 """
 import argparse

@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "projects/vrchat-cafe"))
 from cafe_pipeline import download_snapshot, inspect_glb, manifest_entries, snapshot, verify_snapshots
 
 
