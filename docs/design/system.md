@@ -3,7 +3,7 @@ id: "design-system"
 title: "Workflowの収集と制作基盤の設計"
 kind: "design"
 status: "active"
-updated: "2026-11-03"
+updated: "2026-11-04"
 tags: ["設計","Workflow","出典","ComfyUI"]
 related: ["config/registry.json","src/gwp/discovery.py","src/gwp/production.py"]
 sources: ["https://github.com/Comfy-Org/workflow_templates"]
@@ -11,7 +11,7 @@ sources: ["https://github.com/Comfy-Org/workflow_templates"]
 
 # Workflowの収集と制作基盤の設計
 
-公開Workflow、Subgraph、Blueprintの出典と改訂履歴を記録する。候補は8領域で共有し、各領域の制作は並行して進める。収集元、候補、制作案件の設定は `config/registry.json` で管理する。候補の登録には人気や独自スコアを使わない。
+公開Workflow、Subgraph、Blueprintの出典と改訂履歴を記録する。候補は8領域で共有し、各領域の制作は並行して進める。収集元、候補、制作案件の設定は `config/registry.json` で管理する。収集した候補を人気や独自スコアで除外しない。
 
 ## 情報の流れ
 
