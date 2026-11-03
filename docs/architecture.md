@@ -27,15 +27,15 @@ Blender / Unity / 動画・音声編集 / 配布先の固有工程
 
 この図は**制作案件ごとの工程順**です。8領域を順番に処理する図ではありません。各領域の案件は相互に待たず並列実行できます。
 
-## 実在する正本と実装
+## 構成要素と正本
 
-| 責務 | 正本・実装 | 現時点の意味 |
+| 責務 | 正本・実装 | 用途 |
 | --- | --- | --- |
 | 収集元と用途検索語 | `config/workflow_sources.json` | 公開元、取得方法、検索用分類 |
 | Workflow候補と版 | `data/workflow_registry.json` | 出典付き候補の機械可読な正本 |
 | 収集と検索 | `src/gwp/discovery.py` | GitHub等の公開情報を取得し検索・CSV出力 |
 | 定期更新 | `.github/workflows/collect.yml` | 6時間ごとの収集ジョブと検証 |
-| 生成可能な制作先 | `config/production_targets.json` | 現在の受け渡し対象と完成判定の責任先 |
+| 生成可能な制作先 | `config/production_targets.json` | 受け渡し対象と完成判定の責任先 |
 | 生成・受け渡し | `src/gwp/production.py`, `src/gwp/production_job.py` | ローカルComfyUIへ投入、回収、ハッシュ確認、限定的な転送 |
 | VRChatカフェ | `projects/vrchat-cafe/workflows.json`, `projects/vrchat-cafe/publication.json` | 候補と公開確認状態 |
 | カフェ制作補助 | `projects/vrchat-cafe/cafe_pipeline.py`, `projects/vrchat-cafe/blender_cafe_asset.py`, `projects/vrchat-cafe/GWPCafeBuilder.cs` | 出典取得、GLB形式確認、シーン生成の補助 |
@@ -52,13 +52,6 @@ Blender / Unity / 動画・音声編集 / 配布先の固有工程
 6. 品質判定と公開は制作先の責務とする。画像が生成できてもVRChatワールド完成にはならない。
 7. ComfyUIやモデルを交換しても、出典、制作要求、完成判定、公開実績は失わない。
 
-## 実装済みと未実装を分離する
-
-**実装済み**：出典候補の収集・改訂記録・検索・CSV/JSON出力、API形式Workflowの基本検査、ローカル実行要求、成功時の画像・音声・一部動画出力回収、SHA-256検証付きの限定的な制作先受け渡し、VRChatカフェの補助スクリプト。
-
-**実機確認が必要**：実際のGPU/VRAM動作、依存モデルのライセンス、Blender/Unity/VRChat実行、出力の見た目と性能、公開先での完成確認。
-
-**未完成**：8領域に共通する自律オーケストレーション、全形式の出力取り込み、環境・モデルの自動構築、完成品質の自動判定、全公開先への自動投稿。
 
 ## 運用を壊さないためのルール
 
