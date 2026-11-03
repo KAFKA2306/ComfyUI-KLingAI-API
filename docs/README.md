@@ -17,7 +17,7 @@ sources: []
 
 - [全体設計](design/system.md)：収集から制作までの責任分担
 - [制作工程への接続](design/production.md)：API Workflowの実行・回収・受け渡し
-- [VRChat小型カフェ](design/vrchat-cafe.md)：Unityでの制作と公開の判定
+- [VRChat小型カフェ](design/vrchat-cafe.md)：候補Workflowと形式検査
 
 ## ナレッジ
 
@@ -30,4 +30,4 @@ sources: []
 
 `kind` は `index`、`design`、`knowledge`。`status` は `active`、`reference`。`tags` は重複のない2件以上の検索語であり、採用可否の判定には使いません。`related` は存在するリポジトリ内パス、`sources` は一次資料のHTTPS URLです。
 
-日誌・古いADR・重複台帳は残さず、履歴はGitでたどります。`uv run --locked python scripts/validate_docs.py` でメタデータとリンクを検証します。
+設計書にはコードか一次資料の根拠を示し、根拠のない現況・予定・作業メモを記載しません。`uv run --locked python scripts/validate_docs.py` でメタデータとリンクを検証します。

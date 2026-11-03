@@ -31,11 +31,9 @@ tags: [制作基盤, Workflow, ナレッジ, 8領域, uv]
 - [設計書・ナレッジの索引](docs/README.md)：文書のメタデータとタグ規約
 - [システム設計](docs/design/system.md)：出典収集と実行の境界
 - [制作工程](docs/design/production.md)：ローカル生成・受け渡し
-- [VRChatカフェ設計](docs/design/vrchat-cafe.md)：制作と公開確認
+- [VRChatカフェ設計](docs/design/vrchat-cafe.md)：出典候補と形式検査
 - [Workflow台帳と用語](docs/knowledge/registry.md)：データの意味と検索
 - [一次資料](docs/knowledge/sources.md)：原典と利用条件
-
-旧設計の経緯はGit履歴で確認します。
 
 ## 必須の実行方法
 
@@ -50,13 +48,3 @@ uv run --locked python -m gwp.discovery export > workflows.csv
 ~~~
 
 収集更新は `uv run --locked python -m gwp.discovery sync`。ネットワークを使用し、`.cache/workflow_registry.json`を更新します。実際の制作コマンドは[制作工程](docs/design/production.md)に集約します。
-
-## 制作の原則
-
-- 公式とコミュニティの公開実践を収集し、人気や独自採点を理由に候補を排除しない。
-- 発見、形式確認、GPUでの実行、制作物の品質検証、公開完了を別々に記録する。
-- 必要な制作素材が生成・確認できない場合は未完成とする。Unity標準形状・単色マテリアル・空のシーンなどを自動生成して実素材や完成作品の代わりにしない。
-- 未確認のWorkflow・モデル・Custom Nodeを収集段階で自動実行しない。利用条件と改訂を確認する。
-- モデル、GPU、ComfyUI自体が変わっても、制作目標と出典付き知識を持ち越せる設計とする。
-- 秘密情報、モデル本体、生成メディア、個人情報をGitに含めない。
-

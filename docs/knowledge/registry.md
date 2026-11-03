@@ -23,10 +23,6 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 | `references` | APIで直接収集していない参考先 |
 | `search_progress` | 探索の進み具合とAPI失敗 |
 
-**Workflow**はノードの処理構成です。**Subgraph**は構成の一部分、**Blueprint**は構成定義を含む形式です。**発見**は出典を記録したこと、**静的確認**はJSONを読んだこと、**実行検証**はモデルと環境で実際に動かしたことです。これらは別の状態として扱います。
-
-**タグ**は検索と用途の分類に使います。独自スコア・ランキング・足切りを付けず、未分類候補も保存します。内容が同じファイルでも作者や出典が異なれば別の記録です。
-
 ## 検索と書き出し
 
 ```sh
@@ -36,4 +32,4 @@ uv run --locked python -m gwp.discovery search --term VRChat
 uv run --locked python -m gwp.discovery export > workflows.csv
 ```
 
-エクスポートは台帳から生成する閲覧用データです。GitHub APIの検索件数や巡回数に上限があるため完全網羅とは断定しません。
+出力項目は[discovery.py](../../src/gwp/discovery.py)の `export_catalog` に定義されています。
