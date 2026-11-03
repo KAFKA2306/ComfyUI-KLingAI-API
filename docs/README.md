@@ -18,6 +18,7 @@ sources: []
 - [全体設計](design/system.md)：収集から制作までの責任分担
 - [制作工程への接続](design/production.md)：API Workflowの実行・回収・受け渡し
 - [VRChat小型カフェ](design/vrchat-cafe.md)：候補Workflowと形式検査
+- [作品構成と演出](design/creative.md)：美術・素材・シーン・変更影響をつなぐ制作仕様
 
 ## ナレッジ
 

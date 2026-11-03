@@ -12,7 +12,7 @@ from urllib.request import Request, urlopen
 
 from gwp.comfyui import ComfyUIClient
 
-EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".mp4", ".webm", ".wav", ".flac", ".ogg"}
+EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".mp4", ".webm", ".wav", ".flac", ".ogg", ".glb", ".fbx", ".obj"}
 MAX_FILE_BYTES = 256 * 1024 * 1024
 
 
@@ -115,9 +115,11 @@ def collect_job(receipt, backend, output_root):
     for node_id, result in outputs.items():
         if not isinstance(result, dict):
             continue
-        for field in ("images", "gifs", "audio"):
-            for item in result.get(field, []):
-                if isinstance(item, dict):
+        for entries in result.values():
+            if not isinstance(entries, list):
+                continue
+            for item in entries:
+                if isinstance(item, dict) and "filename" in item:
                     files.append((str(node_id), item))
     if not 1 <= len(files) <= 100:
         raise ValueError("回収可能な出力がないか、100件を超えています")
@@ -174,7 +176,7 @@ def handoff_job(manifest_path, project_root):
         if not isinstance(item, dict):
             raise ValueError("不正なファイル情報です")
         name, expected = item.get("file"), item.get("sha256")
-        if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z0-9_-]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm|wav|flac|ogg)", name, re.I):
+        if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z0-9_-]+\.(?:png|jpg|jpeg|webp|gif|mp4|webm|wav|flac|ogg|glb|fbx|obj)", name, re.I):
             raise ValueError("ファイル名が不正です")
         if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected):
             raise ValueError("SHA-256が不正です")

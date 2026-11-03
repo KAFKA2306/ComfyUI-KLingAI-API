@@ -31,6 +31,7 @@ tags: [制作基盤, Workflow, ナレッジ, 8領域, uv]
 - [設計書・ナレッジの索引](docs/README.md)：文書のメタデータとタグ規約
 - [システム設計](docs/design/system.md)：出典収集と実行の境界
 - [制作工程](docs/design/production.md)：ローカル生成・受け渡し
+- [作品構成と演出](docs/design/creative.md)：各領域の表現・制作依存の管理
 - [VRChatカフェ設計](docs/design/vrchat-cafe.md)：出典候補と形式検査
 - [Workflow台帳と用語](docs/knowledge/registry.md)：データの意味と検索
 - [一次資料](docs/knowledge/sources.md)：原典と利用条件
