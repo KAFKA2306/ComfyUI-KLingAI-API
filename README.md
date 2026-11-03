@@ -1,26 +1,32 @@
-# Generative Workflow Platform
+# Generative Workflow Platform: Workflow-first Registry
 
-Model-agnostic ComfyUI workflow engineering, versioned contracts, and reproducible evaluation.
+Continuous, source-preserving discovery of ComfyUI workflows, blueprints, custom-node examples, model references and public issue evidence. The former Kling-specific implementation was replaced earlier; historical commits remain in Git history.
 
-## Architecture
+**Workflow first. No proprietary quality scores, filtering, rankings, or execution of third-party workflows.** Every indexed candidate remains available with its origin and inspection state. Unsupported or inaccessible sources remain visible as unsynced references.
 
-Application/Agent -> Python API contract -> Workflow registry -> ComfyUI runtime -> Model adapters.
+## Included
+- Original ComfyUI API connection and versioned workflow contracts: `src/gwp/`
+- GitHub workflow source registry: `config/workflow_sources.json`
+- GitHub public-repository search + discovery queue + complete Git trees (including truncated-tree fallback)
+- SHA-pinned workflow file references, revision history, basic node/model references, image-embedded-workflow candidates
+- Public model-index discovery: Hugging Face and Civitai (metadata only)
+- Issue-reference collection (recent 30 per scanned repo, repo-wide scope)
+- UTC daily GitHub Actions collection, metadata commit to main, GitHub-hosted Python tests
+- Local JSON catalog search without subjective rank or gate
 
-This repository intentionally replaces the legacy Kling API custom-node implementation. Old history remains available through Git history. ComfyUI itself is an upstream dependency, not a fork.
+## Run
+```sh
+python -m unittest discover -s tests -v
+PYTHONPATH=src python -m gwp.discovery sync
+PYTHONPATH=src python -m gwp.discovery stats
+PYTHONPATH=src python -m gwp.discovery search --term flux
+```
 
-## Layout
+Uses Python 3.11+ standard library; no external runtime package or model weight. Optional `GITHUB_TOKEN` expands API rate allowance. GitHub Actions runs daily at 01:17 JST (16:17 UTC), with optional manual dispatch. The first full source ingestion occurs when the collector runs; a blank starting catalog does not claim that every source has already been indexed.
 
-- `src/gwp/`: API contracts, orchestration, ComfyUI adapter
-- `workflows/`: versioned ComfyUI API-format workflows
-- `blueprints/`: reusable subgraphs
-- `contracts/`: stable input/output schema
-- `benchmarks/`: fixed cases and evaluation results
-- `environments/`: hardware profiles
-- `dependencies/`: upstream revision locks
-- `docs/decisions/`: architecture decisions
+See [architecture and explicit collection gaps](docs/workflow-first-registry.md). ComfyUI workflows that come from a third party must be reviewed before running; this catalog never auto-adopts them.
 
-## Validate
-
-`python -m unittest discover -s tests -v`
-
-Python 3.11+; standard library only for the core. No model weights or secrets in Git.
+## Existing platform components
+- `src/gwp/comfyui.py`: local ComfyUI client
+- `src/gwp/registry.py`: immutable versioned workflow loading
+- `contracts/`, `workflows/`, `blueprints/`, `dependencies/`, `environments/`: prior platform structure
