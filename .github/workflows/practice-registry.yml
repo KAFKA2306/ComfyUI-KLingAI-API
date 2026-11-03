@@ -33,6 +33,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/practice_registry.py
+      - name: Statically inspect workflow and blueprint JSON
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/audit_practices.py
       - name: Validate snapshot
         run: |
           python -m unittest discover -s tests -v
@@ -44,7 +48,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          git add registry/official.json registry/community.json registry/practices.json dependencies/sources.lock.json
+          git add registry/official.json registry/community.json registry/practices.json registry/insights.json registry/highlights.md dependencies/sources.lock.json
           if git diff --cached --quiet; then
             echo "All catalog references are current"
             exit 0
