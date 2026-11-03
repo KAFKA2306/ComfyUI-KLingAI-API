@@ -15,7 +15,7 @@ sources: []
 
 ## 制作仕様
 
-各制作案件の `creative.json` には、次の情報を記述します。`project_id` と制作領域は、[一元台帳](../../config/registry.json)の `projects` と対応させます。
+各制作案件の `creative.json` に、次の情報を記述します。コマンドを実行する前に、案件IDと制作領域を[設定台帳](../../config/registry.json)の `projects` に登録してください。
 
 | 項目 | 記述する内容 |
 | --- | --- |
@@ -27,13 +27,15 @@ sources: []
 
 `units` の `workflow_ids` には `config/registry.json` に登録したWorkflow IDを指定します。`validate` は存在しないID、領域の不一致、依存関係の循環を検出します。モデルのライセンスや生成物の品質は、この構造検査では判定しません。
 
-例えば3Dワールドなら、建築と家具を制作した後に照明を設定し、音や衝突判定と統合します。動画では台本、ショット、音声、字幕を別の制作単位に分けられます。各領域で実際に必要な工程だけを定義します。
+例えば動画は台本・音声・編集、3Dモデルは形状・材質・書き出しを制作単位に分けられます。作品ごとに必要な工程を定義し、その依存先を登録します。
 
 ## 制作順と変更の影響
 
-次の `PLAN` は実在する制作仕様ファイル、`UNIT` はその中の制作単位IDに置き換えます。
+`PLAN` と `UNIT` に既存の制作仕様ファイルと制作単位IDを指定します。次のパスとIDは実際の値に置き換えてください。
 
 ```sh
+PLAN=/path/to/creative.json
+UNIT=unit-id
 uv run --locked python -m gwp.creative validate --plan "$PLAN"
 uv run --locked python -m gwp.creative order --plan "$PLAN"
 uv run --locked python -m gwp.creative impact --plan "$PLAN" --unit "$UNIT"
