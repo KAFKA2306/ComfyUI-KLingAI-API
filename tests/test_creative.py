@@ -33,6 +33,13 @@ class CreativeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "循環"):
             validate(plan)
 
+    def test_unknown_workflow_is_rejected(self):
+        plan = copy.deepcopy(self.plan)
+        cup = next(unit for unit in plan["units"] if unit["id"] == "cup")
+        cup["workflow_ids"] = ["not-in-central-registry"]
+        with self.assertRaisesRegex(ValueError, "一元台帳にないWorkflow"):
+            validate(plan)
+
     def test_mission_invariants(self):
         plan = copy.deepcopy(self.plan)
         plan["releases"][0]["mission"] = "games"

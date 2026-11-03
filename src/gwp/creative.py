@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-MISSIONS = {"vrchat-world", "avatars", "booth", "youtube", "podcast", "movies", "3d-models", "games"}
+from gwp.registry import load_registry
 KINDS = {"direction", "asset", "scene", "shot", "sound", "interaction", "edit", "package"}
 IDENT = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
 
@@ -24,16 +24,23 @@ def _strings(values, field, required=False):
     return values
 
 
-def validate(plan):
-    """構造・参照と循環のみを検査する。作品の美的評価は行わない。"""
+def validate(plan, registry=None):
+    """一元台帳の参照と制作依存を検査する。作品の美的評価は行わない。"""
     if not isinstance(plan, dict) or plan.get("schema_version") != 1:
         raise ValueError("schema_version は1が必要です")
     _id(plan.get("project_id"), "project_id")
     if not isinstance(plan.get("title"), str) or not plan["title"].strip():
         raise ValueError("title が空です")
+    if registry is None:
+        registry = load_registry()
+    project = registry["projects"].get(plan["project_id"])
+    if project is None:
+        raise ValueError("制作案件が一元台帳 config/registry.json にありません")
     missions = _strings(plan.get("missions"), "missions", True)
-    if any(x not in MISSIONS for x in missions):
-        raise ValueError("missions に未知の制作領域があります")
+    if any(x not in registry["missions"] or x not in project["mission_ids"] for x in missions):
+        raise ValueError("missions が一元台帳の制作案件と一致しません")
+    workflow_ids = {workflow["id"] for row in registry["projects"].values()
+                    for workflow in row["workflows"]}
     continuity = plan.get("continuity")
     if not isinstance(continuity, dict):
         raise ValueError("continuity は辞書にしてください")
@@ -58,7 +65,9 @@ def validate(plan):
         _strings(unit.get("deliverables"), f"{ident}.deliverables", True)
         _strings(unit.get("requires", []), f"{ident}.requires")
         _strings(unit.get("continuity_refs", []), f"{ident}.continuity_refs")
-        _strings(unit.get("origin_refs", []), f"{ident}.origin_refs")
+        _strings(unit.get("workflow_ids", []), f"{ident}.workflow_ids")
+        if any(wid not in workflow_ids for wid in unit.get("workflow_ids", [])):
+            raise ValueError(f"{ident}: 一元台帳にないWorkflowがあります")
         if any(ref not in continuity for ref in unit.get("continuity_refs", [])):
             raise ValueError(f"{ident}: 不明な共有表現があります")
         by_id[ident] = unit
