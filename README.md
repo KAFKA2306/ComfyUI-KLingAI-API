@@ -47,6 +47,9 @@ uv run --locked python -m gwp.discovery sync
 uv run --locked python -m gwp.state verify --catalog .cache/workflow_registry.json
 uv run --locked python -m gwp.discovery stats
 uv run --locked python -m gwp.discovery search --term VRChat
+uv run --locked python -m gwp.select --mission 3d-models --sort suitable --inspected-only
+uv run --locked python -m gwp.select --mission youtube --sort popular --min-stars 1
+uv run --locked python -m gwp.select --mission games --sort latest --updated-within-days 90
 ~~~
 
 `sync`はネットワークに接続します。制作先への素材の受け渡しは[制作工程](docs/design/production.md)で説明します。
