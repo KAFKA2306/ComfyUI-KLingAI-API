@@ -11,7 +11,7 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 
 # Workflow台帳と用語
 
-8領域の目標・制作案件・収集条件・検索分類は main の `config/registry.json` を設定正本とする。収集した出典、改訂履歴、制作・公開履歴は catalog ブランチの `data/workflow_registry.json` に永続保存する。ローカルの `.cache/workflow_registry.json` は一時的な作業コピーであり、正本ではない。保存・復旧手順は[台帳の保全設計](../design/durability.md)に定める。
+8領域の目標、Workflow候補、制作案件、収集条件は `main` ブランチの `config/registry.json` で管理する。収集した出典、改訂履歴、制作・公開履歴は `catalog` ブランチの `data/workflow_registry.json` に保存する。ローカルの `.cache/workflow_registry.json` は作業用コピーである。復旧手順は[台帳の保全・復旧](../design/durability.md)を参照する。
 
 ## 収集データの構造
 
@@ -30,13 +30,13 @@ sources: ["https://github.com/Comfy-Org/workflows"]
 | `projects`・`jobs`・`assets` | 制作、実行、生成素材の来歴 |
 | `rights`・`publications`・`knowledge` | 権利の根拠、公開証拠、再利用する知識 |
 
-Workflowはノードを接続した処理構成、Subgraphは再利用できる部分的な構成を指す。Blueprintは、この収集処理では `definitions.subgraphs` を含むJSONとして識別する。名称やファイルの形式だけでは、動作や品質は判断できない。
+Workflowはノードを接続した処理の構成、Subgraphは再利用するためにまとめた部分構成を指す。この収集処理では、JSONに `definitions.subgraphs` が含まれるものをBlueprintとして識別する。形式を識別した後、実行結果と品質は別に確認する。
 
-発見は公開ファイルの存在を確認したこと、静的確認はファイルの形式や参照を読んだこと、実行確認は指定した環境で動作を確かめたことを指す。用途タグは候補を探すために使い、ランキングや採用可否の判定には使わない。作者や出典が違う候補は別に記録する。
+公開元の発見、候補ファイルの取得、JSONの静的確認、実行確認は別の段階として記録する。実行確認では、指定した環境でWorkflowが動作したかを扱う。用途タグは検索用であり、候補の順位付けや採用可否には使わない。出典が異なる候補は別IDで保持する。
 
 ## 検索と出力
 
-リポジトリのルートで、Pythonのコマンドを `uv` から実行する。
+リポジトリのルートで次のコマンドを実行する。
 
 ```sh
 uv run --locked python -m gwp.discovery sync
@@ -47,4 +47,4 @@ uv run --locked python -m gwp.discovery export --format csv > .cache/workflow_re
 uv run --locked python -m gwp.discovery export --format json > .cache/workflow_registry_export.json
 ```
 
-収集結果はGitHub検索の件数上限と巡回数の制約を受ける。エクスポートした一覧は収集データから再生成し、別の正本として編集しない。
+GitHub検索の件数上限や巡回範囲の制約により、収集一覧は公開Workflowの全件を示すものではない。CSV・JSONの出力は保存台帳から生成し、別の正本として編集しない。
