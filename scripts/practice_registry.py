@@ -200,10 +200,24 @@ def discover(root, get=get_json, timestamp=None):
             len(previous["repositories"]) * 0.8):
         raise ValueError("suspicious official repository count drop")
     community = community_repositories(get, config, official)
+    # Search rankings can change without a source disappearing. Preserve past discoveries.
+    prior_community = read_or(root / "registry/community.json", {}).get("repositories", [])
+    known_repos = {r["repository"] for r in official + community}
+    for old in prior_community:
+        if old["repository"] not in known_repos:
+            community.append({**old, "discovery_state": "not_seen_in_latest_search"})
+            known_repos.add(old["repository"])
+    community.sort(key=lambda r: r["repository"].casefold())
     all_rows = official + community
+    prior_practices = read_or(root / "registry/practices.json", {})
     assets, scanned, heads = collect_assets(
-        get, all_rows, config["scan_repositories"],
-        read_or(root / "registry/practices.json", {}), timestamp)
+        get, all_rows, config["scan_repositories"], prior_practices, timestamp)
+    current_ids = {a["id"] for a in assets}
+    for old in prior_practices.get("assets", []):
+        if old["id"] not in current_ids:
+            assets.append({**old, "lifecycle": "removed_or_unscanned_upstream"})
+            current_ids.add(old["id"])
+    assets.sort(key=lambda a: a["id"].casefold())
     if not assets:
         raise ValueError("empty practice registry")
     refs = []
