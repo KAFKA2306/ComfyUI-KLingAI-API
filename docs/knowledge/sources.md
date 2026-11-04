@@ -32,3 +32,11 @@ Hugging FaceとCivitaiのモデル情報は収集台帳の `feeds` に記録す�
 主な再利用先はPodcast・音声。YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワールドでは台詞音声の制作工程として利用を検討できる。アバター・衣装、BOOTH商品、3Dモデルへの直接の適用は、この原典だけでは確認できない。類似する単一話者の音声合成と異なり、複数話者の参照音声と会話文を1つのノードに入力する構造を持つ。
 
 `FL_ChatterboxDialogTTS`の配布元、必要なカスタムノードの版、モデルの取得先、VRAM、各モデルと参照音声のライセンス、実機動作、商用利用条件は、このJSONだけでは確定できない。利用前にそれぞれの一次資料と実機で確認する。これらの条件はWorkflowの自動順位付けに加点・減点しない。
+
+## 単一画像からスプライトシートとアニメーションを作る構成
+
+[Comfy-Org公式テンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/template_purz_nb2_single_image_sprite_sheet.json)（原典Blob SHA `4d0d760e84173c19c6d28cd10601cd8558fdcaad`）は、`LoadImage`の画像を`GeminiNanoBanana2`へ渡し、画像を分割するサブグラフを通して、複数の`SaveImage`でフレームを保存する。`SaveImageWithAlpha`は透過画像を、2つの`VHS_VideoCombine`はアニメーション出力を扱う。ノートにはGIF・WebMの出力を意図すると記載されているが、保存形式や実際の生成成功は未検証である。
+
+入力は画像と生成指示文、出力先はフレーム画像、スプライトシート、アニメーションである。ゲーム制作のキャラクターアニメーションとBOOTH商品の2D素材に直接応用でき、YouTube・Shortsや映画・アニメーションの素材制作にも応用を検討できる。VRChatワールド、アバター・衣装、Podcast・音声、3Dモデルへの直接適用は原典から確認できない。
+
+`GeminiNanoBanana2`は外部画像生成機能への依存がある。分割処理はUUID型のサブグラフであり、`VHS_VideoCombine`と`SaveImageWithAlpha`を含むノードの配布元・対応版、必要モデル、API利用条件、費用、必要VRAM、素材と出力物のライセンス、商用利用可否は未確認である。単純な静止画生成Workflowと異なり、フレーム分割と動画結合を一続きにする。これらの条件は自動順位付けに含めず、人気30・更新30・領域適合40の外で確認する。人気と更新日がGitHubリポジトリ単位の場合、個別Workflowの値ではない。
