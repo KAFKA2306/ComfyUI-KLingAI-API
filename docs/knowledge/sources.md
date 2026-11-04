@@ -40,3 +40,9 @@ Hugging FaceとCivitaiのモデル情報は収集台帳の `feeds` に記録す�
 入力は画像と生成指示文、出力先はフレーム画像、スプライトシート、アニメーションである。ゲーム制作のキャラクターアニメーションとBOOTH商品の2D素材に直接応用でき、YouTube・Shortsや映画・アニメーションの素材制作にも応用を検討できる。VRChatワールド、アバター・衣装、Podcast・音声、3Dモデルへの直接適用は原典から確認できない。
 
 `GeminiNanoBanana2`は外部画像生成機能への依存がある。分割処理はUUID型のサブグラフであり、`VHS_VideoCombine`と`SaveImageWithAlpha`を含むノードの配布元・対応版、必要モデル、API利用条件、費用、必要VRAM、素材と出力物のライセンス、商用利用可否は未確認である。単純な静止画生成Workflowと異なり、フレーム分割と動画結合を一続きにする。これらの条件は自動順位付けに含めず、人気30・更新30・領域適合40の外で確認する。人気と更新日がGitHubリポジトリ単位の場合、個別Workflowの値ではない。
+
+## 開始画像と終了画像から動画を生成する構成
+
+[Comfy-OrgのWan2.1 First/Last Frame公式テンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/wan2.1_flf2v_720_f16.json)（原典Blob SHA `97db669a9e12309f4ecfb29f4499ee819d126459`）は、2つの`LoadImage`から開始・終了画像を取り込み、`CLIPVisionLoader`・`CLIPVisionEncode`、`WanFirstLastFrameToVideo`、`KSampler`、`VAEDecode`、`CreateVideo`、`SaveVideo`を組み合わせる。`UNETLoader`、`CLIPLoader`、`VAELoader`、`ModelSamplingSD3`も含む。入力は開始・終了画像とテキスト条件、出力は生成動画である。静止画像からの通常の動画生成と異なり、終端画像も条件として渡す。
+
+YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワールドの映像素材に再利用を検討できる。アバター・衣装、BOOTH商品、Podcast・音声、3Dモデルへの直接適用は原典だけでは確認できない。必要なモデルファイルとその版、カスタムノードの要否、VRAM、ライセンス、商用利用条件、実機動作は未確認であり、採点対象にしない。
