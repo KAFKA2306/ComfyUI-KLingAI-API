@@ -46,3 +46,11 @@ Hugging FaceとCivitaiのモデル情報は収集台帳の `feeds` に記録す�
 [Comfy-OrgのWan2.1 First/Last Frame公式テンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/wan2.1_flf2v_720_f16.json)（原典Blob SHA `97db669a9e12309f4ecfb29f4499ee819d126459`）は、2つの`LoadImage`から開始・終了画像を取り込み、`CLIPVisionLoader`・`CLIPVisionEncode`、`WanFirstLastFrameToVideo`、`KSampler`、`VAEDecode`、`CreateVideo`、`SaveVideo`を組み合わせる。`UNETLoader`、`CLIPLoader`、`VAELoader`、`ModelSamplingSD3`も含む。入力は開始・終了画像とテキスト条件、出力は生成動画である。静止画像からの通常の動画生成と異なり、終端画像も条件として渡す。
 
 YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワールドの映像素材に再利用を検討できる。アバター・衣装、BOOTH商品、Podcast・音声、3Dモデルへの直接適用は原典だけでは確認できない。必要なモデルファイルとその版、カスタムノードの要否、VRAM、ライセンス、商用利用条件、実機動作は未確認であり、採点対象にしない。
+
+## 360度パノラマからGLBメッシュを作る構成
+
+[Comfy-Org公式のMoGeパノラマWorkflow](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_moge_panorama_to_mesh.json)は、`LoadImage`から正距円筒図法の360度画像を入力し、サブグラフ内の`MoGePanoramaInference`で12方向の画像を推論・統合し、`MoGePointMapToMesh`を経て`SaveGLB`でメッシュを保存する。原典は通常2:1の全天球画像を想定し、出力は内側から見る球状のGLBである。単一の透視画像を使う[別テンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_moge_perspective_to_mesh.json)と異なり、複数方向の深度をCPUで統合する。
+
+主な再利用先はVRChatワールド、3Dモデル、ゲーム制作。BOOTH商品の3D背景素材にも応用を検討できる。映画・アニメーションとYouTube・Shortsでは3D背景としての利用を検討できるが、アバター・衣装とPodcast・音声への直接適用は原典から確認できない。
+
+モデルの参照先は[Comfy-Org/MoGe](https://huggingface.co/Comfy-Org/MoGe)で、テンプレートには`moge_1_vitl_fp16.safetensors`と`moge_2_vitl_normal_fp16.safetensors`が記載されている。必要VRAM、実機動作、ComfyUI対応版、モデルと出力物のライセンス、商用利用条件は未確認。パノラマの分割解像度とバッチ数はGPU負荷、統合解像度はCPU負荷に関係する。これらの条件は人気30・更新30・領域適合40の採点に含めない。人気と更新日がGitHubリポジトリ単位の場合、個別Workflowの値ではない。
