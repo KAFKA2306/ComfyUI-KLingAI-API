@@ -16,26 +16,24 @@ def evaluate(item, catalog, registry, now, vram_gb=None):
     repo = item.get("source", "").removeprefix("github:")
     meta = catalog.get("repositories", {}).get(repo, {})
     stars = meta.get("stargazers_count")
-    popularity = round(15 * min(1, math.log1p(stars) / math.log1p(10000)), 2) if type(stars) is int and stars >= 0 else None
+    popularity = round(30 * min(1, math.log1p(stars) / math.log1p(10000)), 2) if type(stars) is int and stars >= 0 else None
     pushed = _time(meta.get("pushed_at"))
     days = max(0, (now - pushed).total_seconds() / 86400) if pushed else None
-    freshness = round(15 * max(0, 1 - days / 365), 2) if days is not None else None
+    freshness = round(30 * max(0, 1 - days / 365), 2) if days is not None else None
     inspected = item.get("inspection") == "complete"
     models = sorted(set(item.get("model_references") or []))
     nodes = sorted(set(item.get("node_types") or []))
     license_id = meta.get("license_spdx")
-    license_score = 20 if license_id and license_id not in ("NOASSERTION", "OTHER") else None
     required_vram = item.get("required_vram_gb")
     vram_ok = (vram_gb >= required_vram) if isinstance(required_vram, (int, float)) and vram_gb is not None else None
-    environment = 20 if inspected and vram_ok is True and item.get("runtime_verified") is True else None
     mission_scores = {}
     for mission in MISSION_CATEGORIES:
         hits = matches(item, registry, mission)
         explicit = mission in item.get("mission_ids", [])
         if hits or explicit:
-            mission_scores[mission] = min(30, (20 if explicit else 0) + min(10, 2 * len(hits)))
+            mission_scores[mission] = min(40, (30 if explicit else 0) + min(10, 2 * len(hits)))
     suitability = max(mission_scores.values(), default=0)
-    known = [x for x in (popularity, freshness, environment, license_score) if x is not None]
+    known = [x for x in (popularity, freshness) if x is not None]
     score = round(sum(known) + suitability, 2)
     blockers = []
     if not inspected:
@@ -56,7 +54,6 @@ def evaluate(item, catalog, registry, now, vram_gb=None):
         "id": item.get("id"), "source_url": item.get("source_url"),
         "score_observed": score, "score_max": 100,
         "score_components": {"popularity": popularity, "freshness": freshness,
-                             "environment": environment, "license": license_score,
                              "mission_fit": suitability},
         "mission_scores": mission_scores, "required_models": models,
         "node_types": nodes, "custom_nodes": "未確認",
@@ -93,7 +90,7 @@ def report(catalog, registry, *, vram_gb=None, now=None):
                                   "mission_fit": r["mission_scores"][mission],
                                   "readiness": r["readiness"], "blockers": r["blockers"]}
                                  for r in eligible[:5]]
-    return {"schema_version": 1, "metric_note": "人気と更新日はリポジトリ単位。未確認点は加点せず、実行可能とは断定しない。",
+    return {"schema_version": 1, "metric_note": "採点は人気30点・更新日30点・領域適合40点のみ。人気と更新日はリポジトリ単位。実行条件・ライセンスは参考情報であり採点しない。",
             "candidates": len(rows), "groups": len(groups),
             "ranked": sorted(winners, key=lambda r: (-r["score_observed"], str(r["id"]))),
             "assignments": assignments}
