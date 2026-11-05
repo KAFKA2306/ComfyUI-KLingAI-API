@@ -62,3 +62,11 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 サブグラフ内には`UNETLoader`、`CLIPLoader`、`VAELoader`、`ModelSamplingAuraFlow`などがある。原典が指定するモデルはQwen-Image-2512 FP8、Qwen 2.5 VLのテキストエンコーダ、Qwen Image VAE、360度用LoRA、任意のLightning LoRA。原典に記載されたファイル容量は順に19.03GB、8.74GB、242MB、720.1MB、1.58GBであり、必要VRAMを表す数値ではない。原典のノード属性はComfyUI標準ノードを示すが、実際の対応バージョンと追加依存の有無は利用環境で確認する。
 
 8領域での再利用先は、VRChatワールドとゲーム制作の環境背景、BOOTH商品の背景素材、YouTube・Shortsと映画・アニメーションの背景、3Dモデル制作時の背景参照。アバター・衣装とPodcast・音声への直接適用は未確認。モデル・LoRAごとのライセンス、商用利用条件、必要VRAM、左右境界の品質、実機動作は未確認であり、採点しない。人気と更新日はGitHubリポジトリ単位の代理指標であり、個別Workflowの人気・更新日ではない。自動順位付けは人気30・更新30・制作領域適合40に限定する。
+
+## ACE-Step 1.5のテキスト条件から音声を作る構成
+
+[Comfy-Org公式ACE-Step 1.5テンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/audio_ace_step_1_5_split_4b.json)（原典Blob SHA `fe1c94c6de37b8b900a5c83b0decff4d3d490e02`）では、`DualCLIPLoader`と`TextEncodeAceStepAudio1.5`でテキスト条件を作り、`EmptyAceStep1.5LatentAudio`、`KSampler`、`VAEDecodeAudio`、`SaveAudioMP3`へ接続する。モデルは`UNETLoader`と`VAELoader`から供給する。原典には`acestep_v1.5_turbo.safetensors`、`ace_1.5_vae.safetensors`、`qwen_0.6b_ace15.safetensors`、`qwen_4b_ace15.safetensors`への参照がある。入力はテキスト条件、出力はMP3音声である。
+
+主な再利用先はPodcast・音声。YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワールドでは音楽・音声素材への利用を検討できる。アバター・衣装、BOOTH商品、3Dモデルへの直接適用は未確認。参照音声を入力する[Chatterbox Dialog TTS](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/audio-chatterbox_tts_dialog.json)とは異なり、この構成ではテキスト条件と潜在音声から生成する。
+
+ノードとモデルの対応版、必要VRAM、各モデルのライセンス、商用利用条件、実機動作、音声品質は未確認である。これらは人気30・更新30・制作領域適合40の順位付けには含めない。GitHubスター数と最終push日時を利用する場合、それらはリポジトリ単位の指標であり、このWorkflow単体の人気や更新日ではない。
