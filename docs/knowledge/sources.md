@@ -70,3 +70,11 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 主な再利用先はPodcast・音声。YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワールドでは音楽・音声素材への利用を検討できる。アバター・衣装、BOOTH商品、3Dモデルへの直接適用は未確認。参照音声を入力する[Chatterbox Dialog TTS](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/audio-chatterbox_tts_dialog.json)とは異なり、この構成ではテキスト条件と潜在音声から生成する。
 
 ノードとモデルの対応版、必要VRAM、各モデルのライセンス、商用利用条件、実機動作、音声品質は未確認である。これらは人気30・更新30・制作領域適合40の順位付けには含めない。GitHubスター数と最終push日時を利用する場合、それらはリポジトリ単位の指標であり、このWorkflow単体の人気や更新日ではない。
+
+## 単一の透視画像からテクスチャ付きGLBを作る構成
+
+[Comfy-Org公式MoGe Perspective-to-Mesh](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_moge_perspective_to_mesh.json)（原典Blob SHA `c4a412f9844b033f93782112a404188764afe4a9`）は、`LoadImage`から透視画像を入力し、MoGeの推論・メッシュ化を含むサブグラフを通して`SaveGLB`へ出力する。サブグラフはOpenGLとDirectXの法線プレビューも出力する。幅2048ピクセルを超える入力は、設定により推論前に長辺2048へ縮小できる。メッシュ間引きと深度の不連続をまたぐ面の除去も調整できる。
+
+[360度パノラマからGLBを作る構成](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_moge_panorama_to_mesh.json)とは異なり、単一の透視画像から見えている形状を推定する。主な再利用先は3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品の3D素材。YouTube・Shortsと映画・アニメーションでは背景素材への応用を検討できる。アバター・衣装とPodcast・音声への直接適用は未確認。
+
+モデル参照先は[Comfy-Org/MoGe](https://huggingface.co/Comfy-Org/MoGe)。原典にはMoGe-1の`moge_1_vitl_fp16.safetensors`とMoGe-2の`moge_2_vitl_normal_fp16.safetensors`が記載され、後者は法線推定を扱う。必要VRAM、対応するComfyUI・ノードの版、モデル・出力物のライセンス、商用利用条件、実機動作は未確認であり、採点に含めない。人気30・更新30・制作領域適合40のみを採点し、GitHubスター数とpush日時はリポジトリ単位の代理指標として扱う。
