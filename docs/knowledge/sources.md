@@ -78,3 +78,11 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 [360度パノラマからGLBを作る構成](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_moge_panorama_to_mesh.json)とは異なり、単一の透視画像から見えている形状を推定する。主な再利用先は3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品の3D素材。YouTube・Shortsと映画・アニメーションでは背景素材への応用を検討できる。アバター・衣装とPodcast・音声への直接適用は未確認。
 
 モデル参照先は[Comfy-Org/MoGe](https://huggingface.co/Comfy-Org/MoGe)。原典にはMoGe-1の`moge_1_vitl_fp16.safetensors`とMoGe-2の`moge_2_vitl_normal_fp16.safetensors`が記載され、後者は法線推定を扱う。必要VRAM、対応するComfyUI・ノードの版、モデル・出力物のライセンス、商用利用条件、実機動作は未確認であり、採点に含めない。人気30・更新30・制作領域適合40のみを採点し、GitHubスター数とpush日時はリポジトリ単位の代理指標として扱う。
+
+## LTX-2.3の画像から映像と音声を作る構成
+
+[Comfy-Org公式LTX-2.3 Image-to-Videoテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/video_ltx2_3_i2v.json)では、`LoadImage`の入力画像と文章条件を使い、`LTXVImgToVideoInplace`、`SamplerCustomAdvanced`、`LTXVLatentUpsampler`、`LTXVAudioVAEDecode`、`SaveVideo`などを組み合わせる。映像・音声の潜在表現を生成・拡大・復号し、動画へ保存する構成である。単純な静止画像生成と異なり、画像から時間方向の映像と音声を扱う。
+
+原典には[LightricksのLTX-2.3モデル](https://huggingface.co/Lightricks/LTX-2.3/)、22BのFP8チェックポイント、蒸留LoRA、Gemma 3系LoRA、空間アップスケーラーへの参照がある。これらはモデル依存を示すが、必要VRAMの実測値ではない。対応するComfyUI本体・カスタムノードの版、各モデルのライセンス、商用利用条件、生成品質、実機動作は未確認であり、利用前に原典と実行環境で確認する。
+
+8領域ではYouTube・Shorts、映画・アニメーションの映像制作が直接の再利用候補である。ゲーム制作、VRChatワールド、BOOTH商品では動画素材としての利用を検討できる。Podcast・音声は生成音声の独立利用、アバター・衣装と3Dモデルは直接の適用が原典だけでは確認できない。類似する開始・終了画像指定の[Wan2.1 Workflow](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/wan2.1_flf2v_720_f16.json)とは入力条件と使用モデルが異なる。人気30・更新30・制作領域適合40のみを自動採点し、VRAM・モデル・ライセンス・実行環境は採点しない。GitHubのスター数とpush日時はリポジトリ単位であり、個別Workflowの指標ではない。
