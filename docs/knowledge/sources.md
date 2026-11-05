@@ -54,3 +54,11 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 主な再利用先はVRChatワールド、3Dモデル、ゲーム制作。BOOTH商品の3D背景素材にも応用を検討できる。映画・アニメーションとYouTube・Shortsでは3D背景としての利用を検討できるが、アバター・衣装とPodcast・音声への直接適用は原典から確認できない。
 
 モデルの参照先は[Comfy-Org/MoGe](https://huggingface.co/Comfy-Org/MoGe)で、テンプレートには`moge_1_vitl_fp16.safetensors`と`moge_2_vitl_normal_fp16.safetensors`が記載されている。必要VRAM、実機動作、ComfyUI対応版、モデルと出力物のライセンス、商用利用条件は未確認。パノラマの分割解像度とバッチ数はGPU負荷、統合解像度はCPU負荷に関係する。これらの条件は人気30・更新30・領域適合40の採点に含めない。人気と更新日がGitHubリポジトリ単位の場合、個別Workflowの値ではない。
+
+## Qwen-Image-2512で360度背景画像を生成する構成
+
+[Comfy-Org公式360度画像テンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/template_qwen_Image_2512_360_lora.json)（原典Blob SHA `614e3cc51b13d0ee58dd635b2695465d26bfd512`）は、`PrimitiveStringMultiline`で360度画像の指示語と場面の文章を入力し、`StringConcatenate`で結合して、Qwen-Image-2512とLoRAを扱うサブグラフに渡す。生成された`IMAGE`を`SaveImage`で保存する。既定の画像サイズは2048×1024で、正距円筒図法の2:1パノラマを想定する。単純な画像生成との違いは、360度用LoRAと指示語を併用し、左右がつながる背景画像を狙う点にある。
+
+サブグラフ内には`UNETLoader`、`CLIPLoader`、`VAELoader`、`ModelSamplingAuraFlow`などがある。原典が指定するモデルはQwen-Image-2512 FP8、Qwen 2.5 VLのテキストエンコーダ、Qwen Image VAE、360度用LoRA、任意のLightning LoRA。原典に記載されたファイル容量は順に19.03GB、8.74GB、242MB、720.1MB、1.58GBであり、必要VRAMを表す数値ではない。原典のノード属性はComfyUI標準ノードを示すが、実際の対応バージョンと追加依存の有無は利用環境で確認する。
+
+8領域での再利用先は、VRChatワールドとゲーム制作の環境背景、BOOTH商品の背景素材、YouTube・Shortsと映画・アニメーションの背景、3Dモデル制作時の背景参照。アバター・衣装とPodcast・音声への直接適用は未確認。モデル・LoRAごとのライセンス、商用利用条件、必要VRAM、左右境界の品質、実機動作は未確認であり、採点しない。人気と更新日はGitHubリポジトリ単位の代理指標であり、個別Workflowの人気・更新日ではない。自動順位付けは人気30・更新30・制作領域適合40に限定する。
