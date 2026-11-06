@@ -16,18 +16,19 @@
         "src/gwp/evaluate.py",
         "src/gwp/select.py"
       ]
-    }
-  ],
-  "hypotheses": [
+    },
     {
       "id": "grouping-false-equivalence",
-      "hypothesis": "同じ用途・ノード名・モデル参照・入出力形式を持つ別Workflowが、内容の等価性を確認せず同一グループにまとまる可能性がある。",
-      "basis_url": "https://github.com/KAFKA2306/comfyui-workflows-factory/blob/main/src/gwp/evaluate.py",
+      "finding": "同一ノード名・モデル参照・用途でも内容が異なるWorkflowを誤統合する再現ケースを確認。Git Blob SHA一致かつ用途スコア一致時だけ統合するよう修正し、出典IDを保持する。",
+      "evidence_url": "https://github.com/KAFKA2306/comfyui-workflows-factory/actions/runs/42267025762",
       "checked_on": "2026-11-07",
-      "status": "unverified",
-      "proposed_test": "異なるグラフ構造だがノード名とモデル参照が一致する2つのWorkflowを用意し、report()で別候補として保持されるか確認する。",
-      "next_action": "再現テストで事実を確定し、重複判定の最小修正と8領域への影響測定を行う。"
+      "applies_to": [
+        "src/gwp/evaluate.py",
+        "tests/test_selection.py"
+      ],
+      "next_verification": "実台帳を固定して8領域の候補順位・グループ数を変更前後で比較し、実機での作品制作可否は別途確認する。"
     }
   ],
+  "hypotheses": [],
   "blocked_attempts": []
 }
