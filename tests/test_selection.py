@@ -69,6 +69,7 @@ class SelectionTests(unittest.TestCase):
     def test_evaluation_timestamp_reproduces_freshness_scores(self):
         from gwp.evaluate import report
 
+        self.catalog["repositories"]["example/new"] = self.metadata["example/new"].copy()
         first = report(self.catalog, self.registry, now=self.now)
         repeated = report(self.catalog, self.registry, now=self.now)
         later = report(self.catalog, self.registry,
