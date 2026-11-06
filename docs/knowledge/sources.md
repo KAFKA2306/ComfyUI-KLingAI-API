@@ -115,3 +115,11 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 原典に記載されたモデルは`triposplat_fp16.safetensors`、`dino_v3_vit_h.safetensors`、`triposplat_vae_decoder_fp16.safetensors`、`flux2-vae.safetensors`、背景除去用`birefnet.safetensors`。配布元は[VAST-AI/TripoSplat](https://huggingface.co/VAST-AI/TripoSplat)と[Comfy-Org/BiRefNet](https://huggingface.co/Comfy-Org/BiRefNet)。必要VRAM、モデルとカスタムノードのライセンス、商用利用条件、実機動作は未確認であり、配布ファイル容量からVRAMを推定しない。
 
 8領域では3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品が直接の再利用候補。YouTube・Shortsと映画・アニメーションは回転プレビュー動画を素材として利用できる。アバター・衣装はリギングやメッシュ編集への適性が未確認で、Podcast・音声への直接利用は確認できない。順位付けは人気30・更新30・制作領域適合40のみとし、VRAM・ライセンス・モデル・実行条件は採点しない。GitHubの人気と更新日はリポジトリ単位であり、この個別Workflowの実績ではない。
+
+## 動画から人物の3D姿勢とメッシュを推定する構成
+
+[Comfy-Org公式SAM 3D Bodyテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/utility_sam3d_body.json)（原典Blob SHA `5a7000754c062a945f8024d45b0a5fd35ac58e37`）では、`LoadVideo`・`Video Slice`・`GetVideoComponents`で動画を取り込み、`RTDETR_detect`で人物を検出し、`SAM3_VideoTrack`で追跡する。`SAM3DBody_Loader`・`SAM3DBody_Predict`・`SAM3DBody_Smooth`で人体の3D姿勢・形状を推定し、`SAM3DBody_FaceExpression`で顔表情を補う。`BuildPoseFile`・`Save3DAdvanced`が3D出力、`SAM3DBody_Render`・`CreateVideo`・`SaveVideo`が動画出力の経路となる。`LoadMoGeModel`・`MoGeInference`・`MoGeGeometryToFOV`は画角推定の補助経路で、原典注記では任意とされる。複数人物の動画ではSAM3追跡が実用上重要と説明されている。
+
+原典の参照モデルは`sam3.1_multiplex_fp16.safetensors`、`sam_3d_body_dinov3_bf16.safetensors`、`moge_2_vitl_normal_fp16.safetensors`、`rt_detr_v4-x-hgnet_fp32.safetensors`。一次配布先は[Comfy-Org/sam3.1](https://huggingface.co/Comfy-Org/sam3.1)、[Comfy-Org/sam-3d-body](https://huggingface.co/Comfy-Org/sam-3d-body)、[Comfy-Org/MoGe](https://huggingface.co/Comfy-Org/MoGe)、[Comfy-Org/SDPose](https://huggingface.co/Comfy-Org/SDPose)。入力は動画、出力候補は人物の3Dデータと描画動画。モデル容量は必要VRAMを示さない。各ノードの対応版、追加カスタムノードの要否、必要VRAM、ライセンス、商用利用条件、実機動作、リギング可能性は未確認である。単一画像から物体を生成するHunyuan3DやTripoSplatとは異なり、時間方向の人物検出・追跡と人体推定を扱う。
+
+8領域ではアバター・衣装、3Dモデル、ゲーム制作、VRChatワールドで人物姿勢・メッシュの制作工程への再利用を検討できる。YouTube・Shortsと映画・アニメーションには人物の動きの解析・映像化、BOOTH商品には3D素材化の候補となる。Podcast・音声への直接適用は確認できない。自動採点は人気30・更新30・制作領域適合40のみとし、モデル・ライセンス・VRAM・実行環境は参考情報として独立させる。GitHubの人気と更新日はリポジトリ単位であり、個別Workflowの性能を示さない。
