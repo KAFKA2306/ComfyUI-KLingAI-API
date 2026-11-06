@@ -67,6 +67,9 @@ def evaluate(item, catalog, registry, now, vram_gb=None):
 
 def report(catalog, registry, *, vram_gb=None, now=None):
     now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None or now.utcoffset() is None:
+        raise ValueError("評価時刻はタイムゾーン付きで指定してください")
+    now = now.astimezone(timezone.utc)
     rows = [evaluate(item, catalog, registry, now, vram_gb)
             for item in source_rows(catalog, registry) if not item.get("missing_upstream")]
     # ノード名・モデル名が同じでも接続や設定が異なるため、内容一致の証拠にはならない。
@@ -99,7 +102,7 @@ def report(catalog, registry, *, vram_gb=None, now=None):
                                   "mission_fit": r["mission_scores"][mission],
                                   "readiness": r["readiness"], "blockers": r["blockers"]}
                                  for r in eligible[:5]]
-    return {"schema_version": 1, "metric_note": "採点は人気30点・更新日30点・領域適合40点のみ。人気と更新日はリポジトリ単位。実行条件・ライセンスは参考情報であり採点しない。",
+    return {"schema_version": 1, "evaluated_at": now.isoformat().replace("+00:00", "Z"), "metric_note": "採点は人気30点・更新日30点・領域適合40点のみ。人気と更新日はリポジトリ単位。実行条件・ライセンスは参考情報であり採点しない。",
             "candidates": len(rows), "groups": len(groups),
             "ranked": sorted(winners, key=lambda r: (-r["score_observed"], str(r["id"]))),
             "assignments": assignments}
@@ -110,10 +113,15 @@ def main(argv=None):
     parser.add_argument("--catalog", type=Path, default=Path(".cache/workflow_registry.json"))
     parser.add_argument("--registry", type=Path, default=Path("config/registry.json"))
     parser.add_argument("--vram-gb", type=float)
+    parser.add_argument("--as-of", help="評価基準時刻（ISO 8601、タイムゾーン必須）。同一条件での再評価に使用")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
-    result = report(load_catalog(args.catalog, allow_missing=False),
-                    load_registry(args.registry), vram_gb=args.vram_gb)
+    try:
+        as_of = datetime.fromisoformat(args.as_of.replace("Z", "+00:00")) if args.as_of else None
+        result = report(load_catalog(args.catalog, allow_missing=False),
+                        load_registry(args.registry), vram_gb=args.vram_gb, now=as_of)
+    except ValueError as exc:
+        parser.error(str(exc))
     data = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
