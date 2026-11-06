@@ -18,6 +18,7 @@ sources: ["https://imoz.jp/humanizer.ja.txt"]
 ## 設計書
 
 - [全体設計](design/system.md)：公開Workflowの収集から制作までの処理と責任分担
+- [自律改善・記憶・監視](design/agent-loop.md)：毎時の調査、修正、評価と実行間メモリ
 - [台帳の保全・復旧](design/durability.md)：永続保存、別PCからの復旧、競合統合、制作と公開の出典管理
 - [制作工程への接続](design/production.md)：ComfyUIへの投入、出力回収、制作先への受け渡し
 - [作品構成と演出](design/creative.md)：制作単位の依存関係と変更の影響
