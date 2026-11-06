@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "scope": "KAFKA2306/comfyui-workflows-factory",
+  "baseline": {
+    "observed_main_sha": "3e67b939c13bb12650dfb9b9ec3411173db73024",
+    "observed_on": "2026-11-07",
+    "source_url": "https://github.com/KAFKA2306/comfyui-workflows-factory/commit/3e67b939c13bb12650dfb9b9ec3411173db73024"
+  },
+  "verified_lessons": [
+    {
+      "id": "selection-scoring-source-unit",
+      "finding": "選定の採点は人気30・更新30・領域適合40。人気と更新はWorkflow単位ではなくGitHubリポジトリ単位。",
+      "evidence_url": "https://github.com/KAFKA2306/comfyui-workflows-factory/blob/main/src/gwp/evaluate.py",
+      "checked_on": "2026-11-07",
+      "applies_to": [
+        "src/gwp/evaluate.py",
+        "src/gwp/select.py"
+      ]
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "grouping-false-equivalence",
+      "hypothesis": "同じ用途・ノード名・モデル参照・入出力形式を持つ別Workflowが、内容の等価性を確認せず同一グループにまとまる可能性がある。",
+      "basis_url": "https://github.com/KAFKA2306/comfyui-workflows-factory/blob/main/src/gwp/evaluate.py",
+      "checked_on": "2026-11-07",
+      "status": "unverified",
+      "proposed_test": "異なるグラフ構造だがノード名とモデル参照が一致する2つのWorkflowを用意し、report()で別候補として保持されるか確認する。",
+      "next_action": "再現テストで事実を確定し、重複判定の最小修正と8領域への影響測定を行う。"
+    }
+  ],
+  "blocked_attempts": []
+}
