@@ -3,7 +3,7 @@ id: "knowledge-sources"
 title: "一次資料と情報源"
 kind: "knowledge"
 status: "active"
-updated: "2026-11-04"
+updated: "2026-11-06"
 tags: ["出典","一次資料","ComfyUI","ライセンス"]
 related: ["config/registry.json","docs/knowledge/registry.md"]
 sources: ["https://github.com/Comfy-Org/workflow_templates","https://github.com/comfyanonymous/ComfyUI_examples"]
@@ -86,3 +86,12 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 原典には[LightricksのLTX-2.3モデル](https://huggingface.co/Lightricks/LTX-2.3/)、22BのFP8チェックポイント、蒸留LoRA、Gemma 3系LoRA、空間アップスケーラーへの参照がある。これらはモデル依存を示すが、必要VRAMの実測値ではない。対応するComfyUI本体・カスタムノードの版、各モデルのライセンス、商用利用条件、生成品質、実機動作は未確認であり、利用前に原典と実行環境で確認する。
 
 8領域ではYouTube・Shorts、映画・アニメーションの映像制作が直接の再利用候補である。ゲーム制作、VRChatワールド、BOOTH商品では動画素材としての利用を検討できる。Podcast・音声は生成音声の独立利用、アバター・衣装と3Dモデルは直接の適用が原典だけでは確認できない。類似する開始・終了画像指定の[Wan2.1 Workflow](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/wan2.1_flf2v_720_f16.json)とは入力条件と使用モデルが異なる。人気30・更新30・制作領域適合40のみを自動採点し、VRAM・モデル・ライセンス・実行環境は採点しない。GitHubのスター数とpush日時はリポジトリ単位であり、個別Workflowの指標ではない。
+
+
+## Idolによる単一画像からGaussian Splatとメッシュを作る構成
+
+[Comfy-Org公式Idolテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_idol_image_to_gaussian_splat.json)（原典Blob SHA `bc8ecd97784ebd6f3849fe9c3f41cc0e01a9de7f`）は、`LoadImage`から単一の被写体画像を取り込み、画像からGaussian Splatを作るサブグラフに渡す。背景除去にはBiRefNetを使う設定がある。出力は`SplatToFile3D`によるSPZ、`SplatToMesh`と`SaveGLB`によるGLB、`RenderSplat`・`CreateVideo`・`SaveVideo`による回転プレビュー動画の3系統。原典のメッシュ変換解像度は384、プレビューは1024×1024・75フレーム・25fpsである。MoGeの透視画像からメッシュを推定する工程と異なり、Gaussian Splatを中間表現として使う。
+
+モデルの一次参照先は[Comfy-Org/Idol](https://huggingface.co/Comfy-Org/Idol)と[Comfy-Org/BiRefNet](https://huggingface.co/Comfy-Org/BiRefNet)。原典には`idol_fp16.safetensors`、`idol_decoder_fp16.safetensors`、`dino_v3_vit_h_bf16.safetensors`、`flux2-vae.safetensors`、`birefnet.safetensors`が記載され、IdolはTripoSplat系ノードを使う。モデルファイル合計3.52GBという記載は必要VRAMではない。サブグラフの内部ノード版、カスタムノードの追加要否、必要VRAM、各モデルと出力物のライセンス、商用利用条件、実機動作は未確認。単一視点から推定するため背面・細部の形状は入力画像だけでは保証されない。
+
+8領域では3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品の3D素材が主な再利用候補。YouTube・Shortsと映画・アニメーションには回転プレビューを利用できる。アバター・衣装はメッシュの編集・リギング適性が未確認で、Podcast・音声への直接適用は確認できない。採点は人気30・更新30・領域適合40のみとし、モデル・VRAM・ライセンス・実行条件は別途確認する。GitHubスター数と更新日はリポジトリ単位の代理指標であり、この個別Workflowの評価値ではない。
