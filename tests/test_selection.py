@@ -66,6 +66,23 @@ class SelectionTests(unittest.TestCase):
         self.assertTrue(any(x["inspection"] == "pending" for x in all_rows))
         self.assertFalse(any(x["repository"] == "example/unrelated" for x in all_rows))
 
+    def test_evaluation_timestamp_reproduces_freshness_scores(self):
+        from gwp.evaluate import report
+
+        first = report(self.catalog, self.registry, now=self.now)
+        repeated = report(self.catalog, self.registry, now=self.now)
+        later = report(self.catalog, self.registry,
+                       now=datetime(2026, 12, 4, tzinfo=timezone.utc))
+        self.assertEqual(first, repeated)
+        self.assertEqual(first["evaluated_at"], "2026-11-04T00:00:00Z")
+        self.assertNotEqual(first["evaluated_at"], later["evaluated_at"])
+        def score(result):
+            return next(x["score_components"]["freshness"] for x in result["ranked"]
+                        if x["id"].startswith("github:example/new:"))
+        self.assertGreater(score(first), score(later))
+        with self.assertRaises(ValueError):
+            report(self.catalog, self.registry, now=datetime(2026, 11, 4))
+
     def test_assignment_score_uses_its_own_mission_fit(self):
         from gwp.evaluate import report
 
