@@ -66,6 +66,34 @@ class SelectionTests(unittest.TestCase):
         self.assertTrue(any(x["inspection"] == "pending" for x in all_rows))
         self.assertFalse(any(x["repository"] == "example/unrelated" for x in all_rows))
 
+    def test_report_does_not_merge_different_content_with_same_nodes(self):
+        from gwp.evaluate import report
+
+        catalog = empty_catalog()
+        for repo, blob in [("example/first", "1" * 40), ("example/second", "2" * 40)]:
+            name = "3d/same-nodes.json"
+            record_file(catalog, repo, "a" * 40, {
+                "path": name, "sha": blob, "size": 100,
+            }, "2026-11-01T00:00:00Z")
+            row = catalog["artifacts"]["github:" + repo + ":" + name]
+            row.update({"inspection": "complete", "format": "workflow-ui",
+                        "node_types": ["LoadImage", "SaveGLB"],
+                        "model_references": ["same-model"], "mission_ids": ["3d-models"]})
+        before = json.dumps(catalog, sort_keys=True)
+        evaluated = report(catalog, self.registry, now=self.now)
+        self.assertEqual(evaluated["candidates"], 2)
+        self.assertEqual(evaluated["groups"], 2)
+        self.assertEqual(len(evaluated["assignments"]["3d-models"]), 2)
+        self.assertEqual(json.dumps(catalog, sort_keys=True), before)
+
+        # Identical blob contents may be grouped, but both provenance IDs survive.
+        rows = list(catalog["artifacts"].values())
+        rows[1]["blob_sha"] = rows[0]["blob_sha"]
+        grouped = report(catalog, self.registry, now=self.now)
+        self.assertEqual(grouped["groups"], 1)
+        self.assertEqual(len(grouped["ranked"][0]["similar_candidates"]), 1)
+
+
 
 if __name__ == "__main__":
     unittest.main()
