@@ -31,6 +31,7 @@ jobs:
           uv run --locked python -m unittest discover -s tests -v
           uv run --locked python -m compileall -q src
           uv run --locked python scripts/validate_docs.py
+          uv run --locked python -m gwp.agent_memory
           uv run --locked python -c 'import json,pathlib; [json.loads(p.read_text(encoding="utf-8")) for p in pathlib.Path(".").rglob("*.json")]'
 
   collect:
