@@ -66,6 +66,30 @@ class SelectionTests(unittest.TestCase):
         self.assertTrue(any(x["inspection"] == "pending" for x in all_rows))
         self.assertFalse(any(x["repository"] == "example/unrelated" for x in all_rows))
 
+    def test_assignment_score_uses_its_own_mission_fit(self):
+        from gwp.evaluate import report
+
+        catalog = empty_catalog()
+        name = "mixed/video-and-audio.json"
+        record_file(catalog, "example/mixed", "a" * 40,
+                    {"path": name, "sha": "1" * 40, "size": 100},
+                    "2026-11-01T00:00:00Z")
+        row = catalog["artifacts"]["github:example/mixed:" + name]
+        row.update({"inspection": "complete", "format": "workflow-ui",
+                    "node_types": ["SaveVideo", "SaveAudio"],
+                    "mission_ids": ["youtube", "podcast"]})
+        catalog["repositories"]["example/mixed"] = {
+            "stargazers_count": 10, "pushed_at": "2026-11-03T00:00:00Z"}
+        result = report(catalog, self.registry, now=self.now)
+        ranked = next(x for x in result["ranked"] if x["id"] == row["id"])
+        for mission in ("youtube", "podcast"):
+            assignment = next(x for x in result["assignments"][mission]
+                              if x["workflow_id"] == row["id"])
+            components = ranked["score_components"]
+            expected = round(sum(x for x in (components["popularity"], components["freshness"])
+                                 if x is not None) + ranked["mission_scores"][mission], 2)
+            self.assertEqual(assignment["score"], expected)
+
     def test_report_does_not_merge_different_content_with_same_nodes(self):
         from gwp.evaluate import report
 
