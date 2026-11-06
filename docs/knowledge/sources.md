@@ -101,3 +101,9 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 [Comfy-Org公式Hunyuan3Dテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_hunyuan3d_image_to_model.json)では、`LoadImage`の`IMAGE`を3D生成サブグラフへ渡し、出力を`SaveGLB`の`mesh`入力へ接続する。原典は`hunyuan3d-dit-v2_fp16.safetensors`を参照する。入力は単一画像、出力はGLB形式の3Dデータである。パノラマから周囲のメッシュを作るMoGeとは異なり、画像内の対象物を3D化する構成である。
 
 主な再利用先は3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品。アバター・衣装はメッシュの調整とリギングが別途必要であり、YouTube・Shorts、映画・アニメーションは3D素材として間接利用を検討できる。Podcast・音声への直接適用は確認できない。必要VRAM、サブグラフ内の詳細な依存関係、モデルとノードの配布条件、ライセンス、商用利用可否、実機動作は未確認である。これらは採点せず、人気30・更新30・制作領域適合40のみで順位付けする。GitHub単位の人気と更新日は個別Workflowの実績ではない。
+
+## 4方向画像からHunyuan3D TurboでGLBを生成する構成
+
+[Comfy-Org公式Hunyuan3D MultiView Turboテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_hunyuan3d_multiview_to_model_turbo.json)（確認した原典Blob SHA `0f4b882dafc2241591be41761328bbfbd77fd1aa`）は、前・後・左・右の4画像をそれぞれ`LoadImage`で読み込み、`CLIPVisionEncode`から`Hunyuan3Dv2ConditioningMultiView`に接続する。`ImageOnlyCheckpointLoader`で`hunyuan3d-dit-v2-mv-turbo_fp16.safetensors`を参照し、`EmptyLatentHunyuan3Dv2`、`KSampler`、`VAEDecodeHunyuan3D`、`VoxelToMesh`、`SaveGLB`を経てGLB形式で保存する。原典のモデルリンクは[Comfy-Org/hunyuan3D_2.0_repackaged](https://huggingface.co/Comfy-Org/hunyuan3D_2.0_repackaged)で、チェックポイントの配布サイズは4.59GBと記載されている。これは必要VRAMの実測値ではない。
+
+単一画像の[Hunyuan3Dテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_hunyuan3d_image_to_model.json)と異なり、4方向の入力画像とMultiView専用の条件付け・チェックポイントを使う。3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品の3D素材が主な再利用候補である。アバター・衣装はメッシュ編集とリギングが必要か未確認。YouTube・Shortsと映画・アニメーションは3D素材として間接利用を検討できる。Podcast・音声への直接適用は確認できない。必要VRAM、ライセンスと商用利用条件、カスタムノードの追加要否、実機での生成結果は未確認である。人気30・更新30・制作領域適合40のみで採点し、モデル・VRAM・ライセンス・実行条件は採点しない。GitHubスター数と更新日時はリポジトリ単位の代理指標であり、このWorkflow固有の実績ではない。
