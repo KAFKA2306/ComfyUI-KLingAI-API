@@ -92,6 +92,31 @@ class SelectionTests(unittest.TestCase):
                                  if x is not None) + ranked["mission_scores"][mission], 2)
             self.assertEqual(assignment["score"], expected)
 
+    def test_assignment_ranking_uses_weighted_total_not_fit_first(self):
+        from gwp.evaluate import report
+
+        catalog = empty_catalog()
+        examples = [
+            ("example/high-fit", "generic/high-fit.json", "1" * 40, ["3d-models"], 0, "2025-01-01T00:00:00Z"),
+            ("example/high-total", "3d/mesh.json", "2" * 40, [], 10000, "2026-11-04T00:00:00Z"),
+        ]
+        for repo, path, blob, missions, stars, pushed in examples:
+            record_file(catalog, repo, "a" * 40,
+                        {"path": path, "sha": blob, "size": 100},
+                        "2026-11-01T00:00:00Z")
+            row = catalog["artifacts"]["github:" + repo + ":" + path]
+            row.update({"inspection": "complete", "format": "workflow-ui",
+                        "node_types": ["SaveGLB"], "mission_ids": missions})
+            catalog["repositories"][repo] = {
+                "stargazers_count": stars, "pushed_at": pushed,
+            }
+        assignments = report(catalog, self.registry, now=self.now)["assignments"]["3d-models"]
+        ranked = [x for x in assignments if x["workflow_id"].startswith("github:example/")]
+        self.assertEqual(len(ranked), 2)
+        self.assertGreater(ranked[0]["score"], ranked[1]["score"])
+        self.assertIn("example/high-total", ranked[0]["workflow_id"])
+        self.assertLess(ranked[0]["mission_fit"], ranked[1]["mission_fit"])
+
     def test_report_does_not_merge_different_content_with_same_nodes(self):
         from gwp.evaluate import report
 
