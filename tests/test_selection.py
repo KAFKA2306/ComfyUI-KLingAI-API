@@ -70,18 +70,20 @@ class SelectionTests(unittest.TestCase):
         from gwp.evaluate import report
 
         catalog = empty_catalog()
-        name = "mixed/video-and-audio.json"
+        name = "podcast/video-and-audio.json"
         record_file(catalog, "example/mixed", "a" * 40,
                     {"path": name, "sha": "1" * 40, "size": 100},
                     "2026-11-01T00:00:00Z")
         row = catalog["artifacts"]["github:example/mixed:" + name]
         row.update({"inspection": "complete", "format": "workflow-ui",
                     "node_types": ["SaveVideo", "SaveAudio"],
-                    "mission_ids": ["youtube", "podcast"]})
+                    "mission_ids": ["youtube"]})
         catalog["repositories"]["example/mixed"] = {
             "stargazers_count": 10, "pushed_at": "2026-11-03T00:00:00Z"}
         result = report(catalog, self.registry, now=self.now)
         ranked = next(x for x in result["ranked"] if x["id"] == row["id"])
+        self.assertNotEqual(ranked["mission_scores"]["youtube"],
+                            ranked["mission_scores"]["podcast"])
         for mission in ("youtube", "podcast"):
             assignment = next(x for x in result["assignments"][mission]
                               if x["workflow_id"] == row["id"])
