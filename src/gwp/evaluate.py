@@ -61,6 +61,7 @@ def evaluate(item, catalog, registry, now, vram_gb=None):
         "output_formats": item.get("output_formats"), "license_spdx": license_id,
         "readiness": "verified" if not blockers else "unverified",
         "blockers": blockers, "path": item.get("path"),
+        "blob_sha": item.get("blob_sha"),
     }
 
 
@@ -68,13 +69,15 @@ def report(catalog, registry, *, vram_gb=None, now=None):
     now = now or datetime.now(timezone.utc)
     rows = [evaluate(item, catalog, registry, now, vram_gb)
             for item in source_rows(catalog, registry) if not item.get("missing_upstream")]
-    # 同一用途・同一ノード構成・同一モデル参照が確定したものだけを統合する。
+    # ノード名・モデル名が同じでも接続や設定が異なるため、内容一致の証拠にはならない。
+    # Git Blob SHAが一致し、用途の割当も同じ場合だけまとめる。出典は候補IDで保持する。
     groups = {}
     for row in rows:
-        signature = (tuple(sorted(row["mission_scores"])), tuple(row["node_types"]),
-                     tuple(row["required_models"]), str(row["input_formats"]),
-                     str(row["output_formats"]))
-        key = signature if row["node_types"] and row["required_models"] else ("unique", row["id"])
+        blob = row.get("blob_sha")
+        valid_blob = (isinstance(blob, str) and len(blob) == 40
+                      and all(ch in "0123456789abcdef" for ch in blob.lower()))
+        key = (("blob", blob.lower(), tuple(sorted(row["mission_scores"].items())))
+               if valid_blob else ("unique", row["id"]))
         groups.setdefault(key, []).append(row)
     winners = []
     for group in groups.values():
