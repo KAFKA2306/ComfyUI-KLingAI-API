@@ -95,3 +95,9 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 モデルの一次参照先は[Comfy-Org/Idol](https://huggingface.co/Comfy-Org/Idol)と[Comfy-Org/BiRefNet](https://huggingface.co/Comfy-Org/BiRefNet)。原典には`idol_fp16.safetensors`、`idol_decoder_fp16.safetensors`、`dino_v3_vit_h_bf16.safetensors`、`flux2-vae.safetensors`、`birefnet.safetensors`が記載され、IdolはTripoSplat系ノードを使う。モデルファイル合計3.52GBという記載は必要VRAMではない。サブグラフの内部ノード版、カスタムノードの追加要否、必要VRAM、各モデルと出力物のライセンス、商用利用条件、実機動作は未確認。単一視点から推定するため背面・細部の形状は入力画像だけでは保証されない。
 
 8領域では3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品の3D素材が主な再利用候補。YouTube・Shortsと映画・アニメーションには回転プレビューを利用できる。アバター・衣装はメッシュの編集・リギング適性が未確認で、Podcast・音声への直接適用は確認できない。採点は人気30・更新30・領域適合40のみとし、モデル・VRAM・ライセンス・実行条件は別途確認する。GitHubスター数と更新日はリポジトリ単位の代理指標であり、この個別Workflowの評価値ではない。
+
+## 単一画像からHunyuan3DのGLBを作る構成
+
+[Comfy-Org公式Hunyuan3Dテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_hunyuan3d_image_to_model.json)では、`LoadImage`の`IMAGE`を3D生成サブグラフへ渡し、出力を`SaveGLB`の`mesh`入力へ接続する。原典は`hunyuan3d-dit-v2_fp16.safetensors`を参照する。入力は単一画像、出力はGLB形式の3Dデータである。パノラマから周囲のメッシュを作るMoGeとは異なり、画像内の対象物を3D化する構成である。
+
+主な再利用先は3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品。アバター・衣装はメッシュの調整とリギングが別途必要であり、YouTube・Shorts、映画・アニメーションは3D素材として間接利用を検討できる。Podcast・音声への直接適用は確認できない。必要VRAM、サブグラフ内の詳細な依存関係、モデルとノードの配布条件、ライセンス、商用利用可否、実機動作は未確認である。これらは採点せず、人気30・更新30・制作領域適合40のみで順位付けする。GitHub単位の人気と更新日は個別Workflowの実績ではない。
