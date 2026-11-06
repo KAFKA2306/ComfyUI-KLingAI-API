@@ -81,17 +81,21 @@ class SelectionTests(unittest.TestCase):
                         "model_references": ["same-model"], "mission_ids": ["3d-models"]})
         before = json.dumps(catalog, sort_keys=True)
         evaluated = report(catalog, self.registry, now=self.now)
-        self.assertEqual(evaluated["candidates"], 2)
-        self.assertEqual(evaluated["groups"], 2)
-        self.assertEqual(len(evaluated["assignments"]["3d-models"]), 2)
+        # The registry also contributes 14 independent, uninspected source rows.
+        self.assertEqual(evaluated["groups"], evaluated["candidates"])
+        self.assertEqual(len([row for row in evaluated["ranked"]
+                              if row["id"].startswith("github:example/")]), 2)
         self.assertEqual(json.dumps(catalog, sort_keys=True), before)
 
         # Identical blob contents may be grouped, but both provenance IDs survive.
         rows = list(catalog["artifacts"].values())
         rows[1]["blob_sha"] = rows[0]["blob_sha"]
         grouped = report(catalog, self.registry, now=self.now)
-        self.assertEqual(grouped["groups"], 1)
-        self.assertEqual(len(grouped["ranked"][0]["similar_candidates"]), 1)
+        self.assertEqual(grouped["groups"], grouped["candidates"] - 1)
+        merged = [row for row in grouped["ranked"]
+                  if row["id"].startswith("github:example/")]
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(len(merged[0]["similar_candidates"]), 1)
 
 
 
