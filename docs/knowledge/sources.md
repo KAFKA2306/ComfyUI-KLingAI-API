@@ -123,3 +123,12 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 原典の参照モデルは`sam3.1_multiplex_fp16.safetensors`、`sam_3d_body_dinov3_bf16.safetensors`、`moge_2_vitl_normal_fp16.safetensors`、`rt_detr_v4-x-hgnet_fp32.safetensors`。一次配布先は[Comfy-Org/sam3.1](https://huggingface.co/Comfy-Org/sam3.1)、[Comfy-Org/sam-3d-body](https://huggingface.co/Comfy-Org/sam-3d-body)、[Comfy-Org/MoGe](https://huggingface.co/Comfy-Org/MoGe)、[Comfy-Org/SDPose](https://huggingface.co/Comfy-Org/SDPose)。入力は動画、出力候補は人物の3Dデータと描画動画。モデル容量は必要VRAMを示さない。各ノードの対応版、追加カスタムノードの要否、必要VRAM、ライセンス、商用利用条件、実機動作、リギング可能性は未確認である。単一画像から物体を生成するHunyuan3DやTripoSplatとは異なり、時間方向の人物検出・追跡と人体推定を扱う。
 
 8領域ではアバター・衣装、3Dモデル、ゲーム制作、VRChatワールドで人物姿勢・メッシュの制作工程への再利用を検討できる。YouTube・Shortsと映画・アニメーションには人物の動きの解析・映像化、BOOTH商品には3D素材化の候補となる。Podcast・音声への直接適用は確認できない。自動採点は人気30・更新30・制作領域適合40のみとし、モデル・ライセンス・VRAM・実行環境は参考情報として独立させる。GitHubの人気と更新日はリポジトリ単位であり、個別Workflowの性能を示さない。
+
+
+## 音声を4種類のステムに分離する構成
+
+[Comfy-Org公式Audio Separationテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/utility-audioseparation.json)（原典Blob SHA `493d2e92ca3b6172b1fff5ecc54d09754c8d1190`）では、`LoadAudio`から入力した音声を`AudioStemSeparate`に渡し、`htdemucs`を指定してVocals・Drums・Bass・Otherの4系統に分離する。各出力は`SaveAudioAdvanced`でMP3として個別保存する。入力は音声ファイル、出力は4種類のMP3であり、音声生成や話者別の対話音声合成ではない。
+
+原典の`MarkdownNote`は追加ノードとして[lum3on/ComfyUI_AudioTools](https://github.com/lum3on/ComfyUI_AudioTools)を示す。`htdemucs`のモデル配布・必要なダウンロード、ComfyUI本体とノードの対応版、必要VRAM・CPU/RAM、ライセンス・商用利用条件、実機動作、分離品質は未確認である。音源自体の権利は別途確認する。類似するChatterbox Dialog TTSは台本から音声を生成するが、本構成は既存音声を楽器・歌声の種類で分ける。
+
+8領域ではPodcast・音声の素材編集、YouTube・Shortsと映画・アニメーションの音声調整、ゲーム制作とVRChatワールドの音響素材準備が再利用候補である。BOOTH商品は適切な権利を持つ音響素材の制作工程として検討できる。アバター・衣装と3Dモデルへの直接適用は確認できない。自動順位付けは人気30・更新30・制作領域適合40のみとし、モデル・VRAM・ライセンス・実行環境は採点しない。GitHubのスター数と更新日時はリポジトリ単位の代理指標であり、このWorkflow単体の人気・更新を示さない。
