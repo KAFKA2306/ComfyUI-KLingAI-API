@@ -88,8 +88,14 @@ def report(catalog, registry, *, vram_gb=None, now=None):
     assignments = {}
     for mission in registry["missions"]:
         eligible = [r for r in winners if mission in r["mission_scores"]]
-        eligible.sort(key=lambda r: (-r["mission_scores"][mission], -r["score_observed"], str(r["id"])))
-        assignments[mission] = [{"workflow_id": r["id"], "score": r["score_observed"],
+        # 領域別の点数に他領域の適合度を混ぜない。
+        def mission_score(row):
+            parts = row["score_components"]
+            return round(sum(value for value in (parts["popularity"], parts["freshness"])
+                             if value is not None) + row["mission_scores"][mission], 2)
+
+        eligible.sort(key=lambda r: (-r["mission_scores"][mission], -mission_score(r), str(r["id"])))
+        assignments[mission] = [{"workflow_id": r["id"], "score": mission_score(r),
                                   "mission_fit": r["mission_scores"][mission],
                                   "readiness": r["readiness"], "blockers": r["blockers"]}
                                  for r in eligible[:5]]
