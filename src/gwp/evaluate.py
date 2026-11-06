@@ -94,7 +94,7 @@ def report(catalog, registry, *, vram_gb=None, now=None):
             return round(sum(value for value in (parts["popularity"], parts["freshness"])
                              if value is not None) + row["mission_scores"][mission], 2)
 
-        eligible.sort(key=lambda r: (-r["mission_scores"][mission], -mission_score(r), str(r["id"])))
+        eligible.sort(key=lambda r: (-mission_score(r), -r["mission_scores"][mission], str(r["id"])))
         assignments[mission] = [{"workflow_id": r["id"], "score": mission_score(r),
                                   "mission_fit": r["mission_scores"][mission],
                                   "readiness": r["readiness"], "blockers": r["blockers"]}
