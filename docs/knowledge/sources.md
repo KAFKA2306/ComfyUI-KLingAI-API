@@ -107,3 +107,11 @@ YouTube・Shorts、映画・アニメーション、ゲーム制作、VRChatワ�
 [Comfy-Org公式Hunyuan3D MultiView Turboテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_hunyuan3d_multiview_to_model_turbo.json)（確認した原典Blob SHA `0f4b882dafc2241591be41761328bbfbd77fd1aa`）は、前・後・左・右の4画像をそれぞれ`LoadImage`で読み込み、`CLIPVisionEncode`から`Hunyuan3Dv2ConditioningMultiView`に接続する。`ImageOnlyCheckpointLoader`で`hunyuan3d-dit-v2-mv-turbo_fp16.safetensors`を参照し、`EmptyLatentHunyuan3Dv2`、`KSampler`、`VAEDecodeHunyuan3D`、`VoxelToMesh`、`SaveGLB`を経てGLB形式で保存する。原典のモデルリンクは[Comfy-Org/hunyuan3D_2.0_repackaged](https://huggingface.co/Comfy-Org/hunyuan3D_2.0_repackaged)で、チェックポイントの配布サイズは4.59GBと記載されている。これは必要VRAMの実測値ではない。
 
 単一画像の[Hunyuan3Dテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_hunyuan3d_image_to_model.json)と異なり、4方向の入力画像とMultiView専用の条件付け・チェックポイントを使う。3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品の3D素材が主な再利用候補である。アバター・衣装はメッシュ編集とリギングが必要か未確認。YouTube・Shortsと映画・アニメーションは3D素材として間接利用を検討できる。Podcast・音声への直接適用は確認できない。必要VRAM、ライセンスと商用利用条件、カスタムノードの追加要否、実機での生成結果は未確認である。人気30・更新30・制作領域適合40のみで採点し、モデル・VRAM・ライセンス・実行条件は採点しない。GitHubスター数と更新日時はリポジトリ単位の代理指標であり、このWorkflow固有の実績ではない。
+
+## 単一画像からTripoSplatでGaussian Splatを作る構成
+
+[Comfy-Org公式TripoSplatテンプレート](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/3d_triposplat_image_to_gaussian_splat.json)（原典Blob SHA `54c9ecc05a8270a6576faab6712fd12bf048c3fe`）は、`LoadImage`からTripoSplatの画像→Gaussian Splatサブグラフへ入力する。生成結果を`SplatToFile3D`でSPZに保存し、`RenderSplat`、`CreateVideo`、`SaveVideo`で回転プレビューを作る。別経路の`SplatToMesh`と`SaveGLB`は原典ではバイパス状態で、利用時に有効化する必要がある。メッシュ変換は実験的な出力として説明されている。既存のIdol方式とは生成モデルが異なり、両者の品質優劣は未検証である。
+
+原典に記載されたモデルは`triposplat_fp16.safetensors`、`dino_v3_vit_h.safetensors`、`triposplat_vae_decoder_fp16.safetensors`、`flux2-vae.safetensors`、背景除去用`birefnet.safetensors`。配布元は[VAST-AI/TripoSplat](https://huggingface.co/VAST-AI/TripoSplat)と[Comfy-Org/BiRefNet](https://huggingface.co/Comfy-Org/BiRefNet)。必要VRAM、モデルとカスタムノードのライセンス、商用利用条件、実機動作は未確認であり、配布ファイル容量からVRAMを推定しない。
+
+8領域では3Dモデル、ゲーム制作、VRChatワールド、BOOTH商品が直接の再利用候補。YouTube・Shortsと映画・アニメーションは回転プレビュー動画を素材として利用できる。アバター・衣装はリギングやメッシュ編集への適性が未確認で、Podcast・音声への直接利用は確認できない。順位付けは人気30・更新30・制作領域適合40のみとし、VRAM・ライセンス・モデル・実行条件は採点しない。GitHubの人気と更新日はリポジトリ単位であり、この個別Workflowの実績ではない。
