@@ -67,11 +67,15 @@ jobs:
           git show origin/main:data/workflow_registry.json > .cache/catalog-snapshot/data/workflow_registry.json
           git show origin/main:data/workflow_registry.json.sha256 > .cache/catalog-snapshot/data/workflow_registry.json.sha256
           uv run --locked python -m gwp.state verify --catalog .cache/catalog-snapshot/data/workflow_registry.json
+      - name: 確定台帳から8領域の選定結果をスナップショット化
+        run: |
+          uv run --locked python -m gwp.evaluate --catalog .cache/catalog-snapshot/data/workflow_registry.json --output .cache/catalog-snapshot/selection.json
+          uv run --locked python -c 'import json; from pathlib import Path; x=json.loads(Path(".cache/catalog-snapshot/selection.json").read_text(encoding="utf-8")); expected=set(json.loads(Path("config/registry.json").read_text(encoding="utf-8"))["missions"]); assert set(x["assignments"]) == expected; assert all(len(v) <= 5 for v in x["assignments"].values()); print("選定領域:", len(expected), "候補:", x["candidates"], "統合後:", x["groups"])'
       - name: 復旧可能な確定済みスナップショットを保存
         uses: actions/upload-artifact@v4
         with:
           name: workflow-catalog-snapshot
-          path: .cache/catalog-snapshot/data/
+          path: .cache/catalog-snapshot/
           if-no-files-found: error
           retention-days: 7
       - name: 実行ログ用の候補ファイルを一時保存
