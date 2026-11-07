@@ -49,6 +49,30 @@ class ProductionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 handoff_job(manifest, second)
 
+    def test_handoff_rejects_symlink_redirect_outside_project(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output = root / "output"
+            output.mkdir()
+            raw = b"verified-workflow-output"
+            (output / "001-1.png").write_bytes(raw)
+            manifest = output / "manifest.json"
+            manifest.write_text(json.dumps({
+                "target": "youtube", "promptId": "job-1", "state": "GENERATED_UNVERIFIED",
+                "files": [{"file": "001-1.png", "sha256": hashlib.sha256(raw).hexdigest()}],
+            }), encoding="utf-8")
+            project = root / "project"
+            project.mkdir()
+            outside = root / "outside"
+            outside.mkdir()
+            try:
+                (project / ".artifacts").symlink_to(outside, target_is_directory=True)
+            except (OSError, NotImplementedError) as exc:
+                self.skipTest(f"symbolic links are unavailable: {exc}")
+            with self.assertRaises(ValueError):
+                handoff_job(manifest, project)
+            self.assertEqual(list(outside.iterdir()), [])
+
     def test_glb_transfer_from_meshes_output(self):
         class Backend:
             def history(self, prompt_id):
