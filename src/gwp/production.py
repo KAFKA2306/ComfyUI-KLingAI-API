@@ -5,7 +5,6 @@ import math
 import os
 import re
 import tempfile
-import shutil
 from copy import deepcopy
 from pathlib import Path
 from urllib.parse import quote, urlencode, urlsplit
@@ -202,8 +201,16 @@ def handoff_job(manifest_path, project_root):
     project = Path(project_root).resolve()
     if not project.is_dir():
         raise ValueError("受け渡し先のプロジェクトが存在しません")
-    destination = project / ".artifacts" / "comfyui" / target / prompt_id
-    if destination.exists():
+    artifact_parents = (
+        project / ".artifacts",
+        project / ".artifacts" / "comfyui",
+        project / ".artifacts" / "comfyui" / target,
+    )
+    # An existing symlink must not redirect generated files outside the project.
+    if any(parent.is_symlink() for parent in artifact_parents):
+        raise ValueError("制作先の作業領域にシンボリックリンクが含まれています")
+    destination = artifact_parents[-1] / prompt_id
+    if destination.exists() or destination.is_symlink():
         raise FileExistsError("既存出力は上書きできません")
     checked = []
     for item in files:
@@ -217,24 +224,28 @@ def handoff_job(manifest_path, project_root):
         source = manifest_path.parent / name
         if not source.is_file() or source.is_symlink():
             raise ValueError("生成ファイルが見つかりません")
-        digest = hashlib.sha256()
-        size = 0
-        with source.open("rb") as stream:
-            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
-                size += len(chunk)
-                if size > MAX_STREAM_BYTES:
-                    raise ValueError("転送上限16GiBを超えました")
-                digest.update(chunk)
-        if size == 0 or digest.hexdigest() != expected:
-            raise ValueError("SHA-256検証失敗")
         checked.append((name, source, expected))
     if len(set(name for name, _, _ in checked)) != len(checked):
         raise ValueError("生成ファイル名が重複しています")
     destination.parent.mkdir(parents=True, exist_ok=True)
+    if not destination.parent.resolve().is_relative_to(project):
+        raise ValueError("制作先の作業領域がプロジェクトの外を指しています")
     with tempfile.TemporaryDirectory(dir=destination.parent) as temporary:
         staging = Path(temporary)
         for name, source, expected in checked:
-            shutil.copyfile(source, staging / name)
+            # Verify the bytes that are actually staged, rather than hashing
+            # the source first and copying potentially different bytes later.
+            digest = hashlib.sha256()
+            size = 0
+            with source.open("rb") as inp, (staging / name).open("xb") as out:
+                for chunk in iter(lambda: inp.read(1024 * 1024), b""):
+                    size += len(chunk)
+                    if size > MAX_STREAM_BYTES:
+                        raise ValueError("転送上限16GiBを超えました")
+                    digest.update(chunk)
+                    out.write(chunk)
+            if size == 0 or digest.hexdigest() != expected:
+                raise ValueError("SHA-256検証失敗")
         receipt = {
             "schemaVersion": 1, "target": target, "promptId": prompt_id, "workflowSha256": manifest.get("workflowSha256"),
             "originManifestSha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
