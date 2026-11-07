@@ -66,6 +66,31 @@ class SelectionTests(unittest.TestCase):
         self.assertTrue(any(x["inspection"] == "pending" for x in all_rows))
         self.assertFalse(any(x["repository"] == "example/unrelated" for x in all_rows))
 
+    def test_discovered_metrics_affect_ranking_without_inventing_workflow_license(self):
+        from gwp.evaluate import report
+
+        self.catalog["discoveries"]["example/new"] = {
+            "repo": "example/new", "stargazers_count": 10000,
+            "pushed_at": "2026-11-04T00:00:00Z", "license_spdx": "MIT",
+            "metadata_checked_at": "2026-11-07T00:00:00+00:00",
+        }
+        # 古い巡回値が新しい検索応答を上書きしてはいけない。
+        self.catalog["repositories"]["example/new"] = {
+            "stargazers_count": 1, "pushed_at": "2025-01-01T00:00:00Z",
+            "metadata_checked_at": "2026-11-01T00:00:00+00:00",
+        }
+        result = report(self.catalog, self.registry, now=self.now)
+        row = next(x for x in result["ranked"] if x["id"].startswith("github:example/new:"))
+        self.assertEqual(row["score_components"]["popularity"], 30)
+        self.assertEqual(row["score_components"]["freshness"], 30)
+        self.assertIsNone(row["license_spdx"])
+        self.assertEqual(row["repository_license_spdx"], "MIT")
+        self.assertIn("ライセンス未確認", row["blockers"])
+        self.assertGreater(result["metric_coverage"]["popularity"], 0)
+        items = select_workflows(self.catalog, self.registry, "3d-models", now=self.now)
+        new = next(x for x in items if x["repository"] == "example/new")
+        self.assertEqual(new["repository_stars"], 10000)
+
     def test_evaluation_timestamp_reproduces_freshness_scores(self):
         from gwp.evaluate import report
 

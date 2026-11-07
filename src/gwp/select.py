@@ -118,6 +118,22 @@ def refresh_metadata(api, rows):
     return result
 
 
+def repository_metadata(catalog, repo):
+    """探索・巡回の新しい成功記録を優先し、未取得フィールドは既知値を残す。"""
+    discovered = catalog.get("discoveries", {}).get(repo, {})
+    scanned = catalog.get("repositories", {}).get(repo, {})
+    if discovered.get("metadata_checked_at", "") > scanned.get("metadata_checked_at", ""):
+        rows = (scanned, discovered)
+    else:
+        rows = (discovered, scanned)
+    result = {}
+    for row in rows:
+        for key in ("stargazers_count", "pushed_at", "license_spdx"):
+            if row.get(key) is not None:
+                result[key] = row[key]
+    return result
+
+
 def select_workflows(catalog, registry, mission, metadata=None, *, sort="suitable",
                      min_stars=0, updated_within_days=None, inspected_only=False,
                      term="", now=None):
@@ -133,7 +149,7 @@ def select_workflows(catalog, registry, mission, metadata=None, *, sort="suitabl
     result = []
     for item in candidates(catalog, registry, mission, inspected_only=inspected_only, term=term):
         repo = item["source"].removeprefix("github:")
-        meta = metadata.get(repo) or catalog["repositories"].get(repo, {})
+        meta = metadata.get(repo) or repository_metadata(catalog, repo)
         stars = meta.get("stargazers_count")
         stars = stars if isinstance(stars, int) and not isinstance(stars, bool) else None
         pushed = _time(meta.get("pushed_at"))

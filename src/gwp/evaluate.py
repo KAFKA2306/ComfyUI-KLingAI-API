@@ -8,13 +8,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from gwp.registry import load_registry
-from gwp.select import MISSION_CATEGORIES, matches, source_rows, _time
+from gwp.select import MISSION_CATEGORIES, matches, source_rows, _time, repository_metadata
 from gwp.state import load_catalog
 
 
 def evaluate(item, catalog, registry, now, vram_gb=None):
     repo = item.get("source", "").removeprefix("github:")
-    meta = catalog.get("repositories", {}).get(repo, {})
+    meta = repository_metadata(catalog, repo)
     stars = meta.get("stargazers_count")
     popularity = round(30 * min(1, math.log1p(stars) / math.log1p(10000)), 2) if type(stars) is int and stars >= 0 else None
     pushed = _time(meta.get("pushed_at"))
@@ -23,7 +23,8 @@ def evaluate(item, catalog, registry, now, vram_gb=None):
     inspected = item.get("inspection") == "complete"
     models = sorted(set(item.get("model_references") or []))
     nodes = sorted(set(item.get("node_types") or []))
-    license_id = meta.get("license_spdx")
+    # 公開元リポジトリのライセンスは個別Workflowの利用許可の証拠ではない。
+    license_id = item.get("license_spdx")
     required_vram = item.get("required_vram_gb")
     vram_ok = (vram_gb >= required_vram) if isinstance(required_vram, (int, float)) and vram_gb is not None else None
     mission_scores = {}
@@ -59,6 +60,7 @@ def evaluate(item, catalog, registry, now, vram_gb=None):
         "node_types": nodes, "custom_nodes": "未確認",
         "required_vram_gb": required_vram, "input_formats": item.get("input_formats"),
         "output_formats": item.get("output_formats"), "license_spdx": license_id,
+        "repository_license_spdx": meta.get("license_spdx"),
         "readiness": "verified" if not blockers else "unverified",
         "blockers": blockers, "path": item.get("path"),
         "blob_sha": item.get("blob_sha"),
@@ -102,7 +104,13 @@ def report(catalog, registry, *, vram_gb=None, now=None):
                                   "mission_fit": r["mission_scores"][mission],
                                   "readiness": r["readiness"], "blockers": r["blockers"]}
                                  for r in eligible[:5]]
-    return {"schema_version": 1, "evaluated_at": now.isoformat().replace("+00:00", "Z"), "metric_note": "採点は人気30点・更新日30点・領域適合40点のみ。人気と更新日はリポジトリ単位。実行条件・ライセンスは参考情報であり採点しない。",
+    coverage = {
+        "total": len(winners),
+        "popularity": sum(row["score_components"]["popularity"] is not None for row in winners),
+        "freshness": sum(row["score_components"]["freshness"] is not None for row in winners),
+    }
+    return {"schema_version": 1, "evaluated_at": now.isoformat().replace("+00:00", "Z"), "metric_note": "採点は人気30点・更新日30点・領域適合40点のみ。人気と更新日はリポジトリ単位。欠損指標は0点ではなく未取得であり、順位は暫定。個別Workflowのライセンス・実行条件は別途確認する。",
+            "metric_coverage": coverage,
             "candidates": len(rows), "groups": len(groups),
             "ranked": sorted(winners, key=lambda r: (-r["score_observed"], str(r["id"]))),
             "assignments": assignments}

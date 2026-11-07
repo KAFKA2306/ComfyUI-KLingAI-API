@@ -234,8 +234,31 @@ def inspect_pending(api, catalog, limit):
 
 
 
+def record_repository_metadata(row, metadata, stamp):
+    """既存のGitHub API応答から公開元単位の指標だけを保存する。"""
+    observed = {}
+    stars = metadata.get("stargazers_count")
+    if type(stars) is int and stars >= 0:
+        observed["stargazers_count"] = stars
+    pushed = metadata.get("pushed_at")
+    if isinstance(pushed, str):
+        try:
+            parsed = datetime.fromisoformat(pushed.replace("Z", "+00:00"))
+            if parsed.tzinfo is not None and parsed.utcoffset() is not None:
+                observed["pushed_at"] = pushed
+        except ValueError:
+            pass
+    license_info = metadata.get("license")
+    if isinstance(license_info, dict) and isinstance(license_info.get("spdx_id"), str):
+        observed["license_spdx"] = license_info["spdx_id"]
+    if observed:
+        row.update(observed)
+        row["metadata_checked_at"] = stamp
+
+
 def discover_organizations(api, catalog, organizations):
     """組織の公開リポジトリを列挙し、失敗を消滅と取り違えない。"""
+    stamp = now_utc()
     for organization in organizations:
         for page in range(1, 101):
             url = BASE + "/orgs/" + quote(organization, safe="") + "/repos?" + urlencode(
@@ -259,6 +282,7 @@ def discover_organizations(api, catalog, organizations):
                 tag = "organization:" + organization
                 if tag not in row["discovered_via"]:
                     row["discovered_via"].append(tag)
+                record_repository_metadata(row, repository, stamp)
             if len(repos) < 100:
                 break
 
@@ -269,6 +293,7 @@ def discover_github(api, catalog, queries, pages):
     from urllib.parse import urlencode
 
     today = date.today()
+    stamp = now_utc()
     for query in queries:
         key = "github-search:" + query
         state = catalog["search_progress"].setdefault(key, {
@@ -337,6 +362,7 @@ def discover_github(api, catalog, queries, pages):
                         row["discovered_via"].append(query)
                     if item.get("id"):
                         row["github_repo_id"] = item["id"]
+                    record_repository_metadata(row, item, stamp)
             state["total_last_segment"] = total
             state["last_completed_page"] = page
             budget -= 1
@@ -398,6 +424,8 @@ def sync(api, catalog, settings, max_repos=12, discovery_pages=1, inspect_limit=
         state = catalog["repositories"].setdefault(key, {"repo": repo, "url": "https://github.com/" + repo})
         try:
             meta = api.json(BASE + "/repos/" + repo)
+            record_repository_metadata(state, meta, stamp)
+            record_repository_metadata(candidate, meta, stamp)
             branch = meta["default_branch"]
             commit = api.json(BASE + "/repos/" + repo + "/commits/" + quote(branch, safe=""))
             sha = commit["sha"]
